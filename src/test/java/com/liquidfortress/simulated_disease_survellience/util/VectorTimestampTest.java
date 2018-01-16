@@ -33,61 +33,67 @@
 
 package com.liquidfortress.simulated_disease_survellience.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * VectorTimestamp
+ * VectorTimestampTest
  * <p/>
- * Implements vector timestamp
+ * Tests for VectorTimestamp
  */
-public class VectorTimestamp {
+public class VectorTimestampTest {
 
-    private final HashMap<Integer, Long> vector = new HashMap<>();
+    VectorTimestamp timestamp;
 
-    public VectorTimestamp() {
-    } // treat empty vector as all fields being zero
-
-    public void update(VectorTimestamp vectorTimestamp, Integer nodeIdToIncrement) {
-        incrementSelf(nodeIdToIncrement);
-        if (vectorTimestamp != null && !vectorTimestamp.isEmpty()) {
-            for (Map.Entry<Integer, Long> entry : vectorTimestamp.entrySet()) {
-                Integer key = entry.getKey();
-                Long entryValue = entry.getValue();
-                // vector does not have this key, so add it
-                vector.merge(key, entryValue, (a, b) -> Long.max(b, a));
-            }
-        }
+    @Before
+    public void setup() {
+        timestamp = new VectorTimestamp();
     }
 
-    public void incrementSelf(Integer nodeIdToIncrement) {
-        vector.merge(nodeIdToIncrement, 1L, (a, b) -> (a + b));
+    @Test
+    public void getZeroFromEmptyTest() {
+        Long value = timestamp.get(1);
+        Assert.assertTrue(0L == value);
     }
 
-    public Long get(Object o) {
-        Long value = vector.get(o);
-        return (value != null) ? value : 0L; // treat empty vector as all fields being zero
+    @Test
+    public void incrementSelfTest() {
+        timestamp.incrementSelf(1);
+        timestamp.incrementSelf(1);
+        timestamp.incrementSelf(1);
+        timestamp.incrementSelf(2);
+        timestamp.incrementSelf(2);
+        timestamp.incrementSelf(3);
+        System.out.println("timestamp is: " + timestamp);
+        Assert.assertTrue(timestamp.get(1) == 3L);
+        Assert.assertTrue(timestamp.get(2) == 2L);
+        Assert.assertTrue(timestamp.get(3) == 1L);
     }
 
-    private boolean isEmpty() {
-        return vector.isEmpty();
-    }
-
-    private Set<Map.Entry<Integer, Long>> entrySet() {
-        return vector.entrySet();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("VectorTimestamp{");
-        for (Map.Entry<Integer, Long> entry : this.entrySet()) {
-            builder.append(entry.getKey());
-            builder.append(" => ");
-            builder.append(entry.getValue());
-            builder.append("\n");
-        }
-        builder.append('}');
-        return builder.toString();
+    @Test
+    public void updateTest() {
+        timestamp.incrementSelf(1);
+        timestamp.incrementSelf(2);
+        timestamp.incrementSelf(2);
+        timestamp.incrementSelf(3);
+        timestamp.incrementSelf(3);
+        timestamp.incrementSelf(3);
+        System.out.println("timestamp is: " + timestamp);
+        VectorTimestamp ts2 = new VectorTimestamp();
+        ts2.incrementSelf(1);
+        ts2.incrementSelf(1);
+        ts2.incrementSelf(1);
+        ts2.incrementSelf(1);
+        ts2.incrementSelf(3);
+        ts2.incrementSelf(3);
+        ts2.incrementSelf(3);
+        ts2.incrementSelf(3);
+        ts2.incrementSelf(3);
+        ts2.update(timestamp, 3);
+        System.out.println("ts2 is: " + ts2);
+        Assert.assertTrue(ts2.get(1) == 4L);
+        Assert.assertTrue(ts2.get(2) == 2L);
+        Assert.assertTrue(ts2.get(3) == 6L);
     }
 }

@@ -11,8 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="simulated_disease_survellience" target="1.8" />
-      <module name="SimulatedDiseaseSurvellience" target="1.5" />
+      <module name="SimulatedDiseaseSurvellience" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
