@@ -37,19 +37,28 @@ import com.liquidfortress.simulated_disease_survellience.cli_args.CommandLineVal
 import com.liquidfortress.simulated_disease_survellience.cli_args.ValidatedArgs;
 import com.liquidfortress.simulated_disease_survellience.logging.LoggerFactory;
 import org.apache.logging.log4j.core.Logger;
+import org.zeromq.ZMQ;
 
 public class Main {
 
     public static Logger log;
+    public static final int ZMQ_IO_THREAD_COUNT = 1;
+    public static ZMQ.Context context = null;
 
     public static void main(String[] args) {
-        // validate command line args
-        ValidatedArgs validatedArgs = CommandLineValidator.validateCommandLineArgs(args);
-        // prepare requested output formats
-        log = LoggerFactory.getLogger(validatedArgs);
-        // parse config file
+        try {
+            // validate command line args
+            ValidatedArgs validatedArgs = CommandLineValidator.validateCommandLineArgs(args);
+            // prepare requested output formats
+            log = LoggerFactory.getLogger(validatedArgs);
+            // parse config file
 
-        // identify node to
+            // Initialize ZMQ context
+            context = ZMQ.context(ZMQ_IO_THREAD_COUNT);
+        } finally {
+            // Shutdown ZMQ context
+            context.term();
+        }
     }
 
 }

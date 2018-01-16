@@ -33,6 +33,8 @@
 
 package com.liquidfortress.simulated_disease_survellience.nodes;
 
+import com.liquidfortress.simulated_disease_survellience.util.VectorTimestamp;
+
 /**
  * AbstractNode
  * <p/>
@@ -41,6 +43,7 @@ package com.liquidfortress.simulated_disease_survellience.nodes;
 public abstract class AbstractNode {
 
     public final int nodeId;
+    public final VectorTimestamp vectorTimestamp = new VectorTimestamp();
 
     public AbstractNode(int nodeId) {
         this.nodeId = nodeId;
