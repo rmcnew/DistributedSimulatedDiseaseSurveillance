@@ -31,47 +31,33 @@
  * THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
  */
 
-package com.liquidfortress.simulated_disease_survellience.nodes;
+package com.liquidfortress.simulated_disease_survellience.messages;
 
 import com.liquidfortress.simulated_disease_survellience.disease.Disease;
-import com.liquidfortress.simulated_disease_survellience.util.Shared;
-
-import java.util.HashMap;
+import com.liquidfortress.simulated_disease_survellience.main.Main;
+import com.liquidfortress.simulated_disease_survellience.util.VectorTimestamp;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * HealthDistrictSimulator
+ * DiseaseCountMessageTest
  * <p/>
- * Simulates a Health District:
- * 1.  Receives disease reports from Electronic Medical Record Simulators
- * 2.  Answers disease outbreak queries from Electronic Medical Record Simulators
- * 3.  Sends disease count reports to Disease Outbreak Analyzers
- * 4.  Receives disease outbreak alerts from Disease Outbreak Analyzers
+ * Tests for DiseaseCountMessage
  */
-public class HealthDistrictSimulator extends AbstractNode {
+public class DiseaseCountMessageTest {
 
-    public final int healthDistrictSimulatorId;
-    private final HashMap<Disease, Long> diseaseCounts = new HashMap<>();
-    private final HashMap<Disease, Boolean> diseaseOutbreaks = new HashMap<>();
+    DiseaseCountMessage diseaseCountMessage;
 
-    public HealthDistrictSimulator(int nodeId, int healthDistrictSimulatorId) {
-        super(nodeId);
-        Shared.validateId(healthDistrictSimulatorId, "healthDistrictSimulatorId cannot be negative!");
-        this.healthDistrictSimulatorId = healthDistrictSimulatorId;
-        for (Disease disease : Disease.values()) {
-            diseaseCounts.put(disease, 0L);
-            diseaseOutbreaks.put(disease, Boolean.FALSE);
-        }
+    @Before
+    public void setup() {
+        diseaseCountMessage = new DiseaseCountMessage(new VectorTimestamp(), 1, Disease.CHICKEN_POX, 2);
     }
 
-    @Override
-    public void increaseDiseaseCount(Disease disease, long increaseValue) {
-        Shared.validateIncrease(increaseValue, "increaseValue must be positive!");
-        long count = diseaseCounts.get(disease);
-        diseaseCounts.put(disease, (count + increaseValue));
-        this.vectorTimestamp.incrementSelf(this.nodeId);
-    }
-
-    public boolean isOutbreakHappening(Disease disease) {
-        return diseaseOutbreaks.get(disease);
+    @Test
+    public void serializeTest() {
+        String serialized = Main.jsonb.toJson(diseaseCountMessage);
+        System.out.println("DiseaseCountMessage serialized: " + serialized);
+        Assert.assertNotNull(serialized);
     }
 }

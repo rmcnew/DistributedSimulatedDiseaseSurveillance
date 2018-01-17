@@ -33,10 +33,18 @@
 
 package com.liquidfortress.simulated_disease_survellience.messages;
 
+import com.liquidfortress.simulated_disease_survellience.util.VectorTimestamp;
+
 /**
  * AbstractMessage
  * <p/>
  * Abstract parent class for messages
  */
 public abstract class AbstractMessage {
+
+    public final VectorTimestamp vectorTimestamp;
+
+    public AbstractMessage(VectorTimestamp vectorTimestamp) {
+        this.vectorTimestamp = vectorTimestamp;
+    }
 }

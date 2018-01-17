@@ -46,12 +46,11 @@ public class DiseaseCountMessage extends AbstractMessage {
     public final int healthDistrictSimulatorId;
     public final Disease disease;
     public final long absoluteCount;
-    public final VectorTimestamp vectorTimestamp;
 
-    public DiseaseCountMessage(int healthDistrictSimulatorId, Disease disease, long absoluteCount, VectorTimestamp vectorTimestamp) {
+    public DiseaseCountMessage(VectorTimestamp vectorTimestamp, int healthDistrictSimulatorId, Disease disease, long absoluteCount) {
+        super(vectorTimestamp);
         this.healthDistrictSimulatorId = healthDistrictSimulatorId;
         this.disease = disease;
         this.absoluteCount = absoluteCount;
-        this.vectorTimestamp = vectorTimestamp;
     }
 }

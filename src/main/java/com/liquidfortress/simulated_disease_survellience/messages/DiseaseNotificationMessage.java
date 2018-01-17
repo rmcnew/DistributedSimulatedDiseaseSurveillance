@@ -34,6 +34,7 @@
 package com.liquidfortress.simulated_disease_survellience.messages;
 
 import com.liquidfortress.simulated_disease_survellience.disease.Disease;
+import com.liquidfortress.simulated_disease_survellience.util.Shared;
 import com.liquidfortress.simulated_disease_survellience.util.VectorTimestamp;
 
 import java.time.Instant;
@@ -48,12 +49,13 @@ public class DiseaseNotificationMessage extends AbstractMessage {
     public final int electronicMedicalRecordSimulatorId;
     public final Disease disease;
     public final Instant localDiagnosisTimestamp;
-    public final VectorTimestamp vectorTimestamp;
 
-    public DiseaseNotificationMessage(int electronicMedicalRecordSimulatorId, Disease disease, Instant localDiagnosisTimestamp, VectorTimestamp vectorTimestamp) {
+
+    public DiseaseNotificationMessage(VectorTimestamp vectorTimestamp, int electronicMedicalRecordSimulatorId, Disease disease, Instant localDiagnosisTimestamp) {
+        super(vectorTimestamp);
+        Shared.validateId(electronicMedicalRecordSimulatorId, "electronicMedicalRecordSimulatorId cannot be negative!");
         this.electronicMedicalRecordSimulatorId = electronicMedicalRecordSimulatorId;
         this.disease = disease;
         this.localDiagnosisTimestamp = localDiagnosisTimestamp;
-        this.vectorTimestamp = vectorTimestamp;
     }
 }

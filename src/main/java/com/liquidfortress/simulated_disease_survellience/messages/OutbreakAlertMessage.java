@@ -44,10 +44,9 @@ import com.liquidfortress.simulated_disease_survellience.util.VectorTimestamp;
 public class OutbreakAlertMessage extends AbstractMessage {
 
     public final Disease disease;
-    public final VectorTimestamp vectorTimestamp;
 
-    public OutbreakAlertMessage(Disease disease, VectorTimestamp vectorTimestamp) {
+    public OutbreakAlertMessage(VectorTimestamp vectorTimestamp, Disease disease) {
+        super(vectorTimestamp);
         this.disease = disease;
-        this.vectorTimestamp = vectorTimestamp;
     }
 }

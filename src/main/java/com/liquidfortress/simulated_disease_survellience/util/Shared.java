@@ -31,47 +31,24 @@
  * THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
  */
 
-package com.liquidfortress.simulated_disease_survellience.nodes;
-
-import com.liquidfortress.simulated_disease_survellience.disease.Disease;
-import com.liquidfortress.simulated_disease_survellience.util.Shared;
-
-import java.util.HashMap;
+package com.liquidfortress.simulated_disease_survellience.util;
 
 /**
- * HealthDistrictSimulator
+ * Shared
  * <p/>
- * Simulates a Health District:
- * 1.  Receives disease reports from Electronic Medical Record Simulators
- * 2.  Answers disease outbreak queries from Electronic Medical Record Simulators
- * 3.  Sends disease count reports to Disease Outbreak Analyzers
- * 4.  Receives disease outbreak alerts from Disease Outbreak Analyzers
+ * Shared constants and utility methods
  */
-public class HealthDistrictSimulator extends AbstractNode {
+public class Shared {
 
-    public final int healthDistrictSimulatorId;
-    private final HashMap<Disease, Long> diseaseCounts = new HashMap<>();
-    private final HashMap<Disease, Boolean> diseaseOutbreaks = new HashMap<>();
-
-    public HealthDistrictSimulator(int nodeId, int healthDistrictSimulatorId) {
-        super(nodeId);
-        Shared.validateId(healthDistrictSimulatorId, "healthDistrictSimulatorId cannot be negative!");
-        this.healthDistrictSimulatorId = healthDistrictSimulatorId;
-        for (Disease disease : Disease.values()) {
-            diseaseCounts.put(disease, 0L);
-            diseaseOutbreaks.put(disease, Boolean.FALSE);
+    public static void validateId(int id, String message) {
+        if (id < 0) {
+            throw new IllegalArgumentException(message);
         }
     }
 
-    @Override
-    public void increaseDiseaseCount(Disease disease, long increaseValue) {
-        Shared.validateIncrease(increaseValue, "increaseValue must be positive!");
-        long count = diseaseCounts.get(disease);
-        diseaseCounts.put(disease, (count + increaseValue));
-        this.vectorTimestamp.incrementSelf(this.nodeId);
-    }
-
-    public boolean isOutbreakHappening(Disease disease) {
-        return diseaseOutbreaks.get(disease);
+    public static void validateIncrease(long increase, String message) {
+        if (increase <= 0) {
+            throw new IllegalArgumentException(message);
+        }
     }
 }

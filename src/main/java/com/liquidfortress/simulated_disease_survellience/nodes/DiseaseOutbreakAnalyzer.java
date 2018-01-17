@@ -33,6 +33,9 @@
 
 package com.liquidfortress.simulated_disease_survellience.nodes;
 
+import com.liquidfortress.simulated_disease_survellience.disease.Disease;
+import com.liquidfortress.simulated_disease_survellience.util.Shared;
+
 /**
  * DiseaseOutbreakAnalyzer
  * <p/>
@@ -40,5 +43,40 @@ package com.liquidfortress.simulated_disease_survellience.nodes;
  * 1.  Receives disease count reports from Health District Simulators
  * 2.  Sends disease outbreak alerts to Health District Simulators
  */
-public class DiseaseOutbreakAnalyzer {
+public class DiseaseOutbreakAnalyzer extends AbstractNode {
+
+    public final Disease disease;
+    public final long outbreakThreshold;
+    private long diseaseCount = 0L;
+
+    public DiseaseOutbreakAnalyzer(int nodeId, Disease disease, long outbreakThreshold) {
+        super(nodeId);
+        this.disease = disease;
+        Shared.validateIncrease(outbreakThreshold, "outbreakThreshold must be a positive value!");
+        this.outbreakThreshold = outbreakThreshold;
+    }
+
+    @Override
+    public void increaseDiseaseCount(Disease disease, long increaseValue) {
+        if (this.disease == disease) {
+            Shared.validateIncrease(increaseValue, "increaseValue must be positive!");
+            this.diseaseCount += increaseValue;
+            this.vectorTimestamp.incrementSelf(this.nodeId);
+        }
+    }
+
+    public boolean isOutbreakHappening() {
+        return (diseaseCount >= outbreakThreshold);
+    }
+
+    @Override
+    public String toString() {
+        return "DiseaseOutbreakAnalyzer{" +
+                "nodeId=" + nodeId +
+                ", disease=" + disease +
+                ", outbreakThreshold=" + outbreakThreshold +
+                ", diseaseCount=" + diseaseCount +
+                ", vectorTimestamp=" + vectorTimestamp +
+                "} " + super.toString();
+    }
 }

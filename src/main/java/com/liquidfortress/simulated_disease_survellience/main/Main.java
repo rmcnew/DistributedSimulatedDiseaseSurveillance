@@ -39,9 +39,13 @@ import com.liquidfortress.simulated_disease_survellience.logging.LoggerFactory;
 import org.apache.logging.log4j.core.Logger;
 import org.zeromq.ZMQ;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+
 public class Main {
 
     public static Logger log;
+    public static Jsonb jsonb = JsonbBuilder.create();
     public static final int ZMQ_IO_THREAD_COUNT = 1;
     public static ZMQ.Context context = null;
 

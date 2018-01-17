@@ -33,6 +33,8 @@
 
 package com.liquidfortress.simulated_disease_survellience.nodes;
 
+import com.liquidfortress.simulated_disease_survellience.disease.Disease;
+import com.liquidfortress.simulated_disease_survellience.util.Shared;
 import com.liquidfortress.simulated_disease_survellience.util.VectorTimestamp;
 
 /**
@@ -46,6 +48,9 @@ public abstract class AbstractNode {
     public final VectorTimestamp vectorTimestamp = new VectorTimestamp();
 
     public AbstractNode(int nodeId) {
+        Shared.validateId(nodeId, "nodeId cannot be negative!");
         this.nodeId = nodeId;
     }
+
+    public abstract void increaseDiseaseCount(Disease disease, long increaseValue);
 }

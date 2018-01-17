@@ -33,6 +33,11 @@
 
 package com.liquidfortress.simulated_disease_survellience.nodes;
 
+import com.liquidfortress.simulated_disease_survellience.disease.Disease;
+import com.liquidfortress.simulated_disease_survellience.util.Shared;
+
+import java.util.HashMap;
+
 /**
  * ElectronicMedicalRecordSimulator
  * <p/>
@@ -43,9 +48,28 @@ package com.liquidfortress.simulated_disease_survellience.nodes;
 public class ElectronicMedicalRecordSimulator extends AbstractNode {
 
     public final int electronicMedicalRecordSimulatorId;
+    private final HashMap<Disease, Long> diseaseCounts = new HashMap<>();
+    private final HashMap<Disease, Boolean> diseaseOutbreaks = new HashMap<>();
 
     public ElectronicMedicalRecordSimulator(int nodeId, int electronicMedicalRecordSimulatorId) {
         super(nodeId);
+        Shared.validateId(nodeId, "nodeId cannot be negative!");
         this.electronicMedicalRecordSimulatorId = electronicMedicalRecordSimulatorId;
+        for (Disease disease : Disease.values()) {
+            diseaseCounts.put(disease, 0L);
+            diseaseOutbreaks.put(disease, Boolean.FALSE);
+        }
+    }
+
+    @Override
+    public void increaseDiseaseCount(Disease disease, long increaseValue) {
+        Shared.validateIncrease(increaseValue, "increaseValue must be positive!");
+        long count = diseaseCounts.get(disease);
+        diseaseCounts.put(disease, (count + increaseValue));
+        this.vectorTimestamp.incrementSelf(this.nodeId);
+    }
+
+    public boolean isOutbreakHappening(Disease disease) {
+        return diseaseOutbreaks.get(disease);
     }
 }
