@@ -1,0 +1,18 @@
+Metadata-Version: 2.0
+Name: pyzmp
+Version: 0.0.16
+Summary: ZeroMq based multiprocessing framework.
+Home-page: http://github.com/asmodehn/pyzmp
+Author: AlexV
+Author-email: asmodehn@gmail.com
+License: BSD
+Platform: UNKNOWN
+Requires-Dist: pytest (>=2.9.1)
+Requires-Dist: pytest-timeout
+Requires-Dist: pyzmq
+Requires-Dist: six
+Requires-Dist: tblib
+
+UNKNOWN
+
+

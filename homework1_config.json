@@ -1,0 +1,161 @@
+{
+  "overseer": {
+    "host": "192.168.1.5",
+    "port": 9000
+  },
+  "time_scaling_factor": 1800,
+  "diseases": [
+    "influenza",
+    "chicken_pox",
+    "measles"
+  ],
+  "nodes": {
+    "node_0": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_9"
+      ]
+    },
+    "node_1": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_9"
+      ]
+    },
+    "node_2": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_10"
+      ]
+    },
+    "node_3": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_10"
+      ]
+    },
+    "node_4": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_10"
+      ]
+    },
+    "node_5": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_10"
+      ]
+    },
+    "node_6": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_11"
+      ]
+    },
+    "node_7": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_11"
+      ]
+    },
+    "node_8": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_11"
+      ]
+    },
+    "node_9": {
+      "role": "health_district_system",
+      "role_parameters": {
+      },
+      "connections": [
+        "node_12",
+        "node_13",
+        "node_14"
+      ]
+    },
+    "node_10": {
+      "role": "health_district_system",
+      "role_parameters": {
+      },
+      "connections": [
+        "node_12",
+        "node_13",
+        "node_14"
+      ]
+    },
+    "node_11": {
+      "role": "health_district_system",
+      "role_parameters": {
+      },
+      "connections": [
+        "node_12",
+        "node_13",
+        "node_14"
+      ]
+    },
+    "node_12": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "influenza",
+        "outbreak_threshold": 200
+      },
+      "connections": [
+        "node_9",
+        "node_10",
+        "node_11"
+      ]
+    },
+    "node_13": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "chicken_pox",
+        "outbreak_threshold": 200
+      },
+      "connections": [
+        "node_9",
+        "node_10",
+        "node_11"
+      ]
+    },
+    "node_14": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "measles",
+        "outbreak_threshold": 200
+      },
+      "connections": [
+        "node_9",
+        "node_10",
+        "node_11"
+      ]
+    }
+  }
+}
