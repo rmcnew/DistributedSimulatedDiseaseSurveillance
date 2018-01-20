@@ -1,6 +1,19 @@
-from cmd_parser import parse_overseer_cmd_line
-from config_reader import load_overseer_config
+from config.sds_config import get_overseer_config
+import zmq
+import time
 
-args = parse_overseer_cmd_line()
-config = load_overseer_config(args.config_file)
-print(config)
+config = get_overseer_config()
+
+# print(config)
+
+context = zmq.Context()
+socket = context.socket(zmq.REP)
+socket.bind("tcp://*:" + str(config['overseer_port']))
+
+
+message = socket.recv()
+print("Received message: %s" % message)
+
+time.sleep(1)
+
+socket.send(b"Received")

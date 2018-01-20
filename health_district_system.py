@@ -1,3 +1,6 @@
-from cmd_parser import parse_cmd_line
+from config.sds_config import get_node_config
 
-args = parse_cmd_line()
+config = get_node_config("health_district_system")
+
+print(config)
+

@@ -1,3 +1,4 @@
+# functions to configure and parse script command line arguments
 import argparse
 
 

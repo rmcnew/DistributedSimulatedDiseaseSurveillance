@@ -1,3 +1,7 @@
-from cmd_parser import parse_cmd_line
+from config.sds_config import get_node_config
 
-args = parse_cmd_line()
+config = get_node_config("disease_outbreak_analyzer")
+
+print(config)
+
+

@@ -1,7 +1,7 @@
 #!/home/rmcnew/USU/distributed_systems/SimulatedDiseaseSurvellience/.venv/bin/python
 
-import getopt
 import sys
+import getopt
 import sysconfig
 
 valid_opts = ['prefix', 'exec-prefix', 'includes', 'libs', 'cflags',
@@ -16,9 +16,8 @@ if sys.version_info >= (3, 3):
 
 def exit_with_usage(code=1):
     sys.stderr.write("Usage: {0} [{1}]\n".format(
-        sys.argv[0], '|'.join('--' + opt for opt in valid_opts)))
+        sys.argv[0], '|'.join('--'+opt for opt in valid_opts)))
     sys.exit(code)
-
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], '', valid_opts)
