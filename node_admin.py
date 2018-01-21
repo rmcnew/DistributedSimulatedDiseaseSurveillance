@@ -1,5 +1,15 @@
 # administrative coordination between nodes and overseer -- node functions
+import socket
 import zmq
+
+
+def my_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('192.0.0.8', 1027))
+    except socket.error:
+        return None
+    return s.getsockname()[0]
 
 
 def setup_zmq(config):
