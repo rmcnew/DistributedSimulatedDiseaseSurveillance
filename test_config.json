@@ -1,0 +1,39 @@
+{
+  "overseer": {
+    "host": "192.168.1.5",
+    "port": 9000
+  },
+  "time_scaling_factor": 1800,
+  "diseases": [
+    "influenza",
+    "chicken_pox",
+    "measles"
+  ],
+  "nodes": {
+    "node_1": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "disease_generation": "random"
+      },
+      "connections": [
+        "node_2"
+      ]
+    },
+    "node_2": {
+      "role": "health_district_system",
+      "role_parameters": {
+      },
+      "connections": [
+        "node_3"
+      ]
+    },
+    "node_3": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+      },
+      "connections": [
+        "node_2"
+      ]
+    }
+  }
+}
