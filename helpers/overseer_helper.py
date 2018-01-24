@@ -82,3 +82,11 @@ def all_nodes_ready(config, nodes_ready_to_start):
         return True
     else:
         return False
+
+
+def publish_start_simulation(publish_socket):
+    publish_socket.send_string("start_simulation")
+
+
+def publish_stop_simulation(publish_socket):
+    publish_socket.send_string("stop_simulation")

@@ -73,3 +73,21 @@ def send_ready_to_start(overseer_request_socket, node_id):
     send_to_overseer(overseer_request_socket, node_id, message)
     reply = receive_from_overseer(overseer_request_socket, node_id)
     logging.info(reply)
+
+
+def await_simulation_start(overseer_subscribe_socket):
+    message = receive_subscription_message(overseer_subscribe_socket)
+    if message == "simulation_start":
+        return False
+    else:
+        logging.warning("received message: '" + message + "' while awaiting for simulation_start")
+        return True
+
+
+def is_stop_simulation(overseer_subscribe_socket):
+    message = receive_subscription_message(overseer_subscribe_socket)
+    if message == "simulation_stop":
+        return True
+    else:
+        logging.warning("received message: '" + message + "' but no logic defined to handle it")
+        return False

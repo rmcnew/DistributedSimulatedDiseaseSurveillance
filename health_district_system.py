@@ -2,7 +2,7 @@ import logging
 
 from config.sds_config import get_node_config
 from helpers.health_district_system_helper import setup_listeners, connect_to_peers
-from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start
+from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, await_simulation_start
 
 # get configuration and setup overseer connection
 config = get_node_config("health_district_system")
@@ -29,3 +29,7 @@ disease_outbreak_analyzer_sockets = connect_to_peers(context, config, node_id, n
 
 # send "ready_to_start" message to overseer
 send_ready_to_start(overseer_request_socket, node_id)
+
+# await "start_simulation" message from overseer
+while await_simulation_start(overseer_subscribe_socket):
+    pass  # do nothing until "simulation_start" is received

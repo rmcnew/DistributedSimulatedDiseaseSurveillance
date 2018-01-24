@@ -1,8 +1,12 @@
 import logging
 
+import zmq
+
 from config.sds_config import get_node_config
 from helpers.electronic_medical_record_helper import setup_listeners, connect_to_peers
-from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start
+from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
+    await_simulation_start, \
+    is_stop_simulation
 
 # get configuration and setup overseer connection
 config = get_node_config("electronic_medical_record")
@@ -28,3 +32,30 @@ health_district_system_socket = connect_to_peers(context, config, node_id, node_
 
 # send "ready_to_start" message to overseer
 send_ready_to_start(overseer_request_socket, node_id)
+
+# await "start_simulation" message from overseer
+while await_simulation_start(overseer_subscribe_socket):
+    pass  # do nothing until "simulation_start" is received
+
+# configure main loop poller
+poller = zmq.Poller()
+poller.register(overseer_subscribe_socket, zmq.POLLIN)
+poller.register(health_district_system_socket, zmq.POLLIN)
+
+# main loop
+while True:
+    try:
+        sockets = dict(poller.poll(700))  # poll timeout in milliseconds
+    except KeyboardInterrupt:
+        break
+
+    if overseer_subscribe_socket in sockets:
+        if is_stop_simulation(overseer_subscribe_socket):
+            logging.info("received simulation_stop")
+            break
+
+    if health_district_system_socket in sockets:
+        pass
+        # TODO: handle outbreak query response from health_district_system
+
+    # add logic to track time scale and disease report generation
