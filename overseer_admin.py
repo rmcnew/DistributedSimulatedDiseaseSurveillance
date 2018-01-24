@@ -7,14 +7,17 @@ import json
 
 def setup_zmq(config):
     context = zmq.Context()
-    socket = context.socket(zmq.REP)
-    socket.bind("tcp://*:" + str(config['overseer_port']))
-    ret_val = (context, socket)
+    reply_socket = context.socket(zmq.REP)
+    reply_socket.bind("tcp://*:" + str(config['overseer_reply_port']))
+    publish_socket = context.socket(zmq.PUB)
+    publish_socket.bind("tcp://*:" + str(config['overseer_publish_port']))
+    ret_val = (context, reply_socket, publish_socket)
     return ret_val
 
 
-def shutdown_zmq(context, socket):
-    socket.close()
+def shutdown_zmq(context, reply_socket, publish_socket):
+    reply_socket.close()
+    publish_socket.close()
     context.term()
 
 
@@ -24,8 +27,8 @@ def send_to_node(socket, node_id, message):
     socket.send_multipart([encoded_node_id, encoded_message])
 
 
-def receive_from_nodes(socket):
-    [encoded_node_id, encoded_reply] = socket.recv_multipart()
+def receive_from_nodes(reply_socket):
+    [encoded_node_id, encoded_reply] = reply_socket.recv_multipart()
     node_id = encoded_node_id.decode()
     reply = encoded_reply.decode()
     ret_val = (node_id, reply)
@@ -39,8 +42,8 @@ def all_registrations_completed(config, node_addresses):
         return False
 
 
-def handle_node_registration_request(socket, node_addresses):
-    (node_id, message) = receive_from_nodes(socket)
+def handle_node_registration_request(reply_socket, node_addresses):
+    (node_id, message) = receive_from_nodes(reply_socket)
     logging.debug("Received message: \'" + message + "\' from: \'" + node_id + "\'")
     address_map = json.loads(message)
     node_role = address_map['role']
@@ -54,4 +57,9 @@ def handle_node_registration_request(socket, node_addresses):
     else:
         logging.error("Unknown node role: " + node_role + ".  No configuration for this node role!!")
 
-    send_to_node(socket, node_id, "Successful registration for " + node_id)
+    send_to_node(reply_socket, node_id, "Successful registration for " + node_id)
+
+
+def broadcast_node_addresses(publish_socket, node_addresses):
+    json_node_addresses = json.dumps(node_addresses)
+    publish_socket.send_string(json_node_addresses)

@@ -4,7 +4,8 @@ import json
 
 def extract_overseer(config, json_config):
     config['overseer_host'] = json_config['overseer']['host']
-    config['overseer_port'] = json_config['overseer']['port']
+    config['overseer_reply_port'] = json_config['overseer']['reply_port']
+    config['overseer_publish_port'] = json_config['overseer']['publish_port']
 
 
 def extract_time_scaling_factor(config, json_config):

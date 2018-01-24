@@ -1,7 +1,8 @@
 {
   "overseer": {
     "host": "192.168.1.5",
-    "port": 9000
+    "reply_port": 9000,
+    "publish_port": 9090
   },
   "time_scaling_factor": 1800,
   "diseases": [
