@@ -1,8 +1,9 @@
-# administrative coordination between nodes and overseer -- node functions
-import socket
-import zmq
+# helper functions for all node types:  electronic_medical_record, health_district_system, and disease_outbreak_analyzer
 import json
 import logging
+import socket
+
+import zmq
 
 
 def get_my_ip():
@@ -67,42 +68,8 @@ def receive_node_addresses(overseer_subscribe_socket):
     return node_addresses
 
 
-# electronic_medical_record nodes connect to health_district_system nodes
-# using REQ sockets; they have no listeners and do not provide a listener address
-# nevertheless, they register so the overseer knows that their respective node_id is ready
-def setup_electronic_medical_record_zmq_listeners(config):
-    my_ip_address = get_my_ip()
-    config['address_map'] = {'role': config['role']}
-
-
-# health_district_system nodes use REP listeners to receive
-# electronic_medical_record messages and PUB listeners to publish
-# messages to disease_outbreak_analyzers
-def setup_health_district_system_zmq_listeners(context, config):
-    # create listener zmq sockets and save IP address and ports in config
-    my_ip_address = get_my_ip()
-    electronic_medical_record_socket = context.socket(zmq.REP)
-    electronic_medical_record_port = electronic_medical_record_socket.bind_to_random_port("tcp://*")
-    disease_outbreak_analyzer_socket = context.socket(zmq.PUB)
-    disease_outbreak_analyzer_port = disease_outbreak_analyzer_socket.bind_to_random_port("tcp://*")
-    config['address_map'] = {
-        'role': config['role'],
-        'electronic_medical_record_address': "tcp://" + my_ip_address + ":" + str(electronic_medical_record_port),
-        'disease_outbreak_analyzer_address': "tcp://" + my_ip_address + ":" + str(disease_outbreak_analyzer_port)
-    }
-    ret_val = (electronic_medical_record_socket, disease_outbreak_analyzer_socket)
-    return ret_val
-
-
-# disease_outbreak_analyzer nodes use PUB listeners to publish
-# disease outbreak alerts to health_district_systems
-def setup_disease_outbreak_analyzer_zmq_listeners(context, config):
-    # create listener zmq sockets and save IP address and ports in config
-    my_ip_address = get_my_ip()
-    health_district_system_socket = context.socket(zmq.PUB)
-    health_district_system_port = health_district_system_socket.bind_to_random_port("tcp://*")
-    config['address_map'] = {
-        'role': config['role'],
-        'health_district_system_address': "tcp://" + my_ip_address + ":" + str(health_district_system_port)
-    }
-    return health_district_system_socket
+def send_ready_to_start(overseer_request_socket, node_id):
+    message = "ready_to_start"  # the overseer checks this string for a match
+    send_to_overseer(overseer_request_socket, node_id, message)
+    reply = receive_from_overseer(overseer_request_socket, node_id)
+    logging.info(reply)

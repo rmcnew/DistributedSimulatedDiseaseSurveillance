@@ -1,8 +1,8 @@
 # administrative coordination between nodes and overseer -- overseer functions
-import zmq
-import logging
-import time
 import json
+import logging
+
+import zmq
 
 
 def setup_zmq(config):
@@ -60,6 +60,25 @@ def handle_node_registration_request(reply_socket, node_addresses):
     send_to_node(reply_socket, node_id, "Successful registration for " + node_id)
 
 
-def broadcast_node_addresses(publish_socket, node_addresses):
+def publish_node_addresses(publish_socket, node_addresses):
     json_node_addresses = json.dumps(node_addresses)
     publish_socket.send_string(json_node_addresses)
+
+
+def handle_node_ready_request(reply_socket, nodes_ready_to_start):
+    (node_id, message) = receive_from_nodes(reply_socket)
+    logging.debug("Received message: \'" + message + "\' from: \'" + node_id + "\'")
+    if message == "ready_to_start":
+        nodes_ready_to_start.add(node_id)
+        send_to_node(reply_socket, node_id, "'ready_to_start' received for " + node_id)
+    else:
+        warning_message = "Did not receive expected 'ready_to_start' message!"
+        logging.warning(warning_message)
+        send_to_node(reply_socket, node_id, warning_message)
+
+
+def all_nodes_ready(config, nodes_ready_to_start):
+    if len(config['nodes']) == len(nodes_ready_to_start):
+        return True
+    else:
+        return False
