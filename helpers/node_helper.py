@@ -26,8 +26,9 @@ def setup_zmq(config):
     return ret_val
 
 
-def shutdown_zmq(context, overseer_socket):
-    overseer_socket.close()
+def shutdown_zmq(context, overseer_request_socket, overseer_subscribe_socket):
+    overseer_request_socket.close(linger=2)
+    overseer_subscribe_socket.close(linger=2)
     context.term()
 
 
@@ -75,9 +76,9 @@ def send_ready_to_start(overseer_request_socket, node_id):
     logging.info(reply)
 
 
-def await_simulation_start(overseer_subscribe_socket):
+def await_start_simulation(overseer_subscribe_socket):
     message = receive_subscription_message(overseer_subscribe_socket)
-    if message == "simulation_start":
+    if message == "start_simulation":
         return False
     else:
         logging.warning("received message: '" + message + "' while awaiting for simulation_start")
@@ -86,7 +87,7 @@ def await_simulation_start(overseer_subscribe_socket):
 
 def is_stop_simulation(overseer_subscribe_socket):
     message = receive_subscription_message(overseer_subscribe_socket)
-    if message == "simulation_stop":
+    if message == "stop_simulation":
         return True
     else:
         logging.warning("received message: '" + message + "' but no logic defined to handle it")

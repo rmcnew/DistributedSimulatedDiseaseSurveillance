@@ -34,7 +34,7 @@ publish_node_addresses(publish_socket, node_addresses)
 # wait for all nodes to connect to peers and then send "Ready" message
 while not all_nodes_ready(config, nodes_ready_to_start):
     handle_node_ready_request(reply_socket, nodes_ready_to_start)
-logging.debug("all nodes are ready to start.  Starting the simulation . . .")
+logging.debug("all nodes are ready to start.  Starting the simulation.  Press Ctrl-C to stop simulation.")
 
 # publish "start_simulation" message to all nodes
 publish_start_simulation(publish_socket)

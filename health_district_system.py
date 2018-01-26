@@ -1,9 +1,12 @@
 import logging
+
 import zmq
 
 from config.sds_config import get_node_config
-from helpers.health_district_system_helper import setup_listeners, connect_to_peers
-from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, await_simulation_start
+from helpers.health_district_system_helper import setup_listeners, connect_to_peers, disconnect_from_peers, \
+    shutdown_listeners
+from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
+    await_start_simulation, is_stop_simulation, shutdown_zmq
 
 # get configuration and setup overseer connection
 config = get_node_config("health_district_system")
@@ -26,16 +29,17 @@ node_addresses = receive_node_addresses(overseer_subscribe_socket)
 logging.debug("node_addresses received from overseer: {}".format(node_addresses))
 
 # make peer connections
-disease_outbreak_alert_subscription_sockets = connect_to_peers(context, config, node_id, node_addresses)
+disease_outbreak_alert_subscription_sockets = connect_to_peers(context, config, node_addresses)
 
 # send "ready_to_start" message to overseer
 send_ready_to_start(overseer_request_socket, node_id)
 
 # await "start_simulation" message from overseer
-while await_simulation_start(overseer_subscribe_socket):
+while await_start_simulation(overseer_subscribe_socket):
     pass  # do nothing until "simulation_start" is received
 
 # configure main loop poller
+logging.info("Configuring main loop poller")
 poller = zmq.Poller()
 poller.register(overseer_subscribe_socket, zmq.POLLIN)
 poller.register(electronic_medical_record_socket, zmq.POLLIN)
@@ -44,6 +48,7 @@ for disease_outbreak_alert_subscription_socket in disease_outbreak_alert_subscri
 
 
 # main loop
+logging.info("Starting simulation main loop")
 run_simulation = True
 while run_simulation:
     try:
@@ -65,3 +70,9 @@ while run_simulation:
         if socket in disease_outbreak_alert_subscription_sockets:
             # handle disease outbreak alert
             pass
+
+# shutdown procedures
+logging.info("Shutting down . . .")
+disconnect_from_peers(disease_outbreak_alert_subscription_sockets)
+shutdown_listeners(electronic_medical_record_socket, disease_count_publisher_socket)
+shutdown_zmq(context, overseer_request_socket, overseer_subscribe_socket)

@@ -24,8 +24,14 @@ def setup_listeners(context, config):
     return ret_val
 
 
+# shutdown listeners that were created in setup_listeners
+def shutdown_listeners(electronic_medical_record_socket, disease_count_publisher_socket):
+    electronic_medical_record_socket.close(linger=2)
+    disease_count_publisher_socket.close(linger=2)
+
+
 # each health_district_system connects subscription sockets to each disease_outbreak_analyzer node
-def connect_to_peers(context, config, node_id, node_addresses):
+def connect_to_peers(context, config, node_addresses):
     disease_outbreak_alert_subscription_sockets = {}
     # get the node_id's for connections to be made with disease_outbreak_analyzers
     connection_node_ids = config['connections']
@@ -39,3 +45,8 @@ def connect_to_peers(context, config, node_id, node_addresses):
         disease_outbreak_alert_subscription_socket.setsockopt_string(zmq.SUBSCRIBE, '')
         disease_outbreak_alert_subscription_sockets[connection_node_id] = disease_outbreak_alert_subscription_socket
     return disease_outbreak_alert_subscription_sockets
+
+
+def disconnect_from_peers(disease_outbreak_alert_subscription_sockets):
+    for socket in disease_outbreak_alert_subscription_sockets.values():
+        socket.close(linger=2)

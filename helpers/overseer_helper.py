@@ -16,8 +16,8 @@ def setup_zmq(config):
 
 
 def shutdown_zmq(context, reply_socket, publish_socket):
-    reply_socket.close()
-    publish_socket.close()
+    reply_socket.close(linger=2)
+    publish_socket.close(linger=2)
     context.term()
 
 
