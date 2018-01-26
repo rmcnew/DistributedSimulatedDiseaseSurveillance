@@ -1,4 +1,5 @@
 import logging
+import time
 
 from config.sds_config import get_overseer_config
 from helpers.overseer_helper import setup_zmq, all_registrations_completed, handle_node_registration_request, \
@@ -43,6 +44,7 @@ while True:
     try:
         # TODO: add heartbeat handling here
         (node_id, reply) = receive_from_nodes(reply_socket)
+        time.sleep(1)
     except KeyboardInterrupt:  # wait for Ctrl-C to exit main simulation run loop
         break
 

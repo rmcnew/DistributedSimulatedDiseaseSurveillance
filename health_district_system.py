@@ -1,5 +1,4 @@
 import logging
-
 import zmq
 
 from config.sds_config import get_node_config
@@ -43,4 +42,26 @@ poller.register(electronic_medical_record_socket, zmq.POLLIN)
 for disease_outbreak_alert_subscription_socket in disease_outbreak_alert_subscription_sockets.values():
     poller.register(disease_outbreak_alert_subscription_socket)
 
+
 # main loop
+run_simulation = True
+while run_simulation:
+    try:
+        sockets = dict(poller.poll(700))  # poll timeout in milliseconds
+    except KeyboardInterrupt:
+        break
+
+    for socket, event in sockets.items():
+        if socket == overseer_subscribe_socket:
+            if is_stop_simulation(overseer_subscribe_socket):
+                logging.info("received simulation_stop")
+                run_simulation = False
+                break
+
+        if socket == electronic_medical_record_socket:
+            # receive disease notification and add to disease counts
+            pass
+
+        if socket in disease_outbreak_alert_subscription_sockets:
+            # handle disease outbreak alert
+            pass

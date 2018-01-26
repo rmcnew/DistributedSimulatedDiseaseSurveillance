@@ -1,5 +1,4 @@
 import logging
-
 import zmq
 
 from config.sds_config import get_node_config
@@ -43,7 +42,8 @@ poller.register(overseer_subscribe_socket, zmq.POLLIN)
 poller.register(health_district_system_socket, zmq.POLLIN)
 
 # main loop
-while True:
+run_simulation = True
+while run_simulation:
     try:
         sockets = dict(poller.poll(700))  # poll timeout in milliseconds
     except KeyboardInterrupt:
@@ -52,6 +52,7 @@ while True:
     if overseer_subscribe_socket in sockets:
         if is_stop_simulation(overseer_subscribe_socket):
             logging.info("received simulation_stop")
+            run_simulation = False
             break
 
     if health_district_system_socket in sockets:
