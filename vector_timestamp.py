@@ -1,7 +1,9 @@
 # implement a simple vector clock
 
+
 def new_vector_timestamp():
-    return {};
+    return {}
+
 
 def increment_my_vector_timestamp_count(vector_timestamp, node_id):
     if node_id in vector_timestamp:
