@@ -1,6 +1,9 @@
 import logging
+from random import random
 
 import zmq
+
+from vector_timestamp import update_my_vector_timestamp
 
 
 # electronic_medical_record nodes connect to health_district_system nodes
@@ -33,3 +36,36 @@ def connect_to_peers(context, config, node_addresses):
 # close connections to peer nodes
 def disconnect_from_peers(health_district_system_socket):
     health_district_system_socket.close(linger=2)
+
+
+def send_disease_notification(health_district_system_socket, node_id, disease, local_timestamp, my_vector_timestamp):
+    message = {'message_type': "disease_notification",
+               'electronic_medical_record_id': node_id,
+               'disease': disease,
+               'local_timestamp': local_timestamp,
+               'vector_timestamp': my_vector_timestamp}
+    logging.debug("Sending disease notification: {}".format(message))
+    health_district_system_socket.send_pyobj(message)
+    reply = health_district_system_socket.recv_pyobj()
+    logging.debug("Received reply: {}".format(reply))
+    reply_vector_timestamp = reply['vector_timestamp']
+    update_my_vector_timestamp(my_vector_timestamp, reply_vector_timestamp)
+
+
+# generate disease occurrences using the pseudorandom number generator:
+# probability threshold parameter is 0.0 <= x <= 1.0 where 0.0 means a disease occurrence cannot happen and 1.0 means a
+# disease occurrence will happen each time
+def generate_disease_random(probability_threshold):
+    if (probability_threshold < 0.0) or (probability_threshold > 1.0):
+        raise TypeError("probability_threshold out of range 0.0 <= x <= 1.0")
+    # roll the PRNG to get a pseudorandom number
+    random_number = random()
+    return random_number < probability_threshold
+
+
+def generate_disease(config):
+    role_parameters = config['role_parameters']
+    if role_parameters['disease_generation'] == "random":
+        disease_generation_parameters = role_parameters['disease_generation_parameters']
+        probability = disease_generation_parameters['probability']
+        return generate_disease_random(probability)

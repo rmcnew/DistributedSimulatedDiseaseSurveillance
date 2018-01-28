@@ -4,9 +4,10 @@ import zmq
 
 from config.sds_config import get_node_config
 from helpers.health_district_system_helper import setup_listeners, connect_to_peers, disconnect_from_peers, \
-    shutdown_listeners
+    shutdown_listeners, handle_electronic_medical_record_request
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
     await_start_simulation, is_stop_simulation, shutdown_zmq
+from vector_timestamp import new_vector_timestamp, increment_my_vector_timestamp_count, update_my_vector_timestamp
 
 # get configuration and setup overseer connection
 config = get_node_config("health_district_system")
@@ -31,13 +32,6 @@ logging.debug("node_addresses received from overseer: {}".format(node_addresses)
 # make peer connections
 disease_outbreak_alert_subscription_sockets = connect_to_peers(context, config, node_addresses)
 
-# send "ready_to_start" message to overseer
-send_ready_to_start(overseer_request_socket, node_id)
-
-# await "start_simulation" message from overseer
-while await_start_simulation(overseer_subscribe_socket):
-    pass  # do nothing until "simulation_start" is received
-
 # configure main loop poller
 logging.info("Configuring main loop poller")
 poller = zmq.Poller()
@@ -46,6 +40,15 @@ poller.register(electronic_medical_record_socket, zmq.POLLIN)
 for disease_outbreak_alert_subscription_socket in disease_outbreak_alert_subscription_sockets.values():
     poller.register(disease_outbreak_alert_subscription_socket)
 
+# initialize vector_timestamp
+my_vector_timestamp = new_vector_timestamp()
+
+# send "ready_to_start" message to overseer
+send_ready_to_start(overseer_request_socket, node_id)
+
+# await "start_simulation" message from overseer
+while await_start_simulation(overseer_subscribe_socket):
+    pass  # do nothing until "simulation_start" is received
 
 # main loop
 logging.info("Starting simulation main loop")
@@ -59,12 +62,14 @@ while run_simulation:
     for socket, event in sockets.items():
         if socket == overseer_subscribe_socket:
             if is_stop_simulation(overseer_subscribe_socket):
-                logging.info("received simulation_stop")
+                logging.info("received stop_simulation")
                 run_simulation = False
                 break
 
         if socket == electronic_medical_record_socket:
-            # receive disease notification and add to disease counts
+            increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+            handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp)
+
             pass
 
         if socket in disease_outbreak_alert_subscription_sockets:

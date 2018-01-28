@@ -14,7 +14,7 @@ def increment_my_vector_timestamp_count(vector_timestamp, node_id):
 
 def update_my_vector_timestamp(my_vector_timestamp, other_vector_timestamp):
     # iterate through the other_vector_timestamp
-    for node_id, other_count in other_vector_timestamp:
+    for node_id, other_count in other_vector_timestamp.items():
         # if my_vector_timestamp has the node_id, use the max of the two counts
         if node_id in my_vector_timestamp:
             my_count = my_vector_timestamp[node_id]

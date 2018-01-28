@@ -2,7 +2,7 @@
 import json
 import logging
 import socket
-
+from datetime import datetime
 import zmq
 
 
@@ -92,3 +92,12 @@ def is_stop_simulation(overseer_subscribe_socket):
     else:
         logging.warning("received message: '" + message + "' but no logic defined to handle it")
         return False
+
+
+def get_start_time():
+    return datetime.now()
+
+
+def get_elapsed_time(start_time, time_scaling_factor):
+    return (datetime.now() - start_time) * time_scaling_factor
+

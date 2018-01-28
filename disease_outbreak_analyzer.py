@@ -56,7 +56,7 @@ while run_simulation:
     for socket, event in sockets.items():
         if socket == overseer_subscribe_socket:
             if is_stop_simulation(overseer_subscribe_socket):
-                logging.info("received simulation_stop")
+                logging.info("received stop_simulation")
                 run_simulation = False
                 break
 

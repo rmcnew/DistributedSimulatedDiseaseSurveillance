@@ -3,7 +3,7 @@ import logging
 import zmq
 
 from helpers.node_helper import get_my_ip
-
+from vector_timestamp import increment_my_vector_timestamp_count, update_my_vector_timestamp
 
 # health_district_system nodes use REP listeners to receive
 # electronic_medical_record messages and PUB listeners to publish
@@ -50,3 +50,35 @@ def connect_to_peers(context, config, node_addresses):
 def disconnect_from_peers(disease_outbreak_alert_subscription_sockets):
     for socket in disease_outbreak_alert_subscription_sockets.values():
         socket.close(linger=2)
+
+
+def handle_disease_notification(message):
+    pass
+
+
+def handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp):
+    message = electronic_medical_record_socket.recv_pyobj()
+    logging.debug("Received message: {}".format(message))
+    increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+    if message['message_type'] == 'disease_notification':
+        handle_disease_notification(message)
+        disease_notification_vector_timestamp = message['vector_timestamp']
+        update_my_vector_timestamp(my_vector_timestamp, disease_notification_vector_timestamp)
+        reply = {'message_type': "disease_notification_reply",
+                 'status': "received",
+                 'vector_timestamp': my_vector_timestamp}
+        logging.debug("Sending reply: {}".format(reply))
+        electronic_medical_record_socket.send_pyobj(reply)
+
+    elif message['message_type'] == 'daily_disease_count_report':
+        pass
+
+    elif message['message_type'] == 'past_seven_days_disease_count_report':
+        pass
+
+    elif message['message_type'] == 'outbreak_query':
+        pass
+
+    else:
+        logging.warning("Unknown message_type: {} received from node_id: {}"
+                        .format(message['message_type'], message['electronic_medical_record_id']))
