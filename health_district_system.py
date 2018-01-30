@@ -6,8 +6,9 @@ from config.sds_config import get_node_config
 from helpers.health_district_system_helper import setup_listeners, connect_to_peers, disconnect_from_peers, \
     shutdown_listeners, handle_electronic_medical_record_request
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
-    await_start_simulation, is_stop_simulation, shutdown_zmq
-from vector_timestamp import new_vector_timestamp, increment_my_vector_timestamp_count, update_my_vector_timestamp
+    await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, send_daily_disease_counts, \
+    new_daily_disease_counts, update_simulation_time
+from vector_timestamp import new_vector_timestamp
 
 # get configuration and setup overseer connection
 config = get_node_config("health_district_system")
@@ -19,8 +20,7 @@ logging.debug(config)
 (context, overseer_request_socket, overseer_subscribe_socket) = setup_zmq(config)
 
 # setup listening sockets
-(electronic_medical_record_socket, disease_count_publisher_socket) = \
-    setup_listeners(context, config)
+(electronic_medical_record_socket, disease_count_publisher_socket) = setup_listeners(context, config)
 
 # register listener addresses with overseer
 register(overseer_request_socket, node_id, config)
@@ -43,6 +43,16 @@ for disease_outbreak_alert_subscription_socket in disease_outbreak_alert_subscri
 # initialize vector_timestamp
 my_vector_timestamp = new_vector_timestamp()
 
+# initialize current_daily_disease_counts and previous_daily_disease_counts
+# these are populated from disease_notifications that electronic_medical_records send
+current_daily_disease_counts = new_daily_disease_counts(config)
+previous_daily_disease_counts = []
+
+# daily reports received from electronic_medical_records
+# these can be used for by-node reporting and to cross-check the disease_notification data to
+# ensure that no counts are missed due to dropped messages
+electronic_medical_record_daily_reports = {}
+
 # send "ready_to_start" message to overseer
 send_ready_to_start(overseer_request_socket, node_id)
 
@@ -53,6 +63,8 @@ while await_start_simulation(overseer_subscribe_socket):
 # main loop
 logging.info("Starting simulation main loop")
 run_simulation = True
+start_time = get_start_time()
+current_daily_disease_counts['start_timestamp'] = start_time
 while run_simulation:
     try:
         sockets = dict(poller.poll(700))  # poll timeout in milliseconds
@@ -67,14 +79,20 @@ while run_simulation:
                 break
 
         if socket == electronic_medical_record_socket:
-            increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
-            handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp)
-
-            pass
+            handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp,
+                                                     current_daily_disease_counts,
+                                                     electronic_medical_record_daily_reports)
 
         if socket in disease_outbreak_alert_subscription_sockets:
             # handle disease outbreak alert
             pass
+
+    # update simulation time
+    (elapsed_time, sim_time) = update_simulation_time(start_time, config)
+
+    # if end of day, send daily_disease_counts to disease_outbreak_analyzers
+    send_daily_disease_counts(disease_count_publisher_socket, config, my_vector_timestamp, current_daily_disease_counts,
+                              previous_daily_disease_counts, elapsed_time, sim_time)
 
 # shutdown procedures
 logging.info("Shutting down . . .")

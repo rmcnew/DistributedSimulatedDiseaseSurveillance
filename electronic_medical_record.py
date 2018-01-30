@@ -4,10 +4,10 @@ import zmq
 
 from config.sds_config import get_node_config
 from helpers.electronic_medical_record_helper import setup_listeners, connect_to_peers, disconnect_from_peers, \
-    shutdown_listeners, generate_disease, send_disease_notification, send_daily_summary, new_daily_disease_counts, \
-    archive_current_day
+    shutdown_listeners, generate_disease, send_disease_notification
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
-    await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, get_elapsed_time
+    await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, send_daily_disease_counts, \
+    new_daily_disease_counts, update_simulation_time
 from vector_timestamp import new_vector_timestamp, increment_my_vector_timestamp_count
 
 # get configuration and setup overseer connection
@@ -41,8 +41,7 @@ time_scaling_factor = config['time_scaling_factor']
 
 # initialize vector_timestamp
 my_vector_timestamp = new_vector_timestamp()
-# initialize elapsed_days counter
-elapsed_days = 0
+
 # initialize current_daily_disease_counts and previous_daily_disease_counts
 current_daily_disease_counts = new_daily_disease_counts(config)
 previous_daily_disease_counts = []
@@ -72,10 +71,10 @@ while run_simulation:
             run_simulation = False
             break
 
+    # update simulation time
+    (elapsed_time, sim_time) = update_simulation_time(start_time, config)
+
     # run disease generation to see if any diseases occurred
-    elapsed_time = get_elapsed_time(start_time, time_scaling_factor)
-    sim_time = start_time + elapsed_time
-    logging.debug("Time elapsed: {}  Simulation datetime: {}".format(elapsed_time, sim_time))
     for disease in config['diseases']:
         if generate_disease(config):
             logging.debug("Disease occurred: {}".format(disease))
@@ -83,17 +82,9 @@ while run_simulation:
             increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
             send_disease_notification(health_district_system_socket, node_id, disease, sim_time, my_vector_timestamp)
 
-    # if end of day, send daily summary and last seven days summary
-    if elapsed_time.days > elapsed_days:
-        current_daily_disease_counts['end_timestamp'] = sim_time
-        increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
-        send_daily_summary(health_district_system_socket, current_daily_disease_counts, my_vector_timestamp)
-        archive_current_day(current_daily_disease_counts, previous_daily_disease_counts)
-
-        # advance elapsed_days counter and reset current_daily_disease_counts
-        elapsed_days = elapsed_time.days
-        current_daily_disease_counts = new_daily_disease_counts(config)
-        current_daily_disease_counts['start_timestamp'] = sim_time
+    # if end of day, send daily_disease_counts to health_district_system
+    send_daily_disease_counts(health_district_system_socket, config, my_vector_timestamp, current_daily_disease_counts,
+                              previous_daily_disease_counts, elapsed_time, sim_time)
 
     # if outbreak daily query frequency interval is passed, send outbreak query
 

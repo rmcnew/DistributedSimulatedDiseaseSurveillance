@@ -71,24 +71,3 @@ def generate_disease(config):
         return generate_disease_random(probability)
 
 
-def new_daily_disease_counts(config):
-    daily_disease_counts = {'message_type': "daily_disease_count", 'electronic_medical_record_id': config['node_id']}
-    for disease in config['diseases']:
-        daily_disease_counts[disease] = 0
-    return daily_disease_counts
-
-
-def send_daily_summary(health_district_system_socket, current_daily_disease_counts, my_vector_timestamp):
-    current_daily_disease_counts['vector_timestamp'] = my_vector_timestamp
-    logging.debug("Sending daily disease counts: {}".format(current_daily_disease_counts))
-    health_district_system_socket.send_pyobj(current_daily_disease_counts)
-    reply = health_district_system_socket.recv_pyobj()
-    logging.debug("Received reply: {}".format(reply))
-    reply_vector_timestamp = reply['vector_timestamp']
-    update_my_vector_timestamp(my_vector_timestamp, reply_vector_timestamp)
-
-
-def archive_current_day(current_daily_disease_counts, previous_daily_disease_counts):
-    logging.debug("Archiving current daily disease counts: {}".format(current_daily_disease_counts))
-    previous_daily_disease_counts.append(current_daily_disease_counts)
-    logging.debug("previous_daily_disease_counts is now: {}".format(previous_daily_disease_counts))

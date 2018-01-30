@@ -53,20 +53,26 @@ def disconnect_from_peers(disease_outbreak_alert_subscription_sockets):
         socket.close(linger=2)
 
 
-def handle_disease_notification(message):
-    pass
+def handle_disease_notification(message, current_daily_disease_counts):
+    disease = message['disease']
+    current_daily_disease_counts[disease] = current_daily_disease_counts[disease] + 1
 
 
-def handle_daily_disease_count(message):
-    pass
+def handle_daily_disease_count(message, electronic_medical_record_daily_reports):
+    electronic_medical_record_id = message['electronic_medical_record_id']
+    if electronic_medical_record_id not in electronic_medical_record_daily_reports:
+        electronic_medical_record_daily_reports[electronic_medical_record_id] = []
+    electronic_medical_record_daily_reports[electronic_medical_record_id].append(message)
 
 
-def handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp):
+def handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp,
+                                             current_daily_disease_counts,
+                                             electronic_medical_record_daily_reports):
     message = electronic_medical_record_socket.recv_pyobj()
     logging.debug("Received message: {}".format(message))
     increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
     if message['message_type'] == 'disease_notification':
-        handle_disease_notification(message)
+        handle_disease_notification(message, current_daily_disease_counts)
         disease_notification_vector_timestamp = message['vector_timestamp']
         update_my_vector_timestamp(my_vector_timestamp, disease_notification_vector_timestamp)
         reply = {'message_type': "disease_notification_reply",
@@ -74,9 +80,11 @@ def handle_electronic_medical_record_request(electronic_medical_record_socket, n
                  'vector_timestamp': my_vector_timestamp}
         logging.debug("Sending reply: {}".format(reply))
         electronic_medical_record_socket.send_pyobj(reply)
+        disease = message['disease']
+        logging.debug("{} count is now {}".format(disease, current_daily_disease_counts[disease]))
 
     elif message['message_type'] == 'daily_disease_count':
-        handle_daily_disease_count(message)
+        handle_daily_disease_count(message, electronic_medical_record_daily_reports)
         disease_notification_vector_timestamp = message['vector_timestamp']
         update_my_vector_timestamp(my_vector_timestamp, disease_notification_vector_timestamp)
         reply = {'message_type': "daily_disease_count_reply",

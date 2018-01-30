@@ -41,7 +41,7 @@ while await_start_simulation(overseer_subscribe_socket):
 logging.info("Configuring main loop poller")
 poller = zmq.Poller()
 poller.register(overseer_subscribe_socket, zmq.POLLIN)
-for disease_count_subscription_socket in disease_count_subscription_sockets.values():
+for disease_count_subscription_socket in disease_count_subscription_sockets:
     poller.register(disease_count_subscription_socket)
 
 # main loop
@@ -53,7 +53,7 @@ while run_simulation:
     except KeyboardInterrupt:
         break
 
-    for socket, event in sockets.items():
+    for socket in sockets:
         if socket == overseer_subscribe_socket:
             if is_stop_simulation(overseer_subscribe_socket):
                 logging.info("received stop_simulation")
@@ -61,8 +61,9 @@ while run_simulation:
                 break
 
         if socket in disease_count_subscription_sockets:
-            # handle disease count report 
-            pass
+            message = socket.recv_pyobj()
+            logging.debug("Received message: {}".format(message))
+
 
 # shutdown procedures
 logging.info("Shutting down . . .")
