@@ -5,6 +5,7 @@ import zmq
 from helpers.node_helper import get_my_ip
 from vector_timestamp import increment_my_vector_timestamp_count, update_my_vector_timestamp
 
+
 # health_district_system nodes use REP listeners to receive
 # electronic_medical_record messages and PUB listeners to publish
 # messages to disease_outbreak_analyzers
@@ -56,6 +57,10 @@ def handle_disease_notification(message):
     pass
 
 
+def handle_daily_disease_count(message):
+    pass
+
+
 def handle_electronic_medical_record_request(electronic_medical_record_socket, node_id, my_vector_timestamp):
     message = electronic_medical_record_socket.recv_pyobj()
     logging.debug("Received message: {}".format(message))
@@ -70,11 +75,15 @@ def handle_electronic_medical_record_request(electronic_medical_record_socket, n
         logging.debug("Sending reply: {}".format(reply))
         electronic_medical_record_socket.send_pyobj(reply)
 
-    elif message['message_type'] == 'daily_disease_count_report':
-        pass
-
-    elif message['message_type'] == 'past_seven_days_disease_count_report':
-        pass
+    elif message['message_type'] == 'daily_disease_count':
+        handle_daily_disease_count(message)
+        disease_notification_vector_timestamp = message['vector_timestamp']
+        update_my_vector_timestamp(my_vector_timestamp, disease_notification_vector_timestamp)
+        reply = {'message_type': "daily_disease_count_reply",
+                 'status': "received",
+                 'vector_timestamp': my_vector_timestamp}
+        logging.debug("Sending reply: {}".format(reply))
+        electronic_medical_record_socket.send_pyobj(reply)
 
     elif message['message_type'] == 'outbreak_query':
         pass
