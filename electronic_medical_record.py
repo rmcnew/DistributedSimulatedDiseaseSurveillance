@@ -4,10 +4,9 @@ import zmq
 
 from config.sds_config import get_node_config
 from helpers.electronic_medical_record_helper import setup_listeners, connect_to_peers, disconnect_from_peers, \
-    shutdown_listeners, generate_disease, send_disease_notification
+    shutdown_listeners, generate_disease, send_disease_notification, send_outbreak_query
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
-    await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, send_daily_disease_counts, \
-    new_daily_disease_counts, update_simulation_time
+    await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, update_simulation_time
 from vector_timestamp import new_vector_timestamp, increment_my_vector_timestamp_count
 
 # get configuration and setup overseer connection
@@ -18,6 +17,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s [%(levelname)s] %(message)s')
 logging.debug("electronic_medical_record configuration: {}".format(config))
 (context, overseer_request_socket, overseer_subscribe_socket) = setup_zmq(config)
+outbreak_daily_query_frequency = config['role_parameters']['outbreak_daily_query_frequency']
 
 # setup listening sockets
 setup_listeners(config)
@@ -42,10 +42,6 @@ time_scaling_factor = config['time_scaling_factor']
 # initialize vector_timestamp
 my_vector_timestamp = new_vector_timestamp()
 
-# initialize current_daily_disease_counts and previous_daily_disease_counts
-current_daily_disease_counts = new_daily_disease_counts(config)
-previous_daily_disease_counts = []
-
 # send "ready_to_start" message to overseer
 send_ready_to_start(overseer_request_socket, node_id)
 
@@ -57,7 +53,7 @@ while await_start_simulation(overseer_subscribe_socket):
 logging.info("Starting simulation main loop")
 run_simulation = True
 start_time = get_start_time()
-current_daily_disease_counts['start_timestamp'] = start_time
+last_outbreak_query_time = start_time
 while run_simulation:
     # poll sockets and handle incoming messages
     try:
@@ -78,15 +74,14 @@ while run_simulation:
     for disease in config['diseases']:
         if generate_disease(config):
             logging.debug("Disease occurred: {}".format(disease))
-            current_daily_disease_counts[disease] = current_daily_disease_counts[disease] + 1
             increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
             send_disease_notification(health_district_system_socket, node_id, disease, sim_time, my_vector_timestamp)
 
-    # if end of day, send daily_disease_counts to health_district_system
-    send_daily_disease_counts(health_district_system_socket, config, my_vector_timestamp, current_daily_disease_counts,
-                              previous_daily_disease_counts, elapsed_time, sim_time)
-
     # if outbreak daily query frequency interval is passed, send outbreak query
+    duration_since_last_query = sim_time - last_outbreak_query_time
+    if (duration_since_last_query.seconds / 3600) > outbreak_daily_query_frequency:
+        send_outbreak_query(health_district_system_socket, node_id, my_vector_timestamp)
+        last_outbreak_query_time = sim_time
 
 # shutdown procedures
 logging.info("Shutting down . . .")

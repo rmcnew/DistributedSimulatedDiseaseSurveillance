@@ -71,3 +71,17 @@ def generate_disease(config):
         return generate_disease_random(probability)
 
 
+def send_outbreak_query(health_district_system_socket, node_id, my_vector_timestamp):
+    message = {'message_type': "outbreak_query",
+               'electronic_medical_record_id': node_id,
+               'vector_timestamp': my_vector_timestamp}
+    logging.debug("Sending outbreak query: {}".format(message))
+    health_district_system_socket.send_pyobj(message)
+    reply = health_district_system_socket.recv_pyobj()
+    logging.debug("Received reply: {}".format(reply))
+    reply_vector_timestamp = reply['vector_timestamp']
+    update_my_vector_timestamp(my_vector_timestamp, reply_vector_timestamp)
+    outbreaks = reply['outbreaks']
+    for disease in outbreaks:
+        logging.info("*** ALERT *** {} outbreak reported!  Take appropriate precautions and advise patients."
+                     .format(disease))

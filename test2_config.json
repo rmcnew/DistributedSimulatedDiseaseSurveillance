@@ -17,7 +17,20 @@
         "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
-          "probability": 0.50
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "node_2"
+      ]
+    },
+    "node_4": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.15
         }
       },
       "connections": [
