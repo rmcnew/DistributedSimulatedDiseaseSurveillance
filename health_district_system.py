@@ -8,7 +8,7 @@ from helpers.health_district_system_helper import setup_listeners, connect_to_pe
     handle_disease_outbreak_alert
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
     await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, update_simulation_time
-from vector_timestamp import new_vector_timestamp
+from vector_timestamp import VectorTimestamp
 
 # get configuration and setup overseer connection
 config = get_node_config("health_district_system")
@@ -45,7 +45,7 @@ for disease_outbreak_alert_subscription_socket in disease_outbreak_alert_subscri
     poller.register(disease_outbreak_alert_subscription_socket)
 
 # initialize vector_timestamp
-my_vector_timestamp = new_vector_timestamp()
+my_vector_timestamp = VectorTimestamp()
 
 # initialize current_daily_disease_counts and previous_daily_disease_counts
 # these are populated from disease_notifications that electronic_medical_records send

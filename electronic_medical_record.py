@@ -7,7 +7,7 @@ from helpers.electronic_medical_record_helper import setup_listeners, connect_to
     shutdown_listeners, generate_disease, send_disease_notification, send_outbreak_query
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
     await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, update_simulation_time
-from vector_timestamp import new_vector_timestamp, increment_my_vector_timestamp_count
+from vector_timestamp import VectorTimestamp
 
 # get configuration and setup overseer connection
 config = get_node_config("electronic_medical_record")
@@ -40,7 +40,7 @@ poller.register(health_district_system_socket, zmq.POLLIN)
 time_scaling_factor = config['time_scaling_factor']
 
 # initialize vector_timestamp
-my_vector_timestamp = new_vector_timestamp()
+my_vector_timestamp = VectorTimestamp()
 
 # send "ready_to_start" message to overseer
 send_ready_to_start(overseer_request_socket, node_id)
@@ -74,7 +74,7 @@ while run_simulation:
     for disease in config['diseases']:
         if generate_disease(config):
             logging.debug("Disease occurred: {}".format(disease))
-            increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+            my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
             send_disease_notification(health_district_system_socket, node_id, disease, sim_time, my_vector_timestamp)
 
     # if outbreak daily query frequency interval is passed, send outbreak query

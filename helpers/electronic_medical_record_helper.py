@@ -3,8 +3,6 @@ from random import random
 
 import zmq
 
-from vector_timestamp import update_my_vector_timestamp
-
 
 # electronic_medical_record nodes connect to health_district_system nodes
 # using REQ sockets; they have no listeners and do not provide a listener address
@@ -49,7 +47,7 @@ def send_disease_notification(health_district_system_socket, node_id, disease, l
     reply = health_district_system_socket.recv_pyobj()
     logging.debug("Received reply: {}".format(reply))
     reply_vector_timestamp = reply['vector_timestamp']
-    update_my_vector_timestamp(my_vector_timestamp, reply_vector_timestamp)
+    my_vector_timestamp.update_my_vector_timestamp(reply_vector_timestamp)
 
 
 # generate disease occurrences using the pseudorandom number generator:
@@ -80,7 +78,7 @@ def send_outbreak_query(health_district_system_socket, node_id, my_vector_timest
     reply = health_district_system_socket.recv_pyobj()
     logging.debug("Received reply: {}".format(reply))
     reply_vector_timestamp = reply['vector_timestamp']
-    update_my_vector_timestamp(my_vector_timestamp, reply_vector_timestamp)
+    my_vector_timestamp.update_my_vector_timestamp(reply_vector_timestamp)
     outbreaks = reply['outbreaks']
     for disease in outbreaks:
         logging.info("*** ALERT *** {} outbreak reported!  Take appropriate precautions and advise patients."

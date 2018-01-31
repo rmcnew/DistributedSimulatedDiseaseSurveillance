@@ -3,7 +3,6 @@ import logging
 import zmq
 
 from helpers.node_helper import get_my_ip, get_elapsed_days, archive_current_day
-from vector_timestamp import increment_my_vector_timestamp_count, update_my_vector_timestamp
 
 
 # health_district_system nodes use REP listeners to receive
@@ -63,12 +62,12 @@ def handle_electronic_medical_record_request(electronic_medical_record_socket,
                                              current_daily_disease_counts, outbreaks):
     message = electronic_medical_record_socket.recv_pyobj()
     # logging.debug("Received message: {}".format(message))
-    increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+    my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
 
     if message['message_type'] == 'disease_notification':
         handle_disease_notification(message, current_daily_disease_counts)
         disease_notification_vector_timestamp = message['vector_timestamp']
-        update_my_vector_timestamp(my_vector_timestamp, disease_notification_vector_timestamp)
+        my_vector_timestamp.update_my_vector_timestamp(disease_notification_vector_timestamp)
         reply = {'message_type': "disease_notification_reply",
                  'status': "received",
                  'vector_timestamp': my_vector_timestamp}
@@ -79,7 +78,7 @@ def handle_electronic_medical_record_request(electronic_medical_record_socket,
 
     elif message['message_type'] == 'outbreak_query':
         outbreak_query_vector_timestamp = message['vector_timestamp']
-        update_my_vector_timestamp(my_vector_timestamp, outbreak_query_vector_timestamp)
+        my_vector_timestamp.update_my_vector_timestamp(outbreak_query_vector_timestamp)
         reply = {'message_type': "outbreak_query_reply",
                  'outbreaks': outbreaks,
                  'vector_timestamp': my_vector_timestamp}
@@ -94,9 +93,9 @@ def handle_electronic_medical_record_request(electronic_medical_record_socket,
 def handle_disease_outbreak_alert(socket, node_id, my_vector_timestamp, outbreaks):
     message = socket.recv_pyobj()
     logging.debug("Received outbreak alert message: {}".format(message))
-    increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+    my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
     disease_outbreak_alert_vector_timestamp = message['vector_timestamp']
-    update_my_vector_timestamp(my_vector_timestamp, disease_outbreak_alert_vector_timestamp)
+    my_vector_timestamp.update_my_vector_timestamp(disease_outbreak_alert_vector_timestamp)
     outbreak_disease = message['disease']
     logging.info("*** ALERT *** {} outbreak detected!".format(outbreak_disease))
     outbreaks.add(outbreak_disease)
@@ -122,7 +121,7 @@ def send_daily_disease_counts(sending_socket, config, my_vector_timestamp, curre
     # if the day is over, send the end-of-day counts, then reset the counts
     if elapsed_time.days > elapsed_days:
         current_daily_disease_counts['end_timestamp'] = sim_time
-        increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+        my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
         send_daily_disease_counts_using_sockets(sending_socket, current_daily_disease_counts, my_vector_timestamp)
         archive_current_day(current_daily_disease_counts, previous_daily_disease_counts)
 

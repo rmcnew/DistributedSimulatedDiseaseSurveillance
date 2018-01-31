@@ -8,7 +8,7 @@ from helpers.disease_outbreak_analyzer_helper import setup_listeners, connect_to
 from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
     await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, get_elapsed_days, \
     update_simulation_time, archive_current_day
-from vector_timestamp import new_vector_timestamp, increment_my_vector_timestamp_count
+from vector_timestamp import VectorTimestamp
 
 # get configuration and setup overseer connection
 config = get_node_config("disease_outbreak_analyzer")
@@ -33,7 +33,7 @@ logging.debug("node_addresses received from overseer: {}".format(node_addresses)
 disease_count_subscription_sockets = connect_to_peers(context, config, node_addresses)
 
 # initialize vector_timestamp
-my_vector_timestamp = new_vector_timestamp()
+my_vector_timestamp = VectorTimestamp()
 
 # daily disease counter and previous counts
 disease = config['role_parameters']['disease']
@@ -86,7 +86,7 @@ while run_simulation:
     node_id = config['node_id']
     if elapsed_time.days > elapsed_days:
         current_daily_disease_counts['end_timestamp'] = sim_time
-        increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+        my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
         archive_current_day(current_daily_disease_counts, previous_daily_disease_counts)
 
         # reset current_daily_disease_counts

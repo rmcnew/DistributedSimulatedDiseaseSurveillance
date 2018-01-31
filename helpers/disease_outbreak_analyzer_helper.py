@@ -3,7 +3,6 @@ import logging
 import zmq
 
 from helpers.node_helper import get_my_ip
-from vector_timestamp import increment_my_vector_timestamp_count, update_my_vector_timestamp
 
 
 # disease_outbreak_analyzer nodes use PUB listeners to publish
@@ -73,9 +72,9 @@ def handle_daily_disease_count_message(disease_outbreak_alert_publisher_socket, 
                                        config, my_vector_timestamp, message):
     # update my_vector_timestamp
     node_id = config['node_id']
-    increment_my_vector_timestamp_count(my_vector_timestamp, node_id)
+    my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
     other_vector_timestamp = message['vector_timestamp']
-    update_my_vector_timestamp(my_vector_timestamp, other_vector_timestamp)
+    my_vector_timestamp.update_my_vector_timestamp(other_vector_timestamp)
     # filter for the disease of interest
     disease = current_daily_disease_counts['disease']
     health_district_system_id = message['health_district_system_id']
