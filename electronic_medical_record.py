@@ -1,90 +1,173 @@
 import logging
+from random import random
 
 import zmq
 
 from config.sds_config import get_node_config
-from helpers.electronic_medical_record_helper import setup_listeners, connect_to_peers, disconnect_from_peers, \
-    shutdown_listeners, generate_disease, send_disease_notification, send_outbreak_query
-from helpers.node_helper import setup_zmq, register, receive_node_addresses, send_ready_to_start, \
-    await_start_simulation, is_stop_simulation, shutdown_zmq, get_start_time, update_simulation_time
-from vector_timestamp import VectorTimestamp
+from node import Node
 
-# get configuration and setup overseer connection
-config = get_node_config("electronic_medical_record")
-node_id = config['node_id']
-logging.basicConfig(level=logging.DEBUG,
-                    # filename='electronic_medical_record-' + node_id + '.log',
-                    format='%(asctime)s [%(levelname)s] %(message)s')
-logging.debug("electronic_medical_record configuration: {}".format(config))
-(context, overseer_request_socket, overseer_subscribe_socket) = setup_zmq(config)
-outbreak_daily_query_frequency = config['role_parameters']['outbreak_daily_query_frequency']
 
-# setup listening sockets
-setup_listeners(config)
+class ElectronicMedicalRecord(Node):
 
-# register listener addresses with overseer
-register(overseer_request_socket, node_id, config)
+    def __init__(self, config):
+        super(ElectronicMedicalRecord, self).__init__(config)
+        self.outbreak_daily_query_frequency = config['role_parameters']['outbreak_daily_query_frequency']
+        self.health_district_system_socket = None
 
-# get node_addresses from overseer and make peer connections
-node_addresses = receive_node_addresses(overseer_subscribe_socket)
-logging.debug("node_addresses received from overseer: {}".format(node_addresses))
+    # electronic_medical_record nodes connect to health_district_system nodes
+    # using REQ sockets; they have no listeners and do not provide a listener address
+    # nevertheless, they register so the overseer knows that they are ready to receive
+    # peer addresses
+    def setup_listeners(self):
+        self.config['address_map'] = {'role': self.config['role']}
 
-# make peer connections
-health_district_system_socket = connect_to_peers(context, config, node_addresses)
+    # shutdown listeners that were created in setup_listeners
+    def shutdown_listeners(self):
+        pass
 
-# configure main loop poller and get time_scaling_factor
-logging.info("Configuring main loop poller")
-poller = zmq.Poller()
-poller.register(overseer_subscribe_socket, zmq.POLLIN)
-poller.register(health_district_system_socket, zmq.POLLIN)
-time_scaling_factor = config['time_scaling_factor']
+    # each electronic_medical_record connects to a single health_district_system node
+    def connect_to_peers(self):
+        # get node_id for the connection that needs to be made from config
+        connection_node_id = self.config['connections'][0]
+        logging.debug("Connecting to node_id: {}".format(connection_node_id))
+        # get the connection address from node_addresses
+        connection_node_address = self.node_addresses[connection_node_id]['electronic_medical_record_address']
+        logging.debug("Found node_id {} address as: {}".format(connection_node_id, connection_node_address))
+        # create the REQ socket and connect
+        self.health_district_system_socket = self.context.socket(zmq.REQ)
+        self.health_district_system_socket.connect(connection_node_address)
 
-# initialize vector_timestamp
-my_vector_timestamp = VectorTimestamp()
+    # close connections to peer nodes
+    def disconnect_from_peers(self):
+        self.health_district_system_socket.close(linger=2)
 
-# send "ready_to_start" message to overseer
-send_ready_to_start(overseer_request_socket, node_id)
+    def configure_poller(self):
+        logging.info("Configuring main loop poller")
+        self.poller = zmq.Poller()
+        self.poller.register(self.overseer_subscribe_socket, zmq.POLLIN)
+        self.poller.register(self.health_district_system_socket, zmq.POLLIN)
 
-# await "start_simulation" message from overseer
-while await_start_simulation(overseer_subscribe_socket):
-    pass  # do nothing until "simulation_start" is received
+    def send_disease_notification(self, disease, local_timestamp):
+        message = {'message_type': "disease_notification",
+                   'electronic_medical_record_id': self.node_id,
+                   'disease': disease,
+                   'local_timestamp': local_timestamp,
+                   'vector_timestamp': self.vector_timestamp}
+        logging.debug("Sending disease notification: {}".format(message))
+        self.health_district_system_socket.send_pyobj(message)
+        reply = self.health_district_system_socket.recv_pyobj()
+        logging.debug("Received reply: {}".format(reply))
+        reply_vector_timestamp = reply['vector_timestamp']
+        self.vector_timestamp.update_from_other(reply_vector_timestamp)
 
-# main loop
-logging.info("Starting simulation main loop")
-run_simulation = True
-start_time = get_start_time()
-last_outbreak_query_time = start_time
-while run_simulation:
-    # poll sockets and handle incoming messages
-    try:
-        sockets = dict(poller.poll(700))  # poll timeout in milliseconds
-    except KeyboardInterrupt:
-        break
+    # generate disease occurrences using the pseudorandom number generator:
+    # probability threshold parameter is 0.0 <= x <= 1.0 where 0.0 means a disease occurrence
+    # cannot happen and 1.0 means a disease occurrence will happen each time
+    def generate_disease_random(self, probability_threshold):
+        if (probability_threshold < 0.0) or (probability_threshold > 1.0):
+            raise TypeError("probability_threshold out of range 0.0 <= x <= 1.0")
+        # roll the PRNG to get a pseudorandom number
+        random_number = random()
+        return random_number < probability_threshold
 
-    if overseer_subscribe_socket in sockets:
-        if is_stop_simulation(overseer_subscribe_socket):
-            logging.info("received simulation_stop")
-            run_simulation = False
-            break
+    def generate_disease(self):
+        if self.role_parameters['disease_generation'] == "random":
+            disease_generation_parameters = self.role_parameters['disease_generation_parameters']
+            probability = disease_generation_parameters['probability']
+            return self.generate_disease_random(probability)
 
-    # update simulation time
-    (elapsed_time, sim_time) = update_simulation_time(start_time, config)
+    def send_outbreak_query(self):
+        message = {'message_type': "outbreak_query",
+                   'electronic_medical_record_id': self.node_id,
+                   'vector_timestamp': self.vector_timestamp}
+        logging.debug("Sending outbreak query: {}".format(message))
+        self.health_district_system_socket.send_pyobj(message)
+        reply = self.health_district_system_socket.recv_pyobj()
+        logging.debug("Received reply: {}".format(reply))
+        reply_vector_timestamp = reply['vector_timestamp']
+        self.vector_timestamp.update_from_other(reply_vector_timestamp)
+        outbreaks = reply['outbreaks']
+        for disease in outbreaks:
+            logging.info("*** ALERT *** {} outbreak reported!  Take appropriate precautions and advise patients."
+                         .format(disease))
 
-    # run disease generation to see if any diseases occurred
-    for disease in config['diseases']:
-        if generate_disease(config):
-            logging.debug("Disease occurred: {}".format(disease))
-            my_vector_timestamp.increment_my_vector_timestamp_count(node_id)
-            send_disease_notification(health_district_system_socket, node_id, disease, sim_time, my_vector_timestamp)
+    def shutdown(self):
+        logging.info("Shutting down . . .")
+        self.disconnect_from_peers()
+        self.shutdown_listeners()
+        self.shutdown_zmq()
 
-    # if outbreak daily query frequency interval is passed, send outbreak query
-    duration_since_last_query = sim_time - last_outbreak_query_time
-    if (duration_since_last_query.seconds / 3600) > outbreak_daily_query_frequency:
-        send_outbreak_query(health_district_system_socket, node_id, my_vector_timestamp)
-        last_outbreak_query_time = sim_time
+    def run_simulation(self):
+        logging.info("Starting simulation main loop")
+        self.record_start_time()
+        start_time = self.get_start_time()
+        last_outbreak_query_time = start_time
+        while True:
+            # poll sockets and handle incoming messages
+            try:
+                sockets = dict(self.poller.poll(700))  # poll timeout in milliseconds
+            except KeyboardInterrupt:
+                break
 
-# shutdown procedures
-logging.info("Shutting down . . .")
-disconnect_from_peers(health_district_system_socket)
-shutdown_listeners()
-shutdown_zmq(context, overseer_request_socket, overseer_subscribe_socket)
+            if self.overseer_subscribe_socket in sockets:
+                if self.is_stop_simulation():
+                    logging.info("received simulation_stop")
+                    break
+
+            # update simulation time
+            sim_time = self.get_simulation_time()
+
+            # run disease generation to see if any diseases occurred
+            for disease in self.diseases:
+                if self.generate_disease():
+                    logging.debug("Disease occurred: {}".format(disease))
+                    self.vector_timestamp.increment_count(self.node_id)
+                    self.send_disease_notification(disease, sim_time)
+
+            # if outbreak daily query frequency interval is passed, send outbreak query
+            duration_since_last_query = sim_time - last_outbreak_query_time
+            if (duration_since_last_query.seconds / 3600) > self.outbreak_daily_query_frequency:
+                self.send_outbreak_query()
+                last_outbreak_query_time = sim_time
+
+        # shutdown procedures
+        self.shutdown()
+
+
+def main():
+    # get configuration and setup overseer connection
+    config = get_node_config("electronic_medical_record")
+    logging.basicConfig(level=logging.DEBUG,
+                        # filename="electronic_medical_record-{}.log".format(config['node_id']),
+                        format='%(asctime)s [%(levelname)s] %(message)s')
+    logging.debug("electronic_medical_record configuration: {}".format(config))
+
+    electronic_medical_record = ElectronicMedicalRecord(config)
+
+    # setup listening sockets
+    electronic_medical_record.setup_listeners()
+
+    # register listener addresses with overseer
+    electronic_medical_record.register()
+
+    # get node_addresses from overseer
+    electronic_medical_record.receive_node_addresses()
+
+    # make peer connections
+    electronic_medical_record.connect_to_peers()
+
+    # configure main loop poller
+    electronic_medical_record.configure_poller()
+
+    # send "ready_to_start" message to overseer
+    electronic_medical_record.send_ready_to_start()
+
+    # await "start_simulation" message from overseer
+    electronic_medical_record.await_start_simulation()
+
+    # run the simulation
+    electronic_medical_record.run_simulation()
+
+
+if __name__ == "__main__":
+    main()

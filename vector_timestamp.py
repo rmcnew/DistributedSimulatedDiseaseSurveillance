@@ -6,13 +6,13 @@ class VectorTimestamp:
     def __init__(self):
         self.vector_timestamp = {}
 
-    def increment_my_vector_timestamp_count(self, node_id):
+    def increment_count(self, node_id):
         if node_id in self.vector_timestamp:
             self.vector_timestamp[node_id] = self.vector_timestamp[node_id] + 1
         else:
             self.vector_timestamp[node_id] = 1
 
-    def update_my_vector_timestamp(self, other_vector_timestamp):
+    def update_from_other(self, other_vector_timestamp):
         # iterate through the other_vector_timestamp
         for node_id, other_count in other_vector_timestamp.items():
             # if vector_timestamp has the node_id, use the max of the two counts
