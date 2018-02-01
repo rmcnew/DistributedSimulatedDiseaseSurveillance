@@ -6,27 +6,28 @@ from datetime import datetime
 
 import zmq
 
-from vector_timestamp import VectorTimestamp
+from shared.constants import *
+from shared.vector_timestamp import VectorTimestamp
 
 
 class Node:
 
     def __init__(self, config):
         self.config = config
-        self.node_id = config['node_id']
-        self.time_scaling_factor = config['time_scaling_factor']
-        self.role = config['role']
-        self.role_parameters = config['role_parameters']
-        self.diseases = config['diseases']
+        self.node_id = config[NODE_ID]
+        self.time_scaling_factor = config[TIME_SCALING_FACTOR]
+        self.role = config[ROLE]
+        self.role_parameters = config[ROLE_PARAMETERS]
+        self.diseases = config[DISEASES]
         self.simulation_start_time = None
         self.node_addresses = None
         self.vector_timestamp = VectorTimestamp()
         self.context = zmq.Context()
         self.poller = None
         self.overseer_request_socket = self.context.socket(zmq.REQ)
-        overseer_host = config['overseer_host']
-        overseer_reply_port = str(config['overseer_reply_port'])
-        overseer_publish_port = str(config['overseer_publish_port'])
+        overseer_host = config[OVERSEER_HOST]
+        overseer_reply_port = str(config[OVERSEER_REPLY_PORT])
+        overseer_publish_port = str(config[OVERSEER_PUBLISH_PORT])
         self.overseer_request_socket.connect("tcp://{}:{}".format(overseer_host, overseer_reply_port))
         self.overseer_subscribe_socket = self.context.socket(zmq.SUB)
         self.overseer_subscribe_socket.connect("tcp://{}:{}".format(overseer_host, overseer_publish_port))
@@ -58,8 +59,8 @@ class Node:
 
     def register(self):
         logging.info(str(self.node_id) + " registering with overseer")
-        address_map = self.config['address_map']
-        address_map['type'] = 'address_map'
+        address_map = self.config[ADDRESS_MAP]
+        address_map[TYPE] = ADDRESS_MAP
         serialized_address_map = json.dumps(address_map)
         self.send_to_overseer(serialized_address_map)
         reply = self.receive_from_overseer()
@@ -71,7 +72,7 @@ class Node:
         logging.debug("node_addresses received from overseer: {}".format(self.node_addresses))
 
     def send_ready_to_start(self):
-        message = "ready_to_start"  # the overseer checks this string for a match
+        message = READY_TO_START
         self.send_to_overseer(message)
         reply = self.receive_from_overseer()
         logging.info(reply)
@@ -80,7 +81,7 @@ class Node:
         continue_to_wait = True
         while continue_to_wait:
             message = self.receive_subscription_message()
-            if message == "start_simulation":
+            if message == START_SIMULATION:
                 continue_to_wait = False
             else:
                 logging.warning("received message: '" + message + "' while awaiting for simulation_start")
@@ -88,10 +89,10 @@ class Node:
 
     def is_stop_simulation(self):
         message = self.receive_subscription_message()
-        if message == "stop_simulation":
+        if message == STOP_SIMULATION:
             return True
         else:
-            logging.warning("received message: '" + message + "' but no logic defined to handle it")
+            logging.warning("received message: '" + message + "' but there is no logic defined to handle it")
             return False
 
     def record_start_time(self):

@@ -4,14 +4,15 @@ from random import random
 import zmq
 
 from config.sds_config import get_node_config
-from node import Node
+from shared.constants import *
+from shared.node import Node
 
 
 class ElectronicMedicalRecord(Node):
 
     def __init__(self, config):
         super(ElectronicMedicalRecord, self).__init__(config)
-        self.outbreak_daily_query_frequency = config['role_parameters']['outbreak_daily_query_frequency']
+        self.outbreak_daily_query_frequency = self.role_parameters[OUTBREAK_DAILY_QUERY_FREQUENCY]
         self.health_district_system_socket = None
 
     # electronic_medical_record nodes connect to health_district_system nodes
@@ -19,7 +20,7 @@ class ElectronicMedicalRecord(Node):
     # nevertheless, they register so the overseer knows that they are ready to receive
     # peer addresses
     def setup_listeners(self):
-        self.config['address_map'] = {'role': self.config['role']}
+        self.config[ADDRESS_MAP] = {ROLE: self.config[ROLE]}
 
     # shutdown listeners that were created in setup_listeners
     def shutdown_listeners(self):
@@ -28,10 +29,10 @@ class ElectronicMedicalRecord(Node):
     # each electronic_medical_record connects to a single health_district_system node
     def connect_to_peers(self):
         # get node_id for the connection that needs to be made from config
-        connection_node_id = self.config['connections'][0]
+        connection_node_id = self.config[CONNECTIONS][0]
         logging.debug("Connecting to node_id: {}".format(connection_node_id))
         # get the connection address from node_addresses
-        connection_node_address = self.node_addresses[connection_node_id]['electronic_medical_record_address']
+        connection_node_address = self.node_addresses[connection_node_id][ELECTRONIC_MEDICAL_RECORD_ADDRESS]
         logging.debug("Found node_id {} address as: {}".format(connection_node_id, connection_node_address))
         # create the REQ socket and connect
         self.health_district_system_socket = self.context.socket(zmq.REQ)
@@ -48,16 +49,16 @@ class ElectronicMedicalRecord(Node):
         self.poller.register(self.health_district_system_socket, zmq.POLLIN)
 
     def send_disease_notification(self, disease, local_timestamp):
-        message = {'message_type': "disease_notification",
-                   'electronic_medical_record_id': self.node_id,
-                   'disease': disease,
-                   'local_timestamp': local_timestamp,
-                   'vector_timestamp': self.vector_timestamp}
+        message = {MESSAGE_TYPE: DISEASE_NOTIFICATION,
+                   ELECTRONIC_MEDICAL_RECORD_ID: self.node_id,
+                   DISEASE: disease,
+                   LOCAL_TIMESTAMP: local_timestamp,
+                   VECTOR_TIMESTAMP: self.vector_timestamp}
         logging.debug("Sending disease notification: {}".format(message))
         self.health_district_system_socket.send_pyobj(message)
         reply = self.health_district_system_socket.recv_pyobj()
         logging.debug("Received reply: {}".format(reply))
-        reply_vector_timestamp = reply['vector_timestamp']
+        reply_vector_timestamp = reply[VECTOR_TIMESTAMP]
         self.vector_timestamp.update_from_other(reply_vector_timestamp)
 
     # generate disease occurrences using the pseudorandom number generator:
@@ -71,22 +72,22 @@ class ElectronicMedicalRecord(Node):
         return random_number < probability_threshold
 
     def generate_disease(self):
-        if self.role_parameters['disease_generation'] == "random":
-            disease_generation_parameters = self.role_parameters['disease_generation_parameters']
-            probability = disease_generation_parameters['probability']
+        if self.role_parameters[DISEASE_GENERATION] == RANDOM:
+            disease_generation_parameters = self.role_parameters[DISEASE_GENERATION_PARAMETERS]
+            probability = disease_generation_parameters[PROBABILITY]
             return self.generate_disease_random(probability)
 
     def send_outbreak_query(self):
-        message = {'message_type': "outbreak_query",
-                   'electronic_medical_record_id': self.node_id,
-                   'vector_timestamp': self.vector_timestamp}
+        message = {MESSAGE_TYPE: OUTBREAK_QUERY,
+                   ELECTRONIC_MEDICAL_RECORD_ID: self.node_id,
+                   VECTOR_TIMESTAMP: self.vector_timestamp}
         logging.debug("Sending outbreak query: {}".format(message))
         self.health_district_system_socket.send_pyobj(message)
         reply = self.health_district_system_socket.recv_pyobj()
         logging.debug("Received reply: {}".format(reply))
-        reply_vector_timestamp = reply['vector_timestamp']
+        reply_vector_timestamp = reply[VECTOR_TIMESTAMP]
         self.vector_timestamp.update_from_other(reply_vector_timestamp)
-        outbreaks = reply['outbreaks']
+        outbreaks = reply[OUTBREAKS]
         for disease in outbreaks:
             logging.info("*** ALERT *** {} outbreak reported!  Take appropriate precautions and advise patients."
                          .format(disease))
@@ -126,7 +127,7 @@ class ElectronicMedicalRecord(Node):
 
             # if outbreak daily query frequency interval is passed, send outbreak query
             duration_since_last_query = sim_time - last_outbreak_query_time
-            if (duration_since_last_query.seconds / 3600) > self.outbreak_daily_query_frequency:
+            if (duration_since_last_query.seconds / SECONDS_PER_HOUR) > self.outbreak_daily_query_frequency:
                 self.send_outbreak_query()
                 last_outbreak_query_time = sim_time
 
@@ -136,7 +137,7 @@ class ElectronicMedicalRecord(Node):
 
 def main():
     # get configuration and setup overseer connection
-    config = get_node_config("electronic_medical_record")
+    config = get_node_config(ELECTRONIC_MEDICAL_RECORD)
     logging.basicConfig(level=logging.DEBUG,
                         # filename="electronic_medical_record-{}.log".format(config['node_id']),
                         format='%(asctime)s [%(levelname)s] %(message)s')

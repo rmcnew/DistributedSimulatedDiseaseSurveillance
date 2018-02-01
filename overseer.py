@@ -5,6 +5,7 @@ import time
 import zmq
 
 from config.sds_config import get_overseer_config
+from shared.constants import *
 
 
 class Overseer:
@@ -13,9 +14,9 @@ class Overseer:
         self.config = config
         self.context = zmq.Context()
         self.reply_socket = self.context.socket(zmq.REP)
-        self.reply_socket.bind("tcp://*:" + str(config['overseer_reply_port']))
+        self.reply_socket.bind(TCP_SPECIFIED_PORT + str(config[OVERSEER_REPLY_PORT]))
         self.publish_socket = self.context.socket(zmq.PUB)
-        self.publish_socket.bind("tcp://*:" + str(config['overseer_publish_port']))
+        self.publish_socket.bind(TCP_SPECIFIED_PORT + str(config[OVERSEER_PUBLISH_PORT]))
         # map of node_id => ip_address:port used for address registration
         self.node_addresses = {}
         # set of nodes that are ready to start the simulation
@@ -42,16 +43,16 @@ class Overseer:
         return ret_val
 
     def all_registrations_completed(self):
-        return len(self.config['nodes']) == len(self.node_addresses)
+        return len(self.config[NODES]) == len(self.node_addresses)
 
     def handle_node_registration_request(self):
         (node_id, message) = self.receive_from_nodes()
         logging.debug("Received message: \'{}\' from: \'{}\'".format(message, node_id))
         address_map = json.loads(message)
-        node_role = address_map['role']
-        if (node_role == "electronic_medical_record") or \
-                (node_role == "health_district_system") or \
-                (node_role == "disease_outbreak_analyzer"):
+        node_role = address_map[ROLE]
+        if (node_role == ELECTRONIC_MEDICAL_RECORD) or \
+                (node_role == HEALTH_DISTRICT_SYSTEM) or \
+                (node_role == DISEASE_OUTBREAK_ANALYZER):
 
             self.node_addresses[node_id] = address_map
             logging.debug("Registration received for {}, role: {}".format(node_id, node_role))
@@ -68,7 +69,7 @@ class Overseer:
     def handle_node_ready_request(self):
         (node_id, message) = self.receive_from_nodes()
         logging.debug("Received message: \'{}\' from: \'{}\'".format(message, node_id))
-        if message == "ready_to_start":
+        if message == READY_TO_START:
             self.nodes_ready_to_start.add(node_id)
             self.send_to_node(self.reply_socket, node_id, "'ready_to_start' received for {}".format(node_id))
         else:
@@ -77,13 +78,13 @@ class Overseer:
             self.send_to_node(self.reply_socket, node_id, warning_message)
 
     def all_nodes_ready(self):
-        return len(self.config['nodes']) == len(self.nodes_ready_to_start)
+        return len(self.config[NODES]) == len(self.nodes_ready_to_start)
 
     def publish_start_simulation(self):
-        self.publish_socket.send_string("start_simulation")
+        self.publish_socket.send_string(START_SIMULATION)
 
     def publish_stop_simulation(self):
-        self.publish_socket.send_string("stop_simulation")
+        self.publish_socket.send_string(STOP_SIMULATION)
 
     def supervise_simulation(self):
         # publish "start_simulation" message to all nodes

@@ -3,15 +3,16 @@ import logging
 import zmq
 
 from config.sds_config import get_node_config
-from node import Node
+from shared.constants import *
+from shared.node import Node
 
 
 class DiseaseOutbreakAnalyzer(Node):
 
     def __init__(self, config):
         super(DiseaseOutbreakAnalyzer, self).__init__(config)
-        self.disease = self.role_parameters['disease']
-        self.daily_outbreak_threshold = self.role_parameters['daily_outbreak_threshold']
+        self.disease = self.role_parameters[DISEASE]
+        self.daily_outbreak_threshold = self.role_parameters[DAILY_OUTBREAK_THRESHOLD]
         self.disease_outbreak_alert_publisher_socket = None
         self.disease_count_subscription_sockets = set()
         self.current_daily_disease_counts = self.new_daily_disease_counts()
@@ -24,10 +25,10 @@ class DiseaseOutbreakAnalyzer(Node):
         my_ip_address = Node.get_ip_address()
         self.disease_outbreak_alert_publisher_socket = self.context.socket(zmq.PUB)
         disease_outbreak_alert_publisher_port = \
-            self.disease_outbreak_alert_publisher_socket.bind_to_random_port("tcp://*")
-        self.config['address_map'] = {
-            'role': self.role,
-            'health_district_system_address':
+            self.disease_outbreak_alert_publisher_socket.bind_to_random_port(TCP_RANDOM_PORT)
+        self.config[ADDRESS_MAP] = {
+            ROLE: self.role,
+            HEALTH_DISTRICT_SYSTEM_ADDRESS:
                 "tcp://{}:{}".format(my_ip_address, str(disease_outbreak_alert_publisher_port))
         }
 
@@ -38,11 +39,11 @@ class DiseaseOutbreakAnalyzer(Node):
     # each disease_outbreak_analyzer connects subscription sockets to each health_district_system node
     def connect_to_peers(self):
         # get the node_id's for connections to be made with health_district_system nodes
-        connection_node_ids = self.config['connections']
+        connection_node_ids = self.config[CONNECTIONS]
         logging.debug("Connecting to node_id's: {}".format(connection_node_ids))
         for connection_node_id in connection_node_ids:
             # get the connection addresses
-            connection_node_address = self.node_addresses[connection_node_id]['disease_outbreak_analyzer_address']
+            connection_node_address = self.node_addresses[connection_node_id][DISEASE_OUTBREAK_ANALYZER_ADDRESS]
             disease_count_subscription_socket = self.context.socket(zmq.SUB)
             disease_count_subscription_socket.connect(connection_node_address)
             # empty string filter => receive all messages
@@ -62,38 +63,38 @@ class DiseaseOutbreakAnalyzer(Node):
             self.poller.register(disease_count_subscription_socket)
 
     def new_daily_disease_counts(self):
-        return {self.role + '_id': self.node_id,
-                'disease': self.disease,
-                'health_district_counts': {},
-                'total': 0,
-                'daily_outbreak_threshold': self.daily_outbreak_threshold,
-                'notification_sent': False}
+        return {DISEASE_OUTBREAK_ANALYZER_ID: self.node_id,
+                DISEASE: self.disease,
+                HEALTH_DISTRICT_COUNTS: {},
+                TOTAL: 0,
+                DAILY_OUTBREAK_THRESHOLD: self.daily_outbreak_threshold,
+                NOTIFICATION_SENT: False}
 
     def update_daily_disease_counts(self, health_district_system_id, disease_count):
-        self.current_daily_disease_counts['health_district_counts'][health_district_system_id] = disease_count
+        self.current_daily_disease_counts[HEALTH_DISTRICT_COUNTS][health_district_system_id] = disease_count
         total = 0
-        for health_district_system in self.current_daily_disease_counts['health_district_counts']:
-            total = total + self.current_daily_disease_counts['health_district_counts'][health_district_system]
-        self.current_daily_disease_counts['total'] = total
+        for health_district_system in self.current_daily_disease_counts[HEALTH_DISTRICT_COUNTS]:
+            total = total + self.current_daily_disease_counts[HEALTH_DISTRICT_COUNTS][health_district_system]
+        self.current_daily_disease_counts[TOTAL] = total
 
     def handle_daily_disease_count_message(self, message):
         self.vector_timestamp.increment_count(self.node_id)
-        other_vector_timestamp = message['vector_timestamp']
+        other_vector_timestamp = message[VECTOR_TIMESTAMP]
         self.vector_timestamp.update_from_other(other_vector_timestamp)
-        health_district_system_id = message['health_district_system_id']
+        health_district_system_id = message[HEALTH_DISTRICT_SYSTEM_ID]
         # filter for the disease of interest
         disease_count = message[self.disease]
         self.update_daily_disease_counts(health_district_system_id, disease_count)
-        logging.info("{} daily total is now {}".format(self.disease, self.current_daily_disease_counts['total']))
-        if self.current_daily_disease_counts['total'] >= self.daily_outbreak_threshold \
-                and not self.current_daily_disease_counts['notification_sent']:
+        logging.info("{} daily total is now {}".format(self.disease, self.current_daily_disease_counts[TOTAL]))
+        if self.current_daily_disease_counts[TOTAL] >= self.daily_outbreak_threshold \
+                and not self.current_daily_disease_counts[NOTIFICATION_SENT]:
             logging.info("*** ALERT *** {} outbreak detected!  Notifying health_district_systems . . .")
-            alert_message = {'message_type': "disease_outbreak_alert",
-                             'disease': self.disease,
-                             'vector_timestamp': self.vector_timestamp}
+            alert_message = {MESSAGE_TYPE: DISEASE_OUTBREAK_ALERT,
+                             DISEASE: self.disease,
+                             VECTOR_TIMESTAMP: self.vector_timestamp}
             logging.debug("Sending alert: {}".format(alert_message))
             self.disease_outbreak_alert_publisher_socket.send_pyobj(alert_message)
-            self.current_daily_disease_counts['notification_sent'] = True
+            self.current_daily_disease_counts[NOTIFICATION_SENT] = True
 
     def shutdown(self):
         logging.info("Shutting down . . .")
@@ -106,7 +107,7 @@ class DiseaseOutbreakAnalyzer(Node):
         run_simulation = True
         self.record_start_time()
         start_time = self.get_start_time()
-        self.current_daily_disease_counts['start_timestamp'] = start_time
+        self.current_daily_disease_counts[START_TIMESTAMP] = start_time
         while run_simulation:
             try:
                 sockets = dict(self.poller.poll(700))  # poll timeout in milliseconds
@@ -131,12 +132,12 @@ class DiseaseOutbreakAnalyzer(Node):
 
             # if the day is over, archive the disease count
             if self.get_elapsed_time().days > elapsed_days:
-                self.current_daily_disease_counts['end_timestamp'] = sim_time
+                self.current_daily_disease_counts[END_TIMESTAMP] = sim_time
                 self.vector_timestamp.increment_count(self.node_id)
                 self.archive_current_day(self.current_daily_disease_counts, self.previous_daily_disease_counts)
                 # reset current_daily_disease_counts
                 self.current_daily_disease_counts = self.new_daily_disease_counts()
-                self.current_daily_disease_counts['start_timestamp'] = sim_time
+                self.current_daily_disease_counts[START_TIMESTAMP] = sim_time
 
         # shutdown procedures
         self.shutdown()
@@ -144,7 +145,7 @@ class DiseaseOutbreakAnalyzer(Node):
 
 def main():
     # get configuration and setup overseer connection
-    config = get_node_config("disease_outbreak_analyzer")
+    config = get_node_config(DISEASE_OUTBREAK_ANALYZER)
     logging.basicConfig(level=logging.DEBUG,
                         # filename="disease_outbreak_analyzer-{}.log".format(config['node_id']),
                         format='%(asctime)s [%(levelname)s] %(message)s')
