@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
 import zmq
 
@@ -56,7 +57,7 @@ class DiseaseOutbreakAnalyzer(Node):
             socket.close(linger=2)
 
     def configure_poller(self):
-        logging.info("Configuring main loop poller")
+        logging.debug("Configuring main loop poller")
         self.poller = zmq.Poller()
         self.poller.register(self.overseer_subscribe_socket, zmq.POLLIN)
         for disease_count_subscription_socket in self.disease_count_subscription_sockets:
@@ -85,10 +86,13 @@ class DiseaseOutbreakAnalyzer(Node):
         # filter for the disease of interest
         disease_count = message[self.disease]
         self.update_daily_disease_counts(health_district_system_id, disease_count)
-        logging.info("{} daily total is now {}".format(self.disease, self.current_daily_disease_counts[TOTAL]))
+        logging.info("[{}] {} daily total is now {}.  vector_timestamp: {}"
+                     .format(self.get_simulation_time(), self.disease,
+                             self.current_daily_disease_counts[TOTAL], self.vector_timestamp))
         if self.current_daily_disease_counts[TOTAL] >= self.daily_outbreak_threshold \
                 and not self.current_daily_disease_counts[NOTIFICATION_SENT]:
-            logging.info("*** ALERT *** {} outbreak detected!  Notifying health_district_systems . . .")
+            logging.info("[{}] *** ALERT *** {} outbreak detected!  vector_timestamp: {}"
+                         .format(self.get_simulation_time(), self.vector_timestamp, self.disease))
             alert_message = {MESSAGE_TYPE: DISEASE_OUTBREAK_ALERT,
                              DISEASE: self.disease,
                              VECTOR_TIMESTAMP: self.vector_timestamp}
@@ -117,7 +121,7 @@ class DiseaseOutbreakAnalyzer(Node):
             for socket in sockets:
                 if socket == self.overseer_subscribe_socket:
                     if self.is_stop_simulation():
-                        logging.info("received stop_simulation")
+                        logging.info("[{}] Received stop_simulation".format(self.get_simulation_time()))
                         run_simulation = False
                         break
 
@@ -146,10 +150,13 @@ class DiseaseOutbreakAnalyzer(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(DISEASE_OUTBREAK_ANALYZER)
-    logging.basicConfig(level=logging.DEBUG,
-                        # filename="disease_outbreak_analyzer-{}.log".format(config['node_id']),
-                        format='%(asctime)s [%(levelname)s] %(message)s')
-    logging.debug(config)
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
+
+    if config[LOG_TO_FILE]:
+        file_logger = RotatingFileHandler("{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                                          APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
+        file_logger.setLevel(logging.INFO)
+        logging.getLogger('').addHandler(file_logger)
 
     disease_outbreak_analyzer = DiseaseOutbreakAnalyzer(config)
 

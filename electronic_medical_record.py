@@ -1,4 +1,7 @@
 import logging
+from datetime import datetime
+from logging.handlers import RotatingFileHandler
+from math import sin, tau
 from random import random
 
 import zmq
@@ -14,6 +17,7 @@ class ElectronicMedicalRecord(Node):
         super(ElectronicMedicalRecord, self).__init__(config)
         self.outbreak_daily_query_frequency = self.role_parameters[OUTBREAK_DAILY_QUERY_FREQUENCY]
         self.health_district_system_socket = None
+        self.outbreaks = set()
 
     # electronic_medical_record nodes connect to health_district_system nodes
     # using REQ sockets; they have no listeners and do not provide a listener address
@@ -43,7 +47,7 @@ class ElectronicMedicalRecord(Node):
         self.health_district_system_socket.close(linger=2)
 
     def configure_poller(self):
-        logging.info("Configuring main loop poller")
+        logging.debug("Configuring main loop poller")
         self.poller = zmq.Poller()
         self.poller.register(self.overseer_subscribe_socket, zmq.POLLIN)
         self.poller.register(self.health_district_system_socket, zmq.POLLIN)
@@ -71,11 +75,26 @@ class ElectronicMedicalRecord(Node):
         random_number = random()
         return random_number < probability_threshold
 
+    def generate_disease_sine(self, min_probability, max_probability):
+        difference = max_probability - min_probability
+        sine_probability = abs(sin((datetime.now().second / 60) * tau)) * difference + min_probability
+        if sine_probability < min_probability:
+            sine_probability = min_probability
+        elif sine_probability > max_probability:
+            sine_probability = max_probability
+        logging.debug("sine_probability: {}".format(sine_probability))
+        return self.generate_disease_random(sine_probability)
+
     def generate_disease(self):
         if self.role_parameters[DISEASE_GENERATION] == RANDOM:
             disease_generation_parameters = self.role_parameters[DISEASE_GENERATION_PARAMETERS]
             probability = disease_generation_parameters[PROBABILITY]
             return self.generate_disease_random(probability)
+        elif self.role_parameters[DISEASE_GENERATION] == SINE:
+            disease_generation_parameters = self.role_parameters[DISEASE_GENERATION_PARAMETERS]
+            min_probability = disease_generation_parameters[MIN_PROBABILITY]
+            max_probability = disease_generation_parameters[MAX_PROBABILITY]
+            return self.generate_disease_sine(min_probability, max_probability)
 
     def send_outbreak_query(self):
         message = {MESSAGE_TYPE: OUTBREAK_QUERY,
@@ -89,8 +108,10 @@ class ElectronicMedicalRecord(Node):
         self.vector_timestamp.update_from_other(reply_vector_timestamp)
         outbreaks = reply[OUTBREAKS]
         for disease in outbreaks:
-            logging.info("*** ALERT *** {} outbreak reported!  Take appropriate precautions and advise patients."
-                         .format(disease))
+            if disease not in self.outbreaks:
+                self.outbreaks.add(disease)
+                logging.info("[{}] *** ALERT *** {} outbreak reported!  vector_timestamp: {}"
+                             .format(self.get_simulation_time(), disease, self.vector_timestamp))
 
     def shutdown(self):
         logging.info("Shutting down . . .")
@@ -102,6 +123,7 @@ class ElectronicMedicalRecord(Node):
         logging.info("Starting simulation main loop")
         self.record_start_time()
         start_time = self.get_start_time()
+        elapsed_days = 0
         last_outbreak_query_time = start_time
         while True:
             # poll sockets and handle incoming messages
@@ -112,7 +134,7 @@ class ElectronicMedicalRecord(Node):
 
             if self.overseer_subscribe_socket in sockets:
                 if self.is_stop_simulation():
-                    logging.info("received simulation_stop")
+                    logging.info("[{}] Received simulation_stop".format(self.get_simulation_time()))
                     break
 
             # update simulation time
@@ -121,15 +143,21 @@ class ElectronicMedicalRecord(Node):
             # run disease generation to see if any diseases occurred
             for disease in self.diseases:
                 if self.generate_disease():
-                    logging.debug("Disease occurred: {}".format(disease))
                     self.vector_timestamp.increment_count(self.node_id)
                     self.send_disease_notification(disease, sim_time)
+                    logging.info("[{}] Disease occurred: {}  vector_timestamp: {}"
+                                 .format(sim_time, disease, self.vector_timestamp))
 
             # if outbreak daily query frequency interval is passed, send outbreak query
             duration_since_last_query = sim_time - last_outbreak_query_time
             if (duration_since_last_query.seconds / SECONDS_PER_HOUR) > self.outbreak_daily_query_frequency:
                 self.send_outbreak_query()
                 last_outbreak_query_time = sim_time
+
+            # if a simulation day passed, reset outbreak notification
+            if self.get_elapsed_time().days > elapsed_days:
+                self.outbreaks = set()
+                elapsed_days = elapsed_days + 1
 
         # shutdown procedures
         self.shutdown()
@@ -138,10 +166,15 @@ class ElectronicMedicalRecord(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(ELECTRONIC_MEDICAL_RECORD)
-    logging.basicConfig(level=logging.DEBUG,
-                        # filename="electronic_medical_record-{}.log".format(config['node_id']),
-                        format='%(asctime)s [%(levelname)s] %(message)s')
-    logging.debug("electronic_medical_record configuration: {}".format(config))
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
+
+    if config[LOG_TO_FILE]:
+        file_logger = RotatingFileHandler("{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                                          APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
+        file_logger.setLevel(logging.INFO)
+        logging.getLogger('').addHandler(file_logger)
+
+    logging.debug(config)
 
     electronic_medical_record = ElectronicMedicalRecord(config)
 

@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
 import zmq
 
@@ -59,7 +60,7 @@ class HealthDistrictSystem(Node):
             socket.close(linger=2)
 
     def configure_poller(self):
-        logging.info("Configuring main loop poller")
+        logging.debug("Configuring main loop poller")
         self.poller = zmq.Poller()
         self.poller.register(self.overseer_subscribe_socket, zmq.POLLIN)
         self.poller.register(self.electronic_medical_record_socket, zmq.POLLIN)
@@ -85,7 +86,8 @@ class HealthDistrictSystem(Node):
             # logging.debug("Sending reply: {}".format(reply))
             self.electronic_medical_record_socket.send_pyobj(reply)
             disease = message[DISEASE]
-            logging.debug("{} count is now {}".format(disease, self.current_daily_disease_counts[disease]))
+            logging.debug("{}: {} count is now {}".format(self.get_simulation_time(), disease,
+                                                          self.current_daily_disease_counts[disease]))
 
         elif message[MESSAGE_TYPE] == OUTBREAK_QUERY:
             outbreak_query_vector_timestamp = message[VECTOR_TIMESTAMP]
@@ -107,7 +109,8 @@ class HealthDistrictSystem(Node):
         disease_outbreak_alert_vector_timestamp = message[VECTOR_TIMESTAMP]
         self.vector_timestamp.update_from_other(disease_outbreak_alert_vector_timestamp)
         outbreak_disease = message[DISEASE]
-        logging.info("*** ALERT *** {} outbreak detected!".format(outbreak_disease))
+        logging.info("[{}] *** ALERT *** {} outbreak detected!  vector_timestamp: {}"
+                     .format(self.get_simulation_time(), outbreak_disease, self.vector_timestamp))
         self.outbreaks.add(outbreak_disease)
 
     def new_daily_disease_counts(self):
@@ -117,9 +120,16 @@ class HealthDistrictSystem(Node):
             daily_disease_counts[disease] = 0
         return daily_disease_counts
 
+    def extract_disease_count_map(self):
+        disease_count_map = {}
+        for disease in self.diseases:
+            disease_count_map[disease] = self.current_daily_disease_counts[disease]
+        return disease_count_map
+
     def send_daily_disease_counts_using_sockets(self):
         self.current_daily_disease_counts[VECTOR_TIMESTAMP] = self.vector_timestamp
-        logging.debug("Sending daily disease counts: {}".format(self.current_daily_disease_counts))
+        logging.info("[{}] Sending disease counts: {}  vector_timestamp: {}"
+                     .format(self.get_simulation_time(), self.extract_disease_count_map(), self.vector_timestamp))
         self.disease_count_publisher_socket.send_pyobj(self.current_daily_disease_counts)
 
     def send_daily_disease_counts(self):
@@ -159,7 +169,7 @@ class HealthDistrictSystem(Node):
             for socket in sockets:
                 if socket == self.overseer_subscribe_socket:
                     if self.is_stop_simulation():
-                        logging.info("received stop_simulation")
+                        logging.info("[{}] Received stop_simulation".format(self.get_simulation_time()))
                         run_simulation = False
                         break
 
@@ -187,12 +197,14 @@ class HealthDistrictSystem(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(HEALTH_DISTRICT_SYSTEM)
-    logging.basicConfig(level=logging.DEBUG,
-                        # filename="health_district_system-{}.log".format(config['node_id']),
-                        format='%(asctime)s [%(levelname)s] %(message)s')
-    # console = logging.StreamHandler()
-    # console.setLevel(logging.INFO)
-    # logging.getLogger('').addHandler(console)
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
+
+    if config[LOG_TO_FILE]:
+        file_logger = RotatingFileHandler("{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                                          APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
+        file_logger.setLevel(logging.INFO)
+        logging.getLogger('').addHandler(file_logger)
+
     logging.debug(config)
 
     health_district_system = HealthDistrictSystem(config)

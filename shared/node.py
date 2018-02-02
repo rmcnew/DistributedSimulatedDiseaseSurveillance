@@ -40,7 +40,7 @@ class Node:
         self.context.term()
 
     def send_to_overseer(self, message):
-        logging.info("Sending message: \'" + message + "\' from: \'" + self.node_id + "\'")
+        logging.debug("Sending message: \'" + message + "\' from: \'" + self.node_id + "\'")
         encoded_node_id = self.node_id.encode()
         encoded_message = message.encode()
         self.overseer_request_socket.send_multipart([encoded_node_id, encoded_message])
@@ -58,13 +58,13 @@ class Node:
         return message
 
     def register(self):
-        logging.info(str(self.node_id) + " registering with overseer")
+        logging.debug(str(self.node_id) + " registering with overseer")
         address_map = self.config[ADDRESS_MAP]
         address_map[TYPE] = ADDRESS_MAP
         serialized_address_map = json.dumps(address_map)
         self.send_to_overseer(serialized_address_map)
         reply = self.receive_from_overseer()
-        logging.info(reply)
+        logging.debug(reply)
 
     def receive_node_addresses(self):
         json_node_addresses = self.receive_subscription_message()
@@ -75,7 +75,7 @@ class Node:
         message = READY_TO_START
         self.send_to_overseer(message)
         reply = self.receive_from_overseer()
-        logging.info(reply)
+        logging.debug(reply)
 
     def await_start_simulation(self):
         continue_to_wait = True

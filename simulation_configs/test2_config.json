@@ -28,9 +28,10 @@
       "role": "electronic_medical_record",
       "role_parameters": {
         "outbreak_daily_query_frequency": 4,
-        "disease_generation": "random",
+        "disease_generation": "sine",
         "disease_generation_parameters": {
-          "probability": 0.15
+          "min_probability": 0.02,
+          "max_probability": 0.30
         }
       },
       "connections": [

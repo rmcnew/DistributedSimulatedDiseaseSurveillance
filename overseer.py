@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+from logging.handlers import RotatingFileHandler
 
 import zmq
 
@@ -55,7 +56,7 @@ class Overseer:
                 (node_role == DISEASE_OUTBREAK_ANALYZER):
 
             self.node_addresses[node_id] = address_map
-            logging.debug("Registration received for {}, role: {}".format(node_id, node_role))
+            logging.info("Registration received for {}, role: {}".format(node_id, node_role))
 
         else:
             logging.error("Unknown node role: {}.  No configuration for this node role!!".format(node_role))
@@ -72,6 +73,7 @@ class Overseer:
         if message == READY_TO_START:
             self.nodes_ready_to_start.add(node_id)
             self.send_to_node(self.reply_socket, node_id, "'ready_to_start' received for {}".format(node_id))
+            logging.info("{} is ready to start.".format(node_id))
         else:
             warning_message = "Did not receive expected 'ready_to_start' message!"
             logging.warning(warning_message)
@@ -113,25 +115,33 @@ class Overseer:
 def main():
     # get configuration and setup overseer listening
     config = get_overseer_config()
-    logging.basicConfig(level=logging.DEBUG,
-                        # filename='overseer.log',
-                        format='%(asctime)s [%(levelname)s] %(message)s')
-    logging.debug("overseer configuration: {}".format(config))
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
+
+    if config[LOG_TO_FILE]:
+        file_logger = RotatingFileHandler("overseer.log", APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
+        file_logger.setLevel(logging.INFO)
+        logging.getLogger('').addHandler(file_logger)
+
+    logging.debug(config)
 
     overseer = Overseer(config)
 
     # register all nodes
+    logging.info("Waiting for nodes to register . . .")
     while not overseer.all_registrations_completed():
         overseer.handle_node_registration_request()
+    logging.info("All nodes are registered.")
     logging.debug("registered node_addresses: {}".format(overseer.node_addresses))
 
     # publish node_addresses to all nodes
+    logging.info("Publishing node addresses . . .")
     overseer.publish_node_addresses()
 
     # wait for all nodes to connect to peers and then send "Ready" message
+    logging.info("Waiting for nodes to get ready . . .")
     while not overseer.all_nodes_ready():
         overseer.handle_node_ready_request()
-    logging.debug("all nodes are ready to start.  Starting the simulation.  Press Ctrl-C to stop simulation.")
+    logging.info("All nodes are ready to start.  Starting the simulation.  Press Ctrl-C to stop simulation.")
 
     # supervise simulation until user presses Ctrl-C
     overseer.supervise_simulation()
