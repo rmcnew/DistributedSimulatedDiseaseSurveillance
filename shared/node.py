@@ -1,4 +1,4 @@
-# helper functions for all node types:  electronic_medical_record, health_district_system, and disease_outbreak_analyzer
+# parent class for all node types:  electronic_medical_record, health_district_system, and disease_outbreak_analyzer
 import json
 import logging
 import socket
