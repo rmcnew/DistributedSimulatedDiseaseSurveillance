@@ -1,6 +1,5 @@
 # given a simulation configuration file and some AWS credentials via the command line, run a simulation using AWS EC2
 import logging
-from logging.handlers import RotatingFileHandler
 
 from config.sds_config import get_runner_config
 from shared.constants import *
@@ -14,15 +13,15 @@ class RunAws(Run):
 
 
 def main():
-    config = get_runner_config()
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
-
-    if config[LOG_TO_CONSOLE]:
-        file_logger = RotatingFileHandler("run_aws.log", APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
-        file_logger.setLevel(logging.INFO)
-        logging.getLogger('').addHandler(file_logger)
-
+    config = get_runner_config(RUN_AWS)
+    logging.basicConfig(format='%(message)s',
+                        # filename="{}.log".format(config[ROLE]),
+                        level=logging.INFO, )
     logging.debug(config)
+
+    run_aws = RunAws(config)
+
+    logging.info("Running LFSDS on AWS is under construction and will be coming soon!")
 
     # use AWS credentials from command line to connect
 

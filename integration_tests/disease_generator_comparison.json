@@ -21,10 +21,10 @@
         }
       },
       "connections": [
-        "node_2"
+        "node_3"
       ]
     },
-    "node_4": {
+    "node_2": {
       "role": "electronic_medical_record",
       "role_parameters": {
         "outbreak_daily_query_frequency": 4,
@@ -35,26 +35,49 @@
         }
       },
       "connections": [
-        "node_2"
+        "node_3"
       ]
     },
-    "node_2": {
+    "node_3": {
       "role": "health_district_system",
       "role_parameters": {
         "daily_count_send_frequency": 2
       },
       "connections": [
-        "node_3"
+        "node_4",
+        "node_5",
+        "node_6"
+
       ]
     },
-    "node_3": {
+    "node_4": {
       "role": "disease_outbreak_analyzer",
       "role_parameters": {
         "disease": "influenza",
-        "daily_outbreak_threshold": 20
+        "daily_outbreak_threshold": 70
       },
       "connections": [
-        "node_2"
+        "node_3"
+      ]
+    },
+    "node_5": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "measles",
+        "daily_outbreak_threshold": 80
+      },
+      "connections": [
+        "node_3"
+      ]
+    },
+    "node_6": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "chicken_pox",
+        "daily_outbreak_threshold": 90
+      },
+      "connections": [
+        "node_3"
       ]
     }
   }

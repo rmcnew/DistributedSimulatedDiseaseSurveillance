@@ -1,1 +1,7 @@
+attrs==17.4.0
+pkg-resources==0.0.0
+pluggy==0.6.0
+py==1.5.2
+pytest==3.4.0
 pyzmq==16.0.4
+six==1.11.0

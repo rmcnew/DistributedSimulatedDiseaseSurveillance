@@ -1,0 +1,358 @@
+{
+  "overseer": {
+    "host": "192.168.1.5",
+    "reply_port": 9000,
+    "publish_port": 9090
+  },
+  "time_scaling_factor": 1800,
+  "diseases": [
+    "ebola",
+    "herpes",
+    "polio",
+    "rabies",
+    "dengue_fever",
+    "malaria",
+    "leprosy",
+    "mumps",
+    "rubella",
+    "tuberculosis"
+  ],
+  "nodes": {
+    "EMR_0": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.07
+        }
+      },
+      "connections": [
+        "HDS_0"
+      ]
+    },
+    "EMR_1": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.08
+        }
+      },
+      "connections": [
+        "HDS_1"
+      ]
+    },
+    "EMR_2": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "HDS_1"
+      ]
+    },
+    "EMR_3": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "HDS_2"
+      ]
+    },
+    "EMR_4": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "HDS_2"
+      ]
+    },
+    "EMR_5": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "HDS_2"
+      ]
+    },
+    "EMR_6": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "HDS_3"
+      ]
+    },
+    "EMR_7": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "HDS_3"
+      ]
+    },
+    "EMR_8": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "HDS_3"
+      ]
+    },
+    "EMR_9": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "HDS_3"
+      ]
+    },
+    "HDS_0": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 2
+      },
+      "connections": [
+        "DOA_0",
+        "DOA_1",
+        "DOA_2",
+        "DOA_3",
+        "DOA_4",
+        "DOA_5",
+        "DOA_6",
+        "DOA_7",
+        "DOA_8",
+        "DOA_9"
+      ]
+    },
+    "HDS_1": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 3
+      },
+      "connections": [
+        "DOA_0",
+        "DOA_1",
+        "DOA_2",
+        "DOA_3",
+        "DOA_4",
+        "DOA_5",
+        "DOA_6",
+        "DOA_7",
+        "DOA_8",
+        "DOA_9"
+      ]
+    },
+    "HDS_2": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 4
+      },
+      "connections": [
+        "DOA_0",
+        "DOA_1",
+        "DOA_2",
+        "DOA_3",
+        "DOA_4",
+        "DOA_5",
+        "DOA_6",
+        "DOA_7",
+        "DOA_8",
+        "DOA_9"
+      ]
+    },
+    "HDS_3": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 5
+      },
+      "connections": [
+        "DOA_0",
+        "DOA_1",
+        "DOA_2",
+        "DOA_3",
+        "DOA_4",
+        "DOA_5",
+        "DOA_6",
+        "DOA_7",
+        "DOA_8",
+        "DOA_9"
+      ]
+    },
+    "DOA_0": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "ebola",
+        "daily_outbreak_threshold": 50
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_1": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "herpes",
+        "daily_outbreak_threshold": 100
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_2": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "polio",
+        "daily_outbreak_threshold": 150
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_3": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "rabies",
+        "daily_outbreak_threshold": 250
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_4": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "dengue_fever",
+        "daily_outbreak_threshold": 180
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_5": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "malaria",
+        "daily_outbreak_threshold": 190
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_6": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "leprosy",
+        "daily_outbreak_threshold": 100
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_7": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "mumps",
+        "daily_outbreak_threshold": 450
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_8": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "rubella",
+        "daily_outbreak_threshold": 200
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    },
+    "DOA_9": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "tuberculosis",
+        "daily_outbreak_threshold": 425
+      },
+      "connections": [
+        "HDS_0",
+        "HDS_1",
+        "HDS_2",
+        "HDS_3"
+      ]
+    }
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "overseer": {
+    "host": "192.168.1.5",
+    "reply_port": 9000,
+    "publish_port": 9090
+  },
+  "time_scaling_factor": 1800,
+  "diseases": [
+    "tuberculosis",
+    "influenza",
+    "measles",
+    "mumps",
+    "rubella",
+    "pneumonia",
+    "pertussis"
+  ],
+  "nodes": {
+    "Salt_Lake_City": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.07
+        }
+      },
+      "connections": [
+        "Salt_Lake_County"
+      ]
+    },
+    "Provo": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.08
+        }
+      },
+      "connections": [
+        "Utah_County"
+      ]
+    },
+    "Logan": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Cache_County"
+      ]
+    },
+    "Layton": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Davis_County"
+      ]
+    },
+    "Ogden": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "Weber_County"
+      ]
+    },
+    "St_George": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "Washington_County"
+      ]
+    },
+    "West_Jordan": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "Salt_Lake_County"
+      ]
+    },
+    "Orem": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Utah_County"
+      ]
+    },
+    "Sandy": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "sine",
+        "disease_generation_parameters": {
+          "min_probability": 0.02,
+          "max_probability": 0.30
+        }
+      },
+      "connections": [
+        "Salt_Lake_County"
+      ]
+    },
+    "West_Valley": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Salt_Lake_County"
+      ]
+    },
+    "Salt_Lake_County": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 2
+      },
+      "connections": [
+        "Tuberculosis_Analyzer",
+        "Influenza_Analyzer",
+        "Measles_Analyzer",
+        "Mumps_Analyzer",
+        "Rubella_Analyzer",
+        "Pneumonia_Analyzer",
+        "Pertussis_Analyzer"
+      ]
+    },
+    "Utah_County": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 3
+      },
+      "connections": [
+        "Tuberculosis_Analyzer",
+        "Influenza_Analyzer",
+        "Measles_Analyzer",
+        "Mumps_Analyzer",
+        "Rubella_Analyzer",
+        "Pneumonia_Analyzer",
+        "Pertussis_Analyzer"
+      ]
+    },
+    "Washington_County": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 4
+      },
+      "connections": [
+        "Tuberculosis_Analyzer",
+        "Influenza_Analyzer",
+        "Measles_Analyzer",
+        "Mumps_Analyzer",
+        "Rubella_Analyzer",
+        "Pneumonia_Analyzer",
+        "Pertussis_Analyzer"
+      ]
+    },
+    "Weber_County": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 5
+      },
+      "connections": [
+        "Tuberculosis_Analyzer",
+        "Influenza_Analyzer",
+        "Measles_Analyzer",
+        "Mumps_Analyzer",
+        "Rubella_Analyzer",
+        "Pneumonia_Analyzer",
+        "Pertussis_Analyzer"
+      ]
+    },
+    "Davis_County": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 5
+      },
+      "connections": [
+        "Tuberculosis_Analyzer",
+        "Influenza_Analyzer",
+        "Measles_Analyzer",
+        "Mumps_Analyzer",
+        "Rubella_Analyzer",
+        "Pneumonia_Analyzer",
+        "Pertussis_Analyzer"
+      ]
+    },
+    "Cache_County": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 5
+      },
+      "connections": [
+        "Tuberculosis_Analyzer",
+        "Influenza_Analyzer",
+        "Measles_Analyzer",
+        "Mumps_Analyzer",
+        "Rubella_Analyzer",
+        "Pneumonia_Analyzer",
+        "Pertussis_Analyzer"
+      ]
+    },
+    "Tuberculosis_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "tuberculosis",
+        "daily_outbreak_threshold": 50
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    },
+    "Influenza_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "influenza",
+        "daily_outbreak_threshold": 100
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    },
+    "Measles_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "measles",
+        "daily_outbreak_threshold": 150
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    },
+    "Mumps_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "mumps",
+        "daily_outbreak_threshold": 250
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    },
+    "Rubella_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "rubella",
+        "daily_outbreak_threshold": 180
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    },
+    "Pneumonia_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "pneumonia",
+        "daily_outbreak_threshold": 190
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    },
+    "Pertussis_Analyzer": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "pertussis",
+        "daily_outbreak_threshold": 100
+      },
+      "connections": [
+        "Salt_Lake_County",
+        "Utah_County",
+        "Washington_County",
+        "Weber_County",
+        "Davis_County",
+        "Cache_County"
+      ]
+    }
+  }
+}

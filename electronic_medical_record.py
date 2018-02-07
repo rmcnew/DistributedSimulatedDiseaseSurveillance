@@ -133,7 +133,7 @@ class ElectronicMedicalRecord(Node):
 
             if self.overseer_subscribe_socket in sockets:
                 if self.is_stop_simulation():
-                    logging.info("[{}] Received simulation_stop".format(self.get_simulation_time()))
+                    logging.info("[{}] Received stop_simulation".format(self.get_simulation_time()))
                     break
 
             # update simulation time

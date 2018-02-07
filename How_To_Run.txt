@@ -1,0 +1,90 @@
+Liquid Fortress Simulated Disease Survellience (LFSDS) was developed using Python 3.6.4 on Linux.
+
+It should be able to run under on other platforms that support Python 3, but it has not been tested exhaustively.
+
+These instructions assume that you have little to no Python background, but should enable you to get LFSDS running.
+
+1.  Install Python 3 on your platform.
+
+At the time of this writing, Python 3.6.4 is the latest version of Python.
+If you are using Linux or macOS, there's a good chance that you might have Python already installed.  Open a terminal
+and try running "python3 --version".  If you are on another platform, point your web browser to https://www.python.org,
+download the latest release for your platform and follow the installation instructions for your platform.
+
+2.  Install virtualenv.
+
+virtualenv is a localized Python package management system that allows Python packages to be installed locally for
+Python projects.    Follow the virtualenv installation instructions at
+https://packaging.python.org/guides/installing-using-pip-and-virtualenv/
+
+3.  Create a virtualenv environment
+
+In the SimulatedDiseaseSurvellience directory, run the following command:
+
+python3 -m venv .venv
+
+This will create an empty virtualenv environment in the ".venv" directory.  This allows LFSDS requirements to be
+installed locally.
+
+4.  Activate the virtualenv environment
+
+In the SimulatedDiseaseSurvellience directory, run the following command:
+
+source .venv/bin/activate
+
+This should prepend "(.venv)" to your shell prompt, letting you know that you are in the virtualenv.
+
+5.  Install LFSDS Python requirements
+
+While inside the virtualenv and in the SimulatedDiseaseSurvellience directory, run the following command:
+
+pip install -r requirements.txt
+
+This will install the Python packages needed to run LFSDS in the virtualenv.
+
+6.  Update integration_tests and simulation_configs
+
+One limitation of the current LFSDS design is the IP address and ports of the Overseer node must be hardcoded in the
+JSON configuration files that are used for integration tests and simulations.  The JSON files in the "integration_tests"
+and "simulation_configs" directories will need to be updated for the host IP address and ports that you want to use.
+Make sure you update the "host", "reply_port", and "publish_port" fields in the "overseer" block to match the IP address
+and ports that the Overseer will run on:
+
+"overseer": {
+    "host": "192.168.1.5",  <-- Update to host IP address that Overseer will run on
+    "reply_port": 9000,     <-- Update to free port on the host that Overseer will run on
+    "publish_port": 9090    <-- Update to free port on the host that Overseer will run on
+  },
+
+
+LFSDS is now ready to run!  Here are some things to try:
+
+A.  Run Unit Tests:
+1)  cd unit_tests
+2)  pytest electronic_medical_record_test.py  (Replace "electronic_medical_record.py" with other tests to run them.)
+
+B.  Run Integration Tests:
+1)  python run_local.py ./integration_tests/minimal.json
+2)  Note that each simulation node creates log files for program output.
+Examine the log files to see what is happening.  You can use "tail -f log_file_name.log" to follow the log output.
+3)  Press Ctrl-C to end the integration test.
+
+C.  Run Simulations:
+1)  python run_local.py ./simulation_configs/homework1_config.json
+2)  Note that each simulation node creates log files for program output.
+Examine the log files to see what is happening.  You can use "tail -f log_file_name.log" to follow the log output.
+3)  Press Ctrl-C to end the simulation.
+
+D.  Run Simulation nodes on different hosts:
+1)  Set up LFSDS on multiple hosts by following Steps 1 through 6 above for each host.
+2)  Start the Overseer:
+
+    python overseer.py ./integration_tests/minimal.json  (Remember that the chosen JSON configuration file must be updated so that all simulation nodes can reach the Overseer.)
+
+3)  On other hosts, start other simulation nodes:
+
+    python electronic_medical_record.py node_id ./integration_tests/minimal.json   (node_id must match the JSON configuration file)
+
+    python health_district_system.py node_id ./integration_tests/minimal.json   (node_id must match the JSON configuration file)
+
+    python disease_outbreak_analyzer.py node_id ./integration_tests/minimal.json   (node_id must match the JSON configuration file)
