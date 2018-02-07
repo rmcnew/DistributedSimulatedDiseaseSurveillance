@@ -1,5 +1,6 @@
 # functions to parse and extract data from JSON-formatted network configuration file
 import json
+import os
 
 from shared.constants import *
 
@@ -20,6 +21,13 @@ def extract_diseases(config, json_config):
 
 def extract_node_names(config, json_config):
     config[NODES] = list(json_config[NODES].keys())
+
+
+def extract_node_roles(config, json_config):
+    config[NODES] = {}
+    for node_id in json_config[NODES]:
+        node = json_config[NODES][node_id]
+        config[NODES][node_id] = node[ROLE]
 
 
 def extract_node(config, json_config, node_id):
@@ -52,4 +60,13 @@ def load_overseer_config(json_config_file):
         extract_time_scaling_factor(config, json_config)
         extract_diseases(config, json_config)
         extract_node_names(config, json_config)
+        return config
+
+
+def load_runner_config(json_config_file):
+    config = {CONFIG_FILE: os.path.realpath(json_config_file)}
+    with open(json_config_file) as config_file:
+        json_config = json.load(config_file)
+        extract_overseer(config, json_config)
+        extract_node_roles(config, json_config)
         return config

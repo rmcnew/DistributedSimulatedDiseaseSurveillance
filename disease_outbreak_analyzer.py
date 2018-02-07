@@ -1,5 +1,4 @@
 import logging
-from logging.handlers import RotatingFileHandler
 
 import zmq
 
@@ -150,13 +149,10 @@ class DiseaseOutbreakAnalyzer(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(DISEASE_OUTBREAK_ANALYZER)
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
-
-    if config[LOG_TO_FILE]:
-        file_logger = RotatingFileHandler("{}-{}.log".format(config[ROLE], config[NODE_ID]),
-                                          APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
-        file_logger.setLevel(logging.INFO)
-        logging.getLogger('').addHandler(file_logger)
+    logging.basicConfig(format='%(message)s',
+                        filename="{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                        level=logging.INFO)
+    logging.debug(config)
 
     disease_outbreak_analyzer = DiseaseOutbreakAnalyzer(config)
 

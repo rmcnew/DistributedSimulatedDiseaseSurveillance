@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-from logging.handlers import RotatingFileHandler
 from math import sin, tau
 from random import random
 
@@ -166,14 +165,9 @@ class ElectronicMedicalRecord(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(ELECTRONIC_MEDICAL_RECORD)
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
-
-    if config[LOG_TO_FILE]:
-        file_logger = RotatingFileHandler("{}-{}.log".format(config[ROLE], config[NODE_ID]),
-                                          APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
-        file_logger.setLevel(logging.INFO)
-        logging.getLogger('').addHandler(file_logger)
-
+    logging.basicConfig(format='%(message)s',
+                        filename="{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                        level=logging.INFO)
     logging.debug(config)
 
     electronic_medical_record = ElectronicMedicalRecord(config)

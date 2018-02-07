@@ -1,7 +1,6 @@
 import json
 import logging
 import time
-from logging.handlers import RotatingFileHandler
 
 import zmq
 
@@ -18,6 +17,7 @@ class Overseer:
         self.reply_socket.bind(TCP_SPECIFIED_PORT + str(config[OVERSEER_REPLY_PORT]))
         self.publish_socket = self.context.socket(zmq.PUB)
         self.publish_socket.bind(TCP_SPECIFIED_PORT + str(config[OVERSEER_PUBLISH_PORT]))
+        self.poller = None
         # map of node_id => ip_address:port used for address registration
         self.node_addresses = {}
         # set of nodes that are ready to start the simulation
@@ -82,31 +82,41 @@ class Overseer:
     def all_nodes_ready(self):
         return len(self.config[NODES]) == len(self.nodes_ready_to_start)
 
+    def configure_poller(self):
+        self.poller = zmq.Poller()
+        self.poller.register(self.reply_socket, zmq.POLLIN)
+
     def publish_start_simulation(self):
+        logging.info("Starting the simulation . . .")
         self.publish_socket.send_string(START_SIMULATION)
 
     def publish_stop_simulation(self):
+        logging.info("Stopping the simulation . . .")
         self.publish_socket.send_string(STOP_SIMULATION)
 
     def supervise_simulation(self):
+        self.configure_poller()
         # publish "start_simulation" message to all nodes
         self.publish_start_simulation()
 
         # main simulation run loop
+        logging.info("Press Ctrl-C to stop simulation.")
         while True:
             try:
-                # TODO: add heartbeat handling here
-                (node_id, reply) = self.receive_from_nodes()
+                sockets = dict(self.poller.poll(700))  # poll timeout in milliseconds
+                if self.reply_socket in sockets:
+                    # TODO: add heartbeat handling here
+                    (node_id, message) = self.receive_from_nodes()
+                    if message == STOP_SIMULATION:
+                        self.send_to_node(self.reply_socket, node_id, "Acknowledged")
+                        logging.info("Received remote shutdown request")
+                        break
                 time.sleep(1)
             except KeyboardInterrupt:  # wait for Ctrl-C to exit main simulation run loop
                 break
 
         # publish "stop_simulation" message to all nodes
         self.publish_stop_simulation()
-
-        # supervise shutdown and report collection from all nodes
-
-        # print summary report
 
         # shutdown
         self.shutdown_zmq()
@@ -115,13 +125,9 @@ class Overseer:
 def main():
     # get configuration and setup overseer listening
     config = get_overseer_config()
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
-
-    if config[LOG_TO_FILE]:
-        file_logger = RotatingFileHandler("overseer.log", APPEND, LOG_MAX_SIZE, LOG_BACKUP_COUNT)
-        file_logger.setLevel(logging.INFO)
-        logging.getLogger('').addHandler(file_logger)
-
+    logging.basicConfig(format='%(message)s',
+                        filename="{}.log".format(config[ROLE]),
+                        level=logging.INFO, )
     logging.debug(config)
 
     overseer = Overseer(config)
@@ -141,7 +147,7 @@ def main():
     logging.info("Waiting for nodes to get ready . . .")
     while not overseer.all_nodes_ready():
         overseer.handle_node_ready_request()
-    logging.info("All nodes are ready to start.  Starting the simulation.  Press Ctrl-C to stop simulation.")
+    logging.info("All nodes are ready to start.")
 
     # supervise simulation until user presses Ctrl-C
     overseer.supervise_simulation()

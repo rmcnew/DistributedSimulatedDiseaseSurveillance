@@ -14,6 +14,7 @@
     "node_0": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -26,6 +27,7 @@
     "node_1": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -38,6 +40,7 @@
     "node_2": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -50,6 +53,7 @@
     "node_3": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -62,6 +66,7 @@
     "node_4": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -74,6 +79,7 @@
     "node_5": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -86,6 +92,7 @@
     "node_6": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -98,6 +105,7 @@
     "node_7": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -110,6 +118,7 @@
     "node_8": {
       "role": "electronic_medical_record",
       "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
         "disease_generation": "random",
         "disease_generation_parameters": {
           "probability": 0.05
@@ -156,7 +165,7 @@
       "role": "disease_outbreak_analyzer",
       "role_parameters": {
         "disease": "influenza",
-        "daily_outbreak_threshold": 200
+        "daily_outbreak_threshold": 50
       },
       "connections": [
         "node_9",
