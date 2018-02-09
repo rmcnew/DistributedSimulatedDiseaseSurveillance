@@ -1,4 +1,4 @@
-Liquid Fortress Simulated Disease Survellience (LFSDS) was developed using Python 3.6.4 on Linux.
+Liquid Fortress Simulated Disease Surveillance (LFSDS) was developed using Python 3.6.4 on Linux.
 
 It should be able to run under on other platforms that support Python 3, but it has not been tested exhaustively.
 
