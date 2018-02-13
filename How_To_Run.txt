@@ -88,3 +88,24 @@ D.  Run Simulation nodes on different hosts:
     python health_district_system.py node_id ./integration_tests/minimal.json   (node_id must match the JSON configuration file)
 
     python disease_outbreak_analyzer.py node_id ./integration_tests/minimal.json   (node_id must match the JSON configuration file)
+
+
+== Running on Amazon Web Services (AWS) ==
+LFSDS can run on AWS if you provide a valid Access Key Id, Secret Access Key, and default AWS region.
+
+The boto3 Python library provides easy use of AWS APIs.
+
+boto3 expects to find your AWS Access Key Id and Secret Access Key in ~/.aws/credentials:
+
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY
+
+boto3 expects to find your default AWS region in  ~/.aws/config:
+
+[default]
+region=us-east-1
+
+Replace "us-east-1" with your default AWS region if needed.
+
+Your AWS configuration files will be queried by boto3 to use S3 and EC2 to run
