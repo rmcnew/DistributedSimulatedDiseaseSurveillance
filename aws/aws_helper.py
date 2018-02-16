@@ -42,13 +42,18 @@ def terminate_instances(instance_id_list):
     ec2.instances.filter(InstanceIds=instance_id_list).terminate()
 
 
+def get_instance(instance_id):
+    ec2 = boto3.resource(EC2)
+    return ec2.Instance(instance_id)
+
+
 def run_command(instance, command):
     key = paramiko.RSAKey.from_private_key_file(str(Path.home() / DOT_AWS / LFSDS_KEY_FILENAME))
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 
     try:
-        ssh_client.connect(hostname=instance.public_ip_address, pkey=key)
+        ssh_client.connect(hostname=instance.public_ip_address, username=UBUNTU, pkey=key)
         stdin, stdout, stderr = ssh_client.exec_command(command)
         ret_val = stdout.read()
         ssh_client.close()

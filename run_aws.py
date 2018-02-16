@@ -23,9 +23,14 @@ def main():
 
     logging.info("Running LFSDS on AWS is under construction and will be coming soon!")
 
-    # create overseer EC2 instance
+    # create EC2 instances for all the nodes needed plus the overseer
+    instances = create_ec2_instances(len(config[NODES]) + 1)
 
-    # create simulation node EC2 instances
+    overseer_instance_id = instances[0].instance_id
+    start_instances([overseer_instance_id])
+    overseer_instance = get_instance(overseer_instance_id)
+
+    # create and start simulation node EC2 instances
 
     # generate mktemp-style simulation folder name based on simulation config filename
 
