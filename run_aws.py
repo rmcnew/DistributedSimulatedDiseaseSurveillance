@@ -1,7 +1,9 @@
 # given a simulation configuration file and some AWS credentials via the command line, run a simulation using AWS EC2
 import logging
 
+from pathlib import Path
 from aws.aws_helper import *
+from aws.ec2_instance import Ec2Instance
 from config.sds_config import get_runner_config
 from shared.run import Run
 
@@ -27,12 +29,15 @@ def main():
     instances = create_ec2_instances(len(config[NODES]) + 1)
 
     overseer_instance_id = instances[0].instance_id
-    start_instances([overseer_instance_id])
-    overseer_instance = get_instance(overseer_instance_id)
+    overseer_instance = Ec2Instance(overseer_instance_id)
+    overseer_instant.start()
 
     # create and start simulation node EC2 instances
+     
 
     # generate mktemp-style simulation folder name based on simulation config filename
+    config_filename = Path(config[CONFIG_FILE]).name
+    
 
     # create simulation folder in S3 bucket
 
