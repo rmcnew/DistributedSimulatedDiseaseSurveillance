@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import boto3
 import paramiko
 
 from shared.constants import *
+
 
 class Ec2Instance:
 
@@ -11,7 +14,7 @@ class Ec2Instance:
 
     def __init__(self, instance_id):
         self.instance_id = instance_id
-        self.instance = ec2.Instance(instance_id)
+        self.instance = Ec2Instance.ec2.Instance(instance_id)
         self.ssh_client = paramiko.SSHClient()
         self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 
@@ -32,14 +35,14 @@ class Ec2Instance:
 
     def run_command(self, command):
         try:
-            ssh_client.connect(hostname=instance.public_ip_address, username=UBUNTU, pkey=key)
-            stdin, stdout, stderr = ssh_client.exec_command(command)
+            self.ssh_client.connect(hostname=self.instance.public_ip_address, username=UBUNTU, pkey=Ec2Instance.key)
+            stdin, stdout, stderr = self.ssh_client.exec_command(command)
             ret_val = stdout.read()
-            ssh_client.close()
+            self.ssh_client.close()
             return ret_val
 
         except paramiko.AuthenticationException:
-            print("AuthenticationException while connecting to {}".format(instance))
+            print("AuthenticationException while connecting to {}".format(self.instance))
 
     def console_output(self):
         return self.instance.console_output()

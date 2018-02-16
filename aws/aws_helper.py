@@ -1,14 +1,18 @@
 # aws functions
+import os
+import socket
+from datetime import datetime
 from pathlib import Path
 
 import boto3
-import paramiko
 
+from aws.ec2_instance import Ec2Instance
 from shared.constants import *
 
 
 def create_ec2_instances(count):
     ec2 = boto3.resource(EC2)
+    ec2_instances = []
     instances = ec2.create_instances(
         ImageId=UBUNTU_PYTHON3_AMI_ID,
         MinCount=count,
@@ -16,7 +20,10 @@ def create_ec2_instances(count):
         SecurityGroupIds=[LFSDS_SECURITY_GROUP_ID],
         KeyName=LFSDS_KEY_NAME,
         InstanceType=T2_MICRO)
-    return instances
+    for instance in instances:
+        ec2_instance = Ec2Instance(instance.instance_id)
+        ec2_instances.append(ec2_instance)
+    return ec2_instances
 
 
 def get_running_instances():
@@ -27,37 +34,45 @@ def get_running_instances():
     return instances
 
 
-def start_instances(instance_id_list):
+def start_instances(ec2_instance_list):
+    instance_id_list = []
+    for ec2_instance in ec2_instance_list:
+        instance_id_list.append(ec2_instance.instance_id)
     ec2 = boto3.client(EC2)
     ec2.start_instances(InstanceIds=instance_id_list)
 
 
-def stop_instances(instance_id_list):
+def stop_instances(ec2_instance_list):
+    instance_id_list = []
+    for ec2_instance in ec2_instance_list:
+        instance_id_list.append(ec2_instance.instance_id)
     ec2 = boto3.resource(EC2)
     ec2.instances.filter(InstanceIds=instance_id_list).stop()
 
 
-def terminate_instances(instance_id_list):
+def terminate_instances(ec2_instance_list):
+    instance_id_list = []
+    for ec2_instance in ec2_instance_list:
+        instance_id_list.append(ec2_instance.instance_id)
     ec2 = boto3.resource(EC2)
     ec2.instances.filter(InstanceIds=instance_id_list).terminate()
 
 
-def get_instance(instance_id):
-    ec2 = boto3.resource(EC2)
-    return ec2.Instance(instance_id)
+def get_ec2_instance(instance_id):
+    return Ec2Instance(instance_id)
 
 
-def run_command(instance, command):
-    key = paramiko.RSAKey.from_private_key_file(str(Path.home() / DOT_AWS / LFSDS_KEY_FILENAME))
-    ssh_client = paramiko.SSHClient()
-    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+def generate_simulation_folder_name(config):
+    config_filename_path = Path(config[CONFIG_FILE])
+    config_filename = config_filename_path.stem
+    hostname = socket.getfqdn()
+    pid = os.getpid()
+    timestamp = datetime.now()
 
-    try:
-        ssh_client.connect(hostname=instance.public_ip_address, username=UBUNTU, pkey=key)
-        stdin, stdout, stderr = ssh_client.exec_command(command)
-        ret_val = stdout.read()
-        ssh_client.close()
-        return ret_val
+    return "SIM_{}-HOST_{}-PID_{}-DATETIME_{}-{}-{}T{}-{}-{}" \
+        .format(config_filename, hostname, pid,
+                timestamp.year, timestamp.month, timestamp.day, timestamp.hour, timestamp.minute, timestamp.second)
 
-    except paramiko.AuthenticationException:
-        print("AuthenticationException while connecting to {}".format(instance))
+
+def generate_log_post_url(bucket, key):
+    s3 = boto3.client(S3)

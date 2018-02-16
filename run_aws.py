@@ -1,9 +1,7 @@
 # given a simulation configuration file and some AWS credentials via the command line, run a simulation using AWS EC2
 import logging
 
-from pathlib import Path
 from aws.aws_helper import *
-from aws.ec2_instance import Ec2Instance
 from config.sds_config import get_runner_config
 from shared.run import Run
 
@@ -26,22 +24,27 @@ def main():
     logging.info("Running LFSDS on AWS is under construction and will be coming soon!")
 
     # create EC2 instances for all the nodes needed plus the overseer
-    instances = create_ec2_instances(len(config[NODES]) + 1)
+    ec2_instances = create_ec2_instances(len(config[NODES]) + 1)
 
-    overseer_instance_id = instances[0].instance_id
-    overseer_instance = Ec2Instance(overseer_instance_id)
-    overseer_instant.start()
+    # start overseer EC2 instance
+    overseer_instance = ec2_instances[0]
+    overseer_instance.start()
 
-    # create and start simulation node EC2 instances
-     
+    # start simulation node EC2 instances
+    simulation_node_instances = ec2_instances[1:]
+    start_instances(simulation_node_instances)
 
-    # generate mktemp-style simulation folder name based on simulation config filename
-    config_filename = Path(config[CONFIG_FILE]).name
-    
+    # generate simulation folder name based on simulation config filename, hostname, PID, and start timestamp
+    simulation_folder_name = generate_simulation_folder_name(config)
+    logging.info("Creating simulation folder \'{}\' in S3 bucket: {}".format(simulation_folder_name, LFSDS_S3_BUCKET))
 
-    # create simulation folder in S3 bucket
+    # the simulation "folder" is just a prefix that is added on the S3 keys
+    simulation_folder_prefix = "{}/".format(simulation_folder_name)
 
     # generate signed POST URLs for log files
+    log_post_urls = {}
+    # for node_id, role in config[NODES].items():
+    # build log post urls here
 
     # get overseer EC2 instance IP address
 
@@ -66,8 +69,6 @@ def main():
 
     # after log is uploaded, each simulation node sends a "deregister" message to the overseer and
     # then performs shutdown
-
-
 
 
 if __name__ == "__main__":
