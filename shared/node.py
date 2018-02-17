@@ -40,7 +40,7 @@ class Node:
         self.context.term()
 
     def send_to_overseer(self, message):
-        logging.debug("Sending message: \'" + message + "\' from: \'" + self.node_id + "\'")
+        logging.debug("Sending message: \'{}\' from: {}".format(message, self.node_id))
         encoded_node_id = self.node_id.encode()
         encoded_message = message.encode()
         self.overseer_request_socket.send_multipart([encoded_node_id, encoded_message])
@@ -58,11 +58,18 @@ class Node:
         return message
 
     def register(self):
-        logging.debug(str(self.node_id) + " registering with overseer")
+        logging.debug("{} registering with overseer".format(self.node_id))
         address_map = self.config[ADDRESS_MAP]
         address_map[TYPE] = ADDRESS_MAP
         serialized_address_map = json.dumps(address_map)
         self.send_to_overseer(serialized_address_map)
+        reply = self.receive_from_overseer()
+        logging.debug(reply)
+
+    def deregister(self):
+        logging.debug("{} deregistering with overseer".format(self.node_id))
+        message = DEREGISTER
+        self.send_to_overseer(message)
         reply = self.receive_from_overseer()
         logging.debug(reply)
 

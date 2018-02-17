@@ -46,6 +46,9 @@ class Overseer:
     def all_registrations_completed(self):
         return len(self.config[NODES]) == len(self.node_addresses)
 
+    def all_deregistrations_completed(self):
+        return len(self.node_addresses) == 0
+
     def handle_node_registration_request(self):
         (node_id, message) = self.receive_from_nodes()
         logging.debug("Received message: \'{}\' from: \'{}\'".format(message, node_id))
@@ -63,6 +66,12 @@ class Overseer:
 
         self.send_to_node(self.reply_socket, node_id, "Successful registration for {}".format(node_id))
 
+    def handle_node_deregistration_request(self):
+        (node_id, message) = self.receive_from_nodes()
+        logging.debug("Received message: \'{}\' from: \'{}\'".format(message, node_id))
+        logging.info("Registration received for {}, role: {}".format(node_id, node_role))
+        self.send_to_node(self.reply_socket, node_id, "Successful deregistration for {}".format(node_id))
+        
     def publish_node_addresses(self):
         json_node_addresses = json.dumps(self.node_addresses)
         self.publish_socket.send_string(json_node_addresses)
@@ -117,6 +126,8 @@ class Overseer:
 
         # publish "stop_simulation" message to all nodes
         self.publish_stop_simulation()
+
+        # wait for nodes to deregister
 
         # shutdown
         self.shutdown_zmq()
