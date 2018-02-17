@@ -21,15 +21,15 @@ def main():
     run_aws = RunAws(config)
 
     # create EC2 instances for all the nodes needed plus the overseer
-    ec2_instances = create_ec2_instances(len(config[NODES]) + 1)
+    #ec2_instances = create_ec2_instances(len(config[NODES]) + 1)
 
     # start overseer EC2 instance
-    overseer_instance = ec2_instances[0]
-    overseer_instance.start()
+    #overseer_instance = ec2_instances[0]
+    #overseer_instance.start()
 
     # start simulation node EC2 instances
-    simulation_node_instances = ec2_instances[1:]
-    start_instances(simulation_node_instances)
+    #simulation_node_instances = ec2_instances[1:]
+    #start_instances(simulation_node_instances)
 
     # generate simulation folder name based on simulation config filename, hostname, PID, and start timestamp
     simulation_folder_name = generate_simulation_folder_name(config)
@@ -43,22 +43,21 @@ def main():
     for node_id, role in config[NODES].items():
         log_key = "{}{}-{}.log".format(simulation_folder_prefix, role, node_id) 
         logging.debug("Generating log POST URL for key: {}".format(log_key))
-        log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, log_key)
- 	log_post_urls[node_id] = log_post_url	
+        #log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, log_key)
+ 	#log_post_urls[node_id] = log_post_url	
 
     # get overseer EC2 instance IP address
-    overseer_ip_address = overseer_instance.public_ip_address     	
+    overseer_ip_address = '7.7.7.7'
 
-    # read in config file,update overseer IP address, and save updated config file to local temp location (e.g. /tmp)
+    # read in config file and update overseer IP address for in-memory config file
     temp_config_filename = update_overseer_ip_address_in_config_file(config, overseer_ip_address, simulation_folder_name)
 
-    # upload updated temp config file to S3 simulation folder
-    config_file_key = "{}{}".format(simulation_folder_prefix, SIMULATION_CONFIG_JSON)
-    upload_and_rename_file_to_s3_bucket(LFSDS_S3_BUCKET, temp_config_filename, config_file_key)
+    # save updated config file to local temp location (/tmp)
+
+    # upload updated config file to S3 simulation folder
 
     # generate signed URL for config file
-    config_url = generate_config_url(LFSDS_S3_BUCKET, config_file_key)
-    
+
     # start overseer script with config file URL and log POST URL
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL

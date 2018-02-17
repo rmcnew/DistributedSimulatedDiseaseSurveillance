@@ -1,6 +1,9 @@
 # aws functions
+import json
+import logging
 import os
 import socket
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -76,3 +79,29 @@ def generate_simulation_folder_name(config):
 
 def generate_log_post_url(bucket, key):
     s3 = boto3.client(S3)
+    return s3.generate_presigned_post(bucket, key) # Note that the URL will expire in 1 hour based on default settings
+
+
+def generate_config_url(bucket, key):
+    s3 = boto3.client(S3)
+    return s3.generate_presigned_url( ClientMethod=GET_OBJECT, Params={ BUCKET: bucket, KEY: key }) 
+
+
+def update_overseer_ip_address_in_config_file(config, overseer_ip_address, temp_name):
+    temp_dir = tempfile.gettempdir()
+    temp_path = Path(temp_dir) / temp_name
+    logging.debug("Creating temp config file: {}".format(temp_path))
+    temp_handle = open(temp_path, WRITE)  
+    with open(config[CONFIG_FILE]) as config_file:
+        json_config = json.load(config_file)
+        json_config[OVERSEER][HOST] = str(overseer_ip_address)
+        json.dump(json_config, temp_handle)
+    temp_handle.close()
+    return temp_path
+
+
+def upload_and_rename_file_to_s3_bucket(bucket, source_file, s3_key):
+    s3 = boto3.resource(S3)
+    logging.debug("Uploading {} to bucket: {} with key: {}".format(source_file, bucket, s3_key))
+    s3.Bucket(bucket).upload_file(source_file, s3_key)
+
