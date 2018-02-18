@@ -43,32 +43,24 @@ def main():
     for node_id, role in config[NODES].items():
         log_key = "{}{}-{}.log".format(simulation_folder_prefix, role, node_id) 
         logging.debug("Generating log POST URL for key: {}".format(log_key))
-        #log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, log_key)
- 	#log_post_urls[node_id] = log_post_url	
+        # log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, log_key)
+        # log_post_urls[node_id] = log_post_url
 
     # get overseer EC2 instance IP address
-    overseer_ip_address = '7.7.7.7'
+    overseer_ip_address = '192.168.1.5'
 
     # read in config file and update overseer IP address for in-memory config file
     temp_config_filename = update_overseer_ip_address_in_config_file(config, overseer_ip_address, simulation_folder_name)
 
-    # save updated config file to local temp location (/tmp)
-
-    # upload updated config file to S3 simulation folder
+    # upload updated temp config file to S3 simulation folder
+    config_file_key = "{}{}".format(simulation_folder_prefix, SIMULATION_CONFIG_JSON)
+    upload_and_rename_file_to_s3_bucket(LFSDS_S3_BUCKET, temp_config_filename, config_file_key)
 
     # generate signed URL for config file
+    config_url = generate_config_url(LFSDS_S3_BUCKET, config_file_key)
+    logging.debug("config url is: {}".format(config_url))
 
-    # start overseer script with config file URL and log POST URL
-
-    # start simulation node scripts with config file URL, node_id, and respective log POST URL
-
-    # simulation nodes send heartbeats to overseer every two minutes.  Overseer checks each minute to see if no
-    # heartbeat is received.  Overseer alerts if no heartbeats received from a node for five minutes or more
-
-    # at stop_simulation, each simulation node sends logs using the respective log POST URL
-
-    # after log is uploaded, each simulation node sends a "deregister" message to the overseer and
-    # then performs shutdown
+    # start overseer
 
 
 if __name__ == "__main__":

@@ -103,5 +103,5 @@ def update_overseer_ip_address_in_config_file(config, overseer_ip_address, temp_
 def upload_and_rename_file_to_s3_bucket(bucket, source_file, s3_key):
     s3 = boto3.resource(S3)
     logging.debug("Uploading {} to bucket: {} with key: {}".format(source_file, bucket, s3_key))
-    s3.Bucket(bucket).upload_file(source_file, s3_key)
+    s3.Bucket(bucket).upload_file(str(source_file), s3_key)
 

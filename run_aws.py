@@ -38,7 +38,12 @@ def main():
     logging.info("Using simulation prefix: {} in S3 bucket: {}".format(simulation_folder_prefix, LFSDS_S3_BUCKET))
 
     # generate signed POST URLs for log files
+    #   overseer log
     log_post_urls = {}
+    overseer_log_key = "{}{}".format(simulation_folder_prefix, OVERSEER_LOG)
+    overseer_log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, overseer_log_key)
+    log_post_urls[OVERSEER] = overseer_log_post_url
+    #   simulation node logs
     for node_id, role in config[NODES].items():
         log_key = "{}{}-{}.log".format(simulation_folder_prefix, role, node_id) 
         logging.debug("Generating log POST URL for key: {}".format(log_key))
@@ -62,13 +67,7 @@ def main():
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL
 
-    # simulation nodes send heartbeats to overseer every two minutes.  Overseer checks each minute to see if no
-    # heartbeat is received.  Overseer alerts if no heartbeats received from a node for five minutes or more
-
-    # at stop_simulation, each simulation node sends logs using the respective log POST URL
-
-    # after log is uploaded, each simulation node sends a "deregister" message to the overseer and
-    # then performs shutdown
+    # at stop_simulation, overseer and each simulation node sends logs using the respective log POST URL
 
 
 if __name__ == "__main__":

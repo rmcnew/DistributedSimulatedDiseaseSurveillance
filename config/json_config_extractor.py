@@ -1,7 +1,4 @@
 # functions to parse and extract data from JSON-formatted network configuration file
-import json
-import os
-
 from shared.constants import *
 
 
@@ -41,32 +38,26 @@ def extract_node(config, json_config, node_id):
         raise KeyError("node_id: " + node_id + " was not found in the configuration file!")
 
 
-def load_node_config(json_config_file, node_id):
+def extract_node_config(json_config, node_id):
     config = {}
-    with open(json_config_file) as config_file:
-        json_config = json.load(config_file)
-        extract_overseer(config, json_config)
-        extract_time_scaling_factor(config, json_config)
-        extract_diseases(config, json_config)
-        extract_node(config, json_config, node_id)
-        return config
+    extract_overseer(config, json_config)
+    extract_time_scaling_factor(config, json_config)
+    extract_diseases(config, json_config)
+    extract_node(config, json_config, node_id)
+    return config
 
 
-def load_overseer_config(json_config_file):
+def extract_overseer_config(json_config):
     config = {}
-    with open(json_config_file) as config_file:
-        json_config = json.load(config_file)
-        extract_overseer(config, json_config)
-        extract_time_scaling_factor(config, json_config)
-        extract_diseases(config, json_config)
-        extract_node_names(config, json_config)
-        return config
+    extract_overseer(config, json_config)
+    extract_time_scaling_factor(config, json_config)
+    extract_diseases(config, json_config)
+    extract_node_names(config, json_config)
+    return config
 
 
-def load_runner_config(json_config_file):
-    config = {CONFIG_FILE: os.path.realpath(json_config_file)}
-    with open(json_config_file) as config_file:
-        json_config = json.load(config_file)
-        extract_overseer(config, json_config)
-        extract_node_roles(config, json_config)
-        return config
+def extract_runner_config(json_config):
+    config = {}
+    extract_overseer(config, json_config)
+    extract_node_roles(config, json_config)
+    return config
