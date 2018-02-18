@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+from datetime import datetime
 
 import zmq
 
@@ -23,12 +24,11 @@ class Overseer:
         # set of nodes that are ready to start the simulation
         self.nodes_ready_to_start = set()
         # node heartbeat tracking:  map of node_id => last_heartbeat_received
-        # TODO: add node heartbeat sending and overseer alert trigger if no heartbeat received
         self.node_heartbeats = {}
 
     def shutdown_zmq(self):
-        self.reply_socket.close(linger=2)
         self.publish_socket.close(linger=2)
+        self.reply_socket.close(linger=2)
         self.context.term()
 
     def send_to_node(self, socket, node_id, message):
@@ -69,8 +69,14 @@ class Overseer:
     def handle_node_deregistration_request(self):
         (node_id, message) = self.receive_from_nodes()
         logging.debug("Received message: \'{}\' from: \'{}\'".format(message, node_id))
-        logging.info("Registration received for {}, role: {}".format(node_id, node_role))
-        self.send_to_node(self.reply_socket, node_id, "Successful deregistration for {}".format(node_id))
+        if message == DEREGISTER:
+            self.send_to_node(self.reply_socket, node_id, "Successful deregistration for {}".format(node_id))
+            del self.node_addresses[node_id]
+            logging.info("{} deregistered".format(node_id))
+        else:
+            warning_message = "Did not receive expected 'deregister' message!"
+            logging.warning(warning_message)
+            self.send_to_node(self.reply_socket, node_id, warning_message)
         
     def publish_node_addresses(self):
         json_node_addresses = json.dumps(self.node_addresses)
@@ -97,11 +103,22 @@ class Overseer:
 
     def publish_start_simulation(self):
         logging.info("Starting the simulation . . .")
+        start_time = datetime.now()
+        for node_id in self.node_addresses:
+            self.node_heartbeats[node_id] = start_time
         self.publish_socket.send_string(START_SIMULATION)
 
     def publish_stop_simulation(self):
         logging.info("Stopping the simulation . . .")
         self.publish_socket.send_string(STOP_SIMULATION)
+
+    def check_node_heartbeats(self):
+        current_time = datetime.now()
+        for node_id, last_heartbeat_timestamp in self.node_heartbeats.items():
+            elapsed_time = current_time - last_heartbeat_timestamp
+            if elapsed_time.seconds > SECONDS_WITHOUT_HEARTBEAT:
+                logging.error("*** No heartbeats from {} since {}!  {} may be down or bad network connection."
+                              .format(node_id, last_heartbeat_timestamp, node_id))
 
     def supervise_simulation(self):
         self.configure_poller()
@@ -114,23 +131,22 @@ class Overseer:
             try:
                 sockets = dict(self.poller.poll(700))  # poll timeout in milliseconds
                 if self.reply_socket in sockets:
-                    # TODO: add heartbeat handling here
                     (node_id, message) = self.receive_from_nodes()
                     if message == STOP_SIMULATION:
-                        self.send_to_node(self.reply_socket, node_id, "Acknowledged")
+                        self.send_to_node(self.reply_socket, node_id, ACKNOWLEDGED)
                         logging.info("Received remote shutdown request")
                         break
+                    elif message == HEARTBEAT:
+                        self.send_to_node(self.reply_socket, node_id, HEARTBEAT_RECEIVED)
+                        self.node_heartbeats[node_id] = datetime.now()
+                        logging.info("Heartbeat received from: {}".format(node_id))
+                self.check_node_heartbeats()
                 time.sleep(1)
             except KeyboardInterrupt:  # wait for Ctrl-C to exit main simulation run loop
                 break
 
         # publish "stop_simulation" message to all nodes
         self.publish_stop_simulation()
-
-        # wait for nodes to deregister
-
-        # shutdown
-        self.shutdown_zmq()
 
 
 def main():
@@ -162,6 +178,15 @@ def main():
 
     # supervise simulation until user presses Ctrl-C
     overseer.supervise_simulation()
+
+    # wait for all nodes to deregister
+    logging.info("Waiting for nodes to deregister . . .")
+    while not overseer.all_deregistrations_completed():
+        overseer.handle_node_deregistration_request()
+    logging.info("All nodes are deregistered.  Shutting down . . .")
+
+    # shutdown
+    overseer.shutdown_zmq()
 
 
 if __name__ == "__main__":

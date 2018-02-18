@@ -116,6 +116,7 @@ class ElectronicMedicalRecord(Node):
         logging.info("Shutting down . . .")
         self.disconnect_from_peers()
         self.shutdown_listeners()
+        self.deregister()
         self.shutdown_zmq()
 
     def run_simulation(self):
@@ -157,6 +158,9 @@ class ElectronicMedicalRecord(Node):
             if self.get_elapsed_time().days > elapsed_days:
                 self.outbreaks = set()
                 elapsed_days = elapsed_days + 1
+
+            # if enough time has passed, send a heartbeat to the overseer
+            self.send_heartbeat_if_time()
 
         # shutdown procedures
         self.shutdown()

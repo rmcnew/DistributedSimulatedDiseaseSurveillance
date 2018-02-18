@@ -20,6 +20,7 @@ class Node:
         self.role_parameters = config[ROLE_PARAMETERS]
         self.diseases = config[DISEASES]
         self.simulation_start_time = None
+        self.last_heartbeat_sent = None
         self.node_addresses = None
         self.vector_timestamp = VectorTimestamp()
         self.context = zmq.Context()
@@ -104,6 +105,7 @@ class Node:
 
     def record_start_time(self):
         self.simulation_start_time = datetime.now()
+        self.last_heartbeat_sent = datetime.now()
 
     def get_start_time(self):
         return self.simulation_start_time
@@ -116,6 +118,15 @@ class Node:
         sim_time = self.simulation_start_time + elapsed_time
         # logging.debug("Time elapsed: {}  Simulation datetime: {}".format(elapsed_time, sim_time))
         return sim_time
+
+    def send_heartbeat_if_time(self):
+        current_time = datetime.now()
+        time_since_last_heartbeat = current_time - self.last_heartbeat_sent
+        if time_since_last_heartbeat.seconds > SECONDS_PER_HEARTBEAT:
+            self.send_to_overseer(HEARTBEAT)
+            reply = self.receive_from_overseer()
+            self.last_heartbeat_sent = current_time
+            logging.debug("Heartbeat response: {}".format(reply))
 
     @staticmethod
     def get_ip_address():

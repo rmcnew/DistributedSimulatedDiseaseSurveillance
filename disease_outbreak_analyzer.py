@@ -103,6 +103,7 @@ class DiseaseOutbreakAnalyzer(Node):
         logging.info("Shutting down . . .")
         self.disconnect_from_peers()
         self.shutdown_listeners()
+        self.deregister()
         self.shutdown_zmq()
 
     def run_simulation(self):
@@ -141,6 +142,9 @@ class DiseaseOutbreakAnalyzer(Node):
                 # reset current_daily_disease_counts
                 self.current_daily_disease_counts = self.new_daily_disease_counts()
                 self.current_daily_disease_counts[START_TIMESTAMP] = sim_time
+
+            # if enough time has passed, send a heartbeat to the overseer
+            self.send_heartbeat_if_time()
 
         # shutdown procedures
         self.shutdown()

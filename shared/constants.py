@@ -1,5 +1,6 @@
 # 'constants' used by various components
 
+ACKNOWLEDGED = 'Acknowledged'
 ADDRESS_MAP = 'address_map'
 APPEND = 'a'
 AWS_RUN_SHELL_SCRIPT = 'AWS-RunShellScript'
@@ -35,6 +36,8 @@ HEALTH_DISTRICT_SYSTEM = 'health_district_system'
 HEALTH_DISTRICT_SYSTEM_ADDRESS = 'health_district_system_address'
 HEALTH_DISTRICT_SYSTEM_ID = 'health_district_system_id'
 HEALTH_DISTRICT_SYSTEM_SCRIPT_NAME = 'health_district_system.py'
+HEARTBEAT = 'heartbeat'
+HEARTBEAT_RECEIVED = 'Heartbeat Received'
 HOST = 'host'
 KEY = 'Key'
 LFSDS_S3_BUCKET = 'liquid-fortress-simulated-disease-surveillance'
@@ -68,8 +71,10 @@ ROLE_PARAMETERS = 'role_parameters'
 RUN_AWS = 'run_aws'
 RUN_LOCAL = 'run_local'
 S3 = 's3'
+SECONDS_PER_HEARTBEAT = 60
 SECONDS_PER_HOUR = 3600
 SECONDS_PER_DAY = SECONDS_PER_HOUR * 24
+SECONDS_WITHOUT_HEARTBEAT = SECONDS_PER_HEARTBEAT * 3
 SIMULATION_CONFIG_JSON = 'simulation_config.json'
 SIMULATION_RUNNER = 'simulation_runner'
 SINE = 'sine'
