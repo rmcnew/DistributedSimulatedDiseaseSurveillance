@@ -38,8 +38,7 @@ def extract_node(config, json_config, node_id):
         raise KeyError("node_id: " + node_id + " was not found in the configuration file!")
 
 
-def extract_node_config(json_config, node_id):
-    config = {}
+def extract_node_config(config, json_config, node_id):
     extract_overseer(config, json_config)
     extract_time_scaling_factor(config, json_config)
     extract_diseases(config, json_config)
@@ -47,8 +46,7 @@ def extract_node_config(json_config, node_id):
     return config
 
 
-def extract_overseer_config(json_config):
-    config = {}
+def extract_overseer_config(config, json_config):
     extract_overseer(config, json_config)
     extract_time_scaling_factor(config, json_config)
     extract_diseases(config, json_config)
@@ -56,8 +54,7 @@ def extract_overseer_config(json_config):
     return config
 
 
-def extract_runner_config(json_config):
-    config = {}
+def extract_runner_config(config, json_config):
     extract_overseer(config, json_config)
     extract_node_roles(config, json_config)
     return config

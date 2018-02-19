@@ -26,12 +26,12 @@ class Run:
     def get_script_folder(self):
         return os.path.dirname(os.path.realpath(sys.argv[0]))
 
-    def build_overseer_command_line(self):
+    def build_overseer_command_line(self, config_file):
         return "{} {} {}".format(self.get_python_interpreter(),
                                  os.path.join(self.get_script_folder(), OVERSEER_SCRIPT_NAME),
-                                 self.config[CONFIG_FILE])
+                                 config_file)
 
-    def build_simulation_node_command_lines(self):
+    def build_simulation_node_command_lines(self, config_file):
         node_command_lines = {}
         for node_id in self.config[NODES]:
             role = self.config[NODES][node_id]
@@ -48,7 +48,7 @@ class Run:
             node_command_line = "{} {} {} {}".format(self.get_python_interpreter(),
                                                      os.path.join(self.get_script_folder(), script_name),
                                                      node_id,
-                                                     self.config[CONFIG_FILE])
+                                                     config_file)
             # logging.debug("Adding simulation node command line: {}".format(node_command_line))
             node_command_lines[node_id] = node_command_line
         return node_command_lines
