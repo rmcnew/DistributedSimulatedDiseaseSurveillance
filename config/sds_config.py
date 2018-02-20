@@ -1,7 +1,7 @@
 # functions to parse command line options, read configuration file, and return config object to scripts
 import json
-import logging
 import os
+
 import requests
 
 from config.command_line_parser import parse_node_cmd_line, parse_overseer_cmd_line, parse_runner_cmd_line
@@ -39,16 +39,15 @@ def get_runner_config(role):
 
 
 def get_json_config(config, args_config_file):
-    print("args_config_file is: {}".format(args_config_file))
     if args_config_file.startswith(HTTPS):
-        logging.info("Getting config file from URL: {}".format(args_config_file))
+        print("Getting config file from URL: {}".format(args_config_file))
         config[CONFIG_FILE] = args_config_file
         response = requests.get(args_config_file)
         if response.status_code == 200:
             json_config = json.loads(response.text)
             return json_config
     else:
-        logging.info("Getting config file from file: {}".format(args_config_file))
+        print("Getting config file from file: {}".format(args_config_file))
         config[CONFIG_FILE] = os.path.realpath(args_config_file)
         with open(args_config_file) as config_file:
             json_config = json.load(config_file)
