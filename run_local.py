@@ -22,10 +22,10 @@ def main():
 
     run_local = RunLocal(config)
 
-    overseer_command_line = run_local.build_overseer_command_line(self.config[CONFIG_FILE])
+    overseer_command_line = run_local.build_overseer_command_line(run_local.config[CONFIG_FILE])
     # logging.debug("overseer command line is: {}".format(overseer_command_line))
 
-    simulation_node_command_lines = run_local.build_simulation_node_command_lines(self.config[CONFIG_FILE])
+    simulation_node_command_lines = run_local.build_simulation_node_command_lines(run_local.config[CONFIG_FILE])
     # logging.debug("simulation node command lines are: {}".format(simulation_node_command_lines))
 
     # start overseer

@@ -31,6 +31,13 @@ class Run:
                                  os.path.join(self.get_script_folder(), OVERSEER_SCRIPT_NAME),
                                  config_file)
 
+    def build_overseer_command_line_for_aws(self, config_url, log_post_url):
+        return "{} {} {} {} {}".format(self.get_python_interpreter(),
+                                 os.path.join(self.get_script_folder(), OVERSEER_SCRIPT_NAME),
+                                 config_url,
+                                 LOG_POST_URL_LONG,
+                                 log_post_url)
+
     def build_simulation_node_command_lines(self, config_file):
         node_command_lines = {}
         for node_id in self.config[NODES]:
@@ -50,6 +57,30 @@ class Run:
                                                      node_id,
                                                      config_file)
             # logging.debug("Adding simulation node command line: {}".format(node_command_line))
+            node_command_lines[node_id] = node_command_line
+        return node_command_lines
+
+    def build_simulation_node_command_lines_for_aws(self, config_url, log_post_urls):
+        node_command_lines = {}
+        for node_id in self.config[NODES]:
+            role = self.config[NODES][node_id]
+            script_name = None
+            if role == ELECTRONIC_MEDICAL_RECORD:
+                script_name = ELECTRONIC_MEDICAL_RECORD_SCRIPT_NAME
+            elif role == HEALTH_DISTRICT_SYSTEM:
+                script_name = HEALTH_DISTRICT_SYSTEM_SCRIPT_NAME
+            elif role == DISEASE_OUTBREAK_ANALYZER:
+                script_name = DISEASE_OUTBREAK_ANALYZER_SCRIPT_NAME
+            else:
+                raise TypeError("Unknown role {}! Cannot determine script to run!".format(role))
+
+            node_command_line = "{} {} {} {} {} {}".format(self.get_python_interpreter(),
+                                                     os.path.join(self.get_script_folder(), script_name),
+                                                     node_id,
+                                                     config_url,
+                                                     LOG_POST_URL_LONG,
+                                                     log_post_urls[node_id])
+            logging.debug("Adding simulation node command line: {}".format(node_command_line))
             node_command_lines[node_id] = node_command_line
         return node_command_lines
 

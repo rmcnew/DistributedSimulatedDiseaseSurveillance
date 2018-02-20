@@ -7,6 +7,7 @@ from shared.constants import *
 def parse_overseer_cmd_line():
     parser = argparse.ArgumentParser()
     parser.add_argument(CONFIG_FILE, help="the simulation configuration file in JSON format")
+    parser.add_argument(LOG_POST_URL_SHORT, LOG_POST_URL_LONG, action=store, help="log POST URL")
     args = parser.parse_args()
     return args
 
@@ -16,6 +17,7 @@ def parse_node_cmd_line():
     parser.add_argument(NODE_ID, help="the node_id to specify the role and parameters of "
                                       "this program as found in the config_file")
     parser.add_argument(CONFIG_FILE, help="the simulation configuration file in JSON format")
+    parser.add_argument(LOG_POST_URL_SHORT, LOG_POST_URL_LONG, action=store, help="log POST URL")
     args = parser.parse_args()
     return args
 
