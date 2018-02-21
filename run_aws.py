@@ -1,5 +1,4 @@
 # given a simulation configuration file and some AWS credentials via the command line, run a simulation using AWS EC2
-import time
 from multiprocessing import Process
 
 from aws.aws_helper import *
@@ -22,6 +21,10 @@ class RunAws(Run):
         logging.debug("Launching process with command_line: {}".format(command_line))
         self.processes[node_id] = Process(target=self.run_in_instance, args=(ec2_instance, command_line,), name=node_id)
         self.processes[node_id].start()
+
+    def close_ssh_connections(self):
+        for ec2_instance in self.ec2_instances:
+            ec2_instance.ssh_close()
 
 
 def main():
@@ -101,15 +104,19 @@ def main():
     simulation_node_command_lines = run_aws.build_simulation_node_command_lines_for_aws(config_url, log_post_urls)
     logging.debug("simulation node command lines are: {}".format(simulation_node_command_lines))
 
+    logging.info("======= WAITING FOR EC2 INSTANCES TO FINISH LAUNCHING =======")
+    logging.info("This could take a while . . .")
+    wait_until_instances_are_running(run_aws.ec2_instances)
+
     # run "git clone" on all instances to get the latest version of the LFSDS scripts and modules
     logging.info("======= DEPLOYING LIQUID FORTRESS SIMULATED DISEASE SURVEILLANCE =======")
-    time.sleep(5)
+    time.sleep(1)
     for ec2_instance in run_aws.ec2_instances:
         ec2_instance.run_command(GIT_CLONE_COMMAND)
 
     # start overseer script with config file URL and log POST URL
     logging.info("======= STARTING OVERSEER SCRIPT =======")
-    time.sleep(5)
+    time.sleep(1)
     run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_line)
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL
@@ -142,6 +149,13 @@ def main():
         logging.debug("Joining {}".format(node_id))
         process.join()
     logging.info("======= All simulation processes stopped.  Exiting . . . =======")
+
+    # close SSH connections
+    run_aws.close_ssh_connections()
+    time.sleep(2)
+
+    # shutdown EC2 instances
+    terminate_instances(run_aws.ec2_instances)
 
 
 if __name__ == "__main__":

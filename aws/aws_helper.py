@@ -4,6 +4,7 @@ import logging
 import os
 import socket
 import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -43,6 +44,26 @@ def start_instances(ec2_instance_list):
         instance_id_list.append(ec2_instance.instance_id)
     ec2 = boto3.client(EC2)
     ec2.start_instances(InstanceIds=instance_id_list)
+
+
+def wait_until_instances_are_running(ec2_instance_list):
+    instance_id_list = []
+    for ec2_instance in ec2_instance_list:
+        instance_id_list.append(ec2_instance.instance_id)
+    ec2 = boto3.client(EC2)
+    time.sleep(30)  # initial wait for instances to come up
+    not_ready = True
+    while not_ready:
+        not_ready = False
+        statuses = ec2.describe_instance_status(InstanceIds=instance_id_list)
+        for instance_status in statuses[INSTANCE_STATUSES]:
+            # logging.debug("Checking readiness of EC2 Instance: {}".format(instance_status))
+            if (instance_status[INSTANCE_STATUS][STATUS] != OK) or (instance_status[SYSTEM_STATUS][STATUS] != OK):
+                logging.info("EC2 Instance {} is NOT READY".format(instance_status[INSTANCE_ID]))
+                not_ready = True
+            else:
+                logging.info("EC2 Instance {} is Ready".format(instance_status[INSTANCE_ID]))
+        time.sleep(5)  # still not ready, wait a bit longer
 
 
 def stop_instances(ec2_instance_list):
@@ -91,7 +112,7 @@ def update_overseer_ip_address_in_config_file(config, overseer_ip_address, temp_
     temp_dir = tempfile.gettempdir()
     temp_path = Path(temp_dir) / temp_name
     logging.debug("Creating temp config file: {}".format(temp_path))
-    temp_handle = open(temp_path, WRITE)  
+    temp_handle = open(temp_path, WRITE)
     with open(config[CONFIG_FILE]) as config_file:
         json_config = json.load(config_file)
         json_config[OVERSEER][HOST] = str(overseer_ip_address)
@@ -104,4 +125,3 @@ def upload_and_rename_file_to_s3_bucket(bucket, source_file, s3_key):
     s3 = boto3.resource(S3)
     logging.debug("Uploading {} to bucket: {} with key: {}".format(source_file, bucket, s3_key))
     s3.Bucket(bucket).upload_file(str(source_file), s3_key)
-
