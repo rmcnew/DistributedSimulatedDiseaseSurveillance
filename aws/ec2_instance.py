@@ -1,4 +1,4 @@
-import time
+import logging
 from pathlib import Path
 
 import boto3
@@ -39,8 +39,6 @@ class Ec2Instance:
     def ssh_connect(self):
         try:
             if not self.ssh_succeeded:
-                time.sleep(SSH_TIMEOUT)
-                self.instance.wait_until_running(DryRun=False)
                 self.ssh_client.connect(hostname=self.instance.public_ip_address,
                                         username=UBUNTU,
                                         timeout=SSH_TIMEOUT,
@@ -58,6 +56,9 @@ class Ec2Instance:
                 self.ssh_connect()
             stdin, stdout, stderr = self.ssh_client.exec_command(command)
             ret_val = stdout.read()
+            ret_err = stderr.read()
+            logging.debug("stdout: {}".format(ret_val))
+            logging.debug("stderr: {}".format(ret_err))
             return ret_val
 
         except paramiko.AuthenticationException:

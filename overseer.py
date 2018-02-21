@@ -2,6 +2,7 @@ import json
 import logging
 import time
 from datetime import datetime
+from urllib.parse import parse_qs
 
 import requests
 import zmq
@@ -125,7 +126,7 @@ class Overseer:
         if LOG_POST_URL in self.config:
             logging.debug("POSTing log file: {} to s3 . . .".format(log_file))
             files = {FILE: open(log_file, RB)}
-            post = self.config[LOG_POST_URL]
+            post = parse_qs(self.config[LOG_POST_URL])
             reply = requests.post(post[URL], data=post[FIELDS], files=files)
             logging.debug("Received post_log_to_s3 reply: {}".format(reply))
 

@@ -113,8 +113,10 @@ def main():
     time.sleep(1)
     for ec2_instance in run_aws.ec2_instances:
         ec2_instance.run_command(GIT_CLONE_COMMAND)
+        time.sleep(2)
 
     # start overseer script with config file URL and log POST URL
+    time.sleep(5)
     logging.info("======= STARTING OVERSEER SCRIPT =======")
     time.sleep(1)
     run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_line)

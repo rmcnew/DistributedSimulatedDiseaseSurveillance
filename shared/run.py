@@ -32,8 +32,8 @@ class Run:
                                  config_file)
 
     def build_overseer_command_line_for_aws(self, config_url, log_post_url):
-        return "{} {} {} {} {}".format(self.get_python_interpreter(),
-                                       os.path.join(self.get_script_folder(), OVERSEER_SCRIPT_NAME),
+        return "{} {} {} {} {}".format(PYTHON,
+                                       os.path.join(LFSDS_DIR, OVERSEER_SCRIPT_NAME),
                                        config_url,
                                        LOG_POST_URL_ARG,
                                        log_post_url)
@@ -74,8 +74,8 @@ class Run:
             else:
                 raise TypeError("Unknown role {}! Cannot determine script to run!".format(role))
 
-            node_command_line = "{} {} {} {} {} {}".format(self.get_python_interpreter(),
-                                                           os.path.join(self.get_script_folder(), script_name),
+            node_command_line = "{} {} {} {} {} {}".format(PYTHON,
+                                                           os.path.join(LFSDS_DIR, script_name),
                                                            node_id,
                                                            config_url,
                                                            LOG_POST_URL_ARG,
