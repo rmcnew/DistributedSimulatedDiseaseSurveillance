@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 import boto3
@@ -17,6 +18,7 @@ class Ec2Instance:
         self.instance = Ec2Instance.ec2.Instance(instance_id)
         self.ssh_client = paramiko.SSHClient()
         self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+        self.ssh_succeeded = False  # wait a bit before attempting first SSH connection
 
     def start(self):
         self.instance.start()
@@ -35,11 +37,19 @@ class Ec2Instance:
 
     def run_command(self, command):
         try:
+            if not self.ssh_succeeded:
+                time.sleep(SSH_TIMEOUT)
             self.instance.wait_until_running()
-            self.ssh_client.connect(hostname=self.instance.public_ip_address, username=UBUNTU, pkey=Ec2Instance.key)
+            self.ssh_client.connect(hostname=self.instance.public_ip_address,
+                                    username=UBUNTU,
+                                    timeout=SSH_TIMEOUT,
+                                    auth_timeout=SSH_TIMEOUT,
+                                    banner_timeout=SSH_TIMEOUT,
+                                    pkey=Ec2Instance.key)
             stdin, stdout, stderr = self.ssh_client.exec_command(command)
             ret_val = stdout.read()
             self.ssh_client.close()
+            self.ssh_succeeded = True
             return ret_val
 
         except paramiko.AuthenticationException:

@@ -52,11 +52,6 @@ def main():
         run_aws.simulation_node_instances[node_id] = run_aws.ec2_instances[sim_node_index]
         sim_node_index = sim_node_index + 1
 
-    # run "git clone" on all instances to get the latest version of the LFSDS scripts and modules
-    logging.info("======= DEPLOYING LIQUID FORTRESS SIMULATED DISEASE SURVEILLANCE =======")
-    for ec2_instance in run_aws.ec2_instances:
-        ec2_instance.run_command(GIT_CLONE_COMMAND)
-
     # generate simulation folder name based on simulation config filename, hostname, PID, and start timestamp
     simulation_folder_name = generate_simulation_folder_name(config)
 
@@ -66,6 +61,7 @@ def main():
 
     # generate signed POST URLs for log files
     logging.info("======= GENERATING LOG POST URLs =======")
+    time.sleep(1)
     #   overseer log
     overseer_log_key = "{}{}".format(simulation_folder_prefix, OVERSEER_LOG)
     overseer_log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, overseer_log_key) 
@@ -78,6 +74,7 @@ def main():
 
     # get overseer EC2 instance IP address
     logging.info("======= UPDATING SIMULATION CONFIG FILE WITH OVERSEER IP ADDRESS =======")
+    time.sleep(1)
     overseer_ip_address = run_aws.overseer_instance.get_public_ip_address()
 
     # read in config file, update overseer IP address, and save updated config file to local temp location (e.g. /tmp)
@@ -85,15 +82,18 @@ def main():
 
     # upload updated temp config file to S3 simulation folder
     logging.info("======= UPLOADING SIMULATION CONFIG FILE TO S3 BUCKET =======")
+    time.sleep(1)
     config_file_key = "{}{}".format(simulation_folder_prefix, SIMULATION_CONFIG_JSON)
     upload_and_rename_file_to_s3_bucket(LFSDS_S3_BUCKET, temp_config_filename, config_file_key)
 
     # generate signed URL for config file
     logging.info("======= GENERATING SIGNED URL FOR SIMULATION CONFIG FILE =======")
+    time.sleep(1)
     config_url = generate_config_url(LFSDS_S3_BUCKET, config_file_key)
     
     # build overseer command line
     logging.info("======= BUILDING LAUNCHER COMMAND LINES =======")
+    time.sleep(1)
     overseer_command_line = run_aws.build_overseer_command_line_for_aws(config_url, overseer_log_post_url)
     logging.debug("overseer command line is: {}".format(overseer_command_line))
 
@@ -101,8 +101,15 @@ def main():
     simulation_node_command_lines = run_aws.build_simulation_node_command_lines_for_aws(config_url, log_post_urls)
     logging.debug("simulation node command lines are: {}".format(simulation_node_command_lines))
 
+    # run "git clone" on all instances to get the latest version of the LFSDS scripts and modules
+    logging.info("======= DEPLOYING LIQUID FORTRESS SIMULATED DISEASE SURVEILLANCE =======")
+    time.sleep(5)
+    for ec2_instance in run_aws.ec2_instances:
+        ec2_instance.run_command(GIT_CLONE_COMMAND)
+
     # start overseer script with config file URL and log POST URL
     logging.info("======= STARTING OVERSEER SCRIPT =======")
+    time.sleep(5)
     run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_line)
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL
