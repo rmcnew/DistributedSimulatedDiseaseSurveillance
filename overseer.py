@@ -3,6 +3,7 @@ import logging
 import time
 from datetime import datetime
 
+import requests
 import zmq
 
 from config.sds_config import get_overseer_config
@@ -120,6 +121,13 @@ class Overseer:
                 logging.error("*** No heartbeats from {} since {}!  {} may be down or bad network connection."
                               .format(node_id, last_heartbeat_timestamp, node_id))
 
+    def post_log_to_s3(self, log_file):
+        if LOG_POST_URL in self.config:
+            logging.debug("POSTing log file: {} to s3 . . .".format(log_file))
+            files = {FILE: open(log_file, RB)}
+            reply = requests.post(self.config[LOG_POST_URL], files=files)
+            logging.debug("Received post_log_to_s3 reply: {}".format(reply))
+
     def supervise_simulation(self):
         self.configure_poller()
         # publish "start_simulation" message to all nodes
@@ -152,8 +160,9 @@ class Overseer:
 def main():
     # get configuration and setup overseer listening
     config = get_overseer_config()
+    log_file = OVERSEER_LOG
     logging.basicConfig(format='%(message)s',
-                        filename="{}.log".format(config[ROLE]),
+                        filename=log_file,
                         level=logging.INFO, )
     logging.debug(config)
 
@@ -187,6 +196,9 @@ def main():
 
     # shutdown
     overseer.shutdown_zmq()
+
+    # post log to S3 URL if given
+    overseer.post_log_to_s3(log_file)
 
 
 if __name__ == "__main__":

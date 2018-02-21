@@ -35,6 +35,7 @@ class Ec2Instance:
 
     def run_command(self, command):
         try:
+            self.instance.wait_until_running()
             self.ssh_client.connect(hostname=self.instance.public_ip_address, username=UBUNTU, pkey=Ec2Instance.key)
             stdin, stdout, stderr = self.ssh_client.exec_command(command)
             ret_val = stdout.read()

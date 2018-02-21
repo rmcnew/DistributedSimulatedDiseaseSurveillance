@@ -200,8 +200,9 @@ class HealthDistrictSystem(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(HEALTH_DISTRICT_SYSTEM)
+    log_file = "{}-{}.log".format(config[ROLE], config[NODE_ID])
     logging.basicConfig(format='%(message)s',
-                        filename="{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                        filename=log_file,
                         level=logging.INFO)
     logging.debug(config)
 
@@ -230,6 +231,9 @@ def main():
 
     # run the simulation
     health_district_system.run_simulation()
+
+    # post log to S3 URL if given
+    health_district_system.post_log_to_s3(log_file)
 
 
 if __name__ == "__main__":

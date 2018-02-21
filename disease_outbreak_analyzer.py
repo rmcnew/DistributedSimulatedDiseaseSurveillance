@@ -153,8 +153,9 @@ class DiseaseOutbreakAnalyzer(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(DISEASE_OUTBREAK_ANALYZER)
+    log_file = "{}-{}.log".format(config[ROLE], config[NODE_ID])
     logging.basicConfig(format='%(message)s',
-                        filename="{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                        filename=log_file,
                         level=logging.INFO)
     logging.debug(config)
 
@@ -183,6 +184,9 @@ def main():
 
     # run the simulation
     disease_outbreak_analyzer.run_simulation()
+
+    # post log to S3 URL if given
+    disease_outbreak_analyzer.post_log_to_s3(log_file)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ import logging
 import socket
 from datetime import datetime
 
+import requests
 import zmq
 
 from shared.constants import *
@@ -127,6 +128,13 @@ class Node:
             reply = self.receive_from_overseer()
             self.last_heartbeat_sent = current_time
             logging.debug("Heartbeat response: {}".format(reply))
+
+    def post_log_to_s3(self, log_file):
+        if LOG_POST_URL in self.config:
+            logging.debug("POSTing log file: {} to s3 . . .".format(log_file))
+            files = {FILE: open(log_file, RB)}
+            reply = requests.post(self.config[LOG_POST_URL], files=files)
+            logging.debug("Received post_log_to_s3 reply: {}".format(reply))
 
     @staticmethod
     def get_ip_address():

@@ -12,6 +12,8 @@ from shared.constants import *
 def get_node_config(role):
     config = {}
     args = parse_node_cmd_line()
+    if args.log_post_url:
+        config[LOG_POST_URL] = args.log_post_url
     json_config = get_json_config(config, args.config_file)
     extract_node_config(config, json_config, args.node_id)
     if config[ROLE] != role:
@@ -23,6 +25,8 @@ def get_node_config(role):
 def get_overseer_config():
     config = {}
     args = parse_overseer_cmd_line()
+    if args.log_post_url:
+        config[LOG_POST_URL] = args.log_post_url
     json_config = get_json_config(config, args.config_file)
     extract_overseer_config(config, json_config)
     config[ROLE] = OVERSEER

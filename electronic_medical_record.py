@@ -169,8 +169,9 @@ class ElectronicMedicalRecord(Node):
 def main():
     # get configuration and setup overseer connection
     config = get_node_config(ELECTRONIC_MEDICAL_RECORD)
+    log_file = "{}-{}.log".format(config[ROLE], config[NODE_ID])
     logging.basicConfig(format='%(message)s',
-                        filename="{}-{}.log".format(config[ROLE], config[NODE_ID]),
+                        filename=log_file,
                         level=logging.INFO)
     logging.debug(config)
 
@@ -199,6 +200,9 @@ def main():
 
     # run the simulation
     electronic_medical_record.run_simulation()
+
+    # post log to S3 URL if given
+    electronic_medical_record.post_log_to_s3(log_file)
 
 
 if __name__ == "__main__":
