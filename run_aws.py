@@ -183,8 +183,8 @@ def main():
     # start overseer script with config file URL and log POST URL
     time.sleep(5)
     logging.info("======= STARTING OVERSEER SCRIPT =======")
-    time.sleep(1)
     run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_line)
+    time.sleep(5)
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL
     for sim_node_id, sim_node_command_line in simulation_node_command_lines.items():
@@ -195,6 +195,7 @@ def main():
         time.sleep(1)
 
     # wait until all child processes are started before creating zmq context
+    time.sleep(5)
     run_aws.connect_to_overseer()
 
     logging.info("====================================================================")
@@ -208,22 +209,20 @@ def main():
             break
 
     # upon Ctrl-C, send "stop_simulation" message to overseer
-    logging.info("\n======= Sending stop_simulation to Overseer =======")
+    logging.info("\n======= SENDING stop_simulation TO OVERSEER =======")
     run_aws.send_to_overseer(STOP_SIMULATION)
     reply = run_aws.receive_from_overseer()
     logging.debug("Overseer reply: {}".format(reply))
 
     # at stop_simulation, overseer and each simulation node sends logs using the respective log POST URL
+    logging.info("======= WAITING FOR CHILD THREADS TO COMPLETE =======")
+    time.sleep(5)
     for node_id, process in run_aws.processes.items():
         logging.debug("Joining {}".format(node_id))
         process.join()
-    logging.info("======= All simulation processes stopped.  Exiting . . . =======")
-
-    # close SSH connections
-    run_aws.close_ssh_connections()
-    time.sleep(2)
 
     # shutdown EC2 instances
+    logging.info("======= TERMINATING EC2 INSTANCES =======")
     terminate_instances(run_aws.ec2_instances)
 
 

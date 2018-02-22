@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from math import sin, tau
+from math import sin, pi
 from random import random
 
 import zmq
@@ -76,7 +76,7 @@ class ElectronicMedicalRecord(Node):
 
     def generate_disease_sine(self, min_probability, max_probability):
         difference = max_probability - min_probability
-        sine_probability = abs(sin((datetime.now().second / 60) * tau)) * difference + min_probability
+        sine_probability = abs(sin((datetime.now().second / 60) * 2 * pi)) * difference + min_probability
         if sine_probability < min_probability:
             sine_probability = min_probability
         elif sine_probability > max_probability:

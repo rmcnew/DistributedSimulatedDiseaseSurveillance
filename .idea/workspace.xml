@@ -3,17 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="df38edb3-c06f-486b-b349-3ad1f3fea7dd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/aws/ec2_instance.py" afterPath="$PROJECT_DIR$/aws/ec2_instance.py" />
-      <change beforePath="$PROJECT_DIR$/config/command_line_parser.py" afterPath="$PROJECT_DIR$/config/command_line_parser.py" />
-      <change beforePath="$PROJECT_DIR$/config/sds_config.py" afterPath="$PROJECT_DIR$/config/sds_config.py" />
-      <change beforePath="$PROJECT_DIR$/disease_outbreak_analyzer.py" afterPath="$PROJECT_DIR$/disease_outbreak_analyzer.py" />
       <change beforePath="$PROJECT_DIR$/electronic_medical_record.py" afterPath="$PROJECT_DIR$/electronic_medical_record.py" />
-      <change beforePath="$PROJECT_DIR$/health_district_system.py" afterPath="$PROJECT_DIR$/health_district_system.py" />
-      <change beforePath="$PROJECT_DIR$/overseer.py" afterPath="$PROJECT_DIR$/overseer.py" />
       <change beforePath="$PROJECT_DIR$/run_aws.py" afterPath="$PROJECT_DIR$/run_aws.py" />
       <change beforePath="$PROJECT_DIR$/shared/constants.py" afterPath="$PROJECT_DIR$/shared/constants.py" />
-      <change beforePath="$PROJECT_DIR$/shared/node.py" afterPath="$PROJECT_DIR$/shared/node.py" />
-      <change beforePath="$PROJECT_DIR$/shared/run.py" afterPath="$PROJECT_DIR$/shared/run.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -39,9 +31,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="711">
               <caret line="68" column="34" lean-forward="false" selection-start-line="68" selection-start-column="34" selection-end-line="68" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -59,8 +49,8 @@
       <file leaf-file-name="run_aws.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_aws.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="558">
-              <caret line="84" column="12" lean-forward="false" selection-start-line="84" selection-start-column="12" selection-end-line="84" selection-end-column="12" />
+            <state relative-caret-position="864">
+              <caret line="224" column="51" lean-forward="false" selection-start-line="224" selection-start-column="51" selection-end-line="224" selection-end-column="51" />
               <folding>
                 <element signature="e#118#153#0" expanded="true" />
               </folding>
@@ -73,9 +63,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="243">
               <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-              <folding>
-                <element signature="e#38#52#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -83,9 +71,21 @@
       <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="76" column="38" lean-forward="false" selection-start-line="76" selection-start-column="38" selection-end-line="76" selection-end-column="38" />
+            <state relative-caret-position="108">
+              <caret line="51" column="39" lean-forward="false" selection-start-line="51" selection-start-column="39" selection-end-line="51" selection-end-column="39" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="electronic_medical_record.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/electronic_medical_record.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1620">
+              <caret line="90" column="60" lean-forward="true" selection-start-line="90" selection-start-column="60" selection-end-line="90" selection-end-column="60" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -161,16 +161,16 @@
         <option value="$PROJECT_DIR$/config/json_config_extractor.py" />
         <option value="$PROJECT_DIR$/aws/aws_helper.py" />
         <option value="$PROJECT_DIR$/aws/ec2_instance.py" />
-        <option value="$PROJECT_DIR$/electronic_medical_record.py" />
         <option value="$PROJECT_DIR$/overseer.py" />
-        <option value="$PROJECT_DIR$/shared/constants.py" />
         <option value="$PROJECT_DIR$/config/command_line_parser.py" />
         <option value="$PROJECT_DIR$/config/sds_config.py" />
         <option value="$PROJECT_DIR$/shared/node.py" />
         <option value="$PROJECT_DIR$/disease_outbreak_analyzer.py" />
         <option value="$PROJECT_DIR$/health_district_system.py" />
         <option value="$PROJECT_DIR$/shared/run.py" />
+        <option value="$PROJECT_DIR$/shared/constants.py" />
         <option value="$PROJECT_DIR$/run_aws.py" />
+        <option value="$PROJECT_DIR$/electronic_medical_record.py" />
       </list>
     </option>
   </component>
@@ -575,7 +575,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519272906877</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Checkpoint:  Added EC2 security group rule to allow TCP connections from other simulation nodes; added command line parameter for simulation nodes to pass in EC2 instance public IP address since previous IP address detection only provided EC2 private IP addresses.">
+      <created>1519278693283</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1519278693283</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -659,7 +666,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Overseer messaging of registered node addresses working." />
     <MESSAGE value="'ready_to_start' messaging working" />
     <MESSAGE value="Checkpoint:  adding main loops to nodes" />
     <MESSAGE value="Checkpoint:  adding ZMQ pollers in node scripts" />
@@ -684,7 +690,8 @@
     <MESSAGE value="Checkpoint: run_aws works through starting up scripts on EC2 instances; scripts are not currently handling log post URL command line argument correctly." />
     <MESSAGE value="Checkpoint:  Git cloning works, but script startup fails;" />
     <MESSAGE value="Checkpoint:  More troubleshooting script launching; update AMI ID." />
-    <option name="LAST_COMMIT_MESSAGE" value="Checkpoint:  More troubleshooting script launching; update AMI ID." />
+    <MESSAGE value="Checkpoint:  Added EC2 security group rule to allow TCP connections from other simulation nodes; added command line parameter for simulation nodes to pass in EC2 instance public IP address since previous IP address detection only provided EC2 private IP addresses." />
+    <option name="LAST_COMMIT_MESSAGE" value="Checkpoint:  Added EC2 security group rule to allow TCP connections from other simulation nodes; added command line parameter for simulation nodes to pass in EC2 instance public IP address since previous IP address detection only provided EC2 private IP addresses." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -915,21 +922,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/aws/ec2_instance.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="711">
           <caret line="68" column="34" lean-forward="false" selection-start-line="68" selection-start-column="34" selection-end-line="68" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -953,14 +950,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2484">
           <caret line="148" column="27" lean-forward="true" selection-start-line="148" selection-start-column="27" selection-end-line="148" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/electronic_medical_record.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2970">
-          <caret line="174" column="43" lean-forward="false" selection-start-line="174" selection-start-column="43" selection-end-line="174" selection-end-column="43" />
           <folding />
         </state>
       </provider>
@@ -997,28 +986,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/shared/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="76" column="38" lean-forward="false" selection-start-line="76" selection-start-column="38" selection-end-line="76" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/shared/run.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="243">
           <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/electronic_medical_record.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1620">
+          <caret line="90" column="60" lean-forward="true" selection-start-line="90" selection-start-column="60" selection-end-line="90" selection-end-column="60" />
           <folding>
-            <element signature="e#38#52#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shared/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="51" column="39" lean-forward="false" selection-start-line="51" selection-start-column="39" selection-end-line="51" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run_aws.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="84" column="12" lean-forward="false" selection-start-line="84" selection-start-column="12" selection-end-line="84" selection-end-column="12" />
+        <state relative-caret-position="864">
+          <caret line="224" column="51" lean-forward="false" selection-start-line="224" selection-start-column="51" selection-end-line="224" selection-end-column="51" />
           <folding>
             <element signature="e#118#153#0" expanded="true" />
           </folding>
