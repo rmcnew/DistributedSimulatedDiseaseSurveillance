@@ -18,6 +18,7 @@ def parse_node_cmd_line():
                                       "this program as found in the config_file")
     parser.add_argument(CONFIG_FILE, help="the simulation configuration file in JSON format")
     parser.add_argument(LOG_POST_URL_ARG, help="log POST URL")
+    parser.add_argument(PUBLIC_IP_ADDRESS_ARG, help="the public IP address to use for AWS EC2 instances")
     args = parser.parse_args()
     return args
 

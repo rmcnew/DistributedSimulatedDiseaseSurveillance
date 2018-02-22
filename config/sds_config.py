@@ -14,6 +14,8 @@ def get_node_config(role):
     args = parse_node_cmd_line()
     if args.log_post_url:
         config[LOG_POST_URL] = args.log_post_url
+    if args.public_ip_address:
+        config[PUBLIC_IP_ADDRESS] = args.public_ip_address
     json_config = get_json_config(config, args.config_file)
     extract_node_config(config, json_config, args.node_id)
     if config[ROLE] != role:

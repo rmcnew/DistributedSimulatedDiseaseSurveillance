@@ -14,20 +14,81 @@ class RunAws(Run):
         self.overseer_instance = None
         self.simulation_node_instances = {}
 
-    def run_in_instance(self, ec2_instance, command_lines):
-        for command_line in command_lines:
-            ec2_instance.run_command(command_line)
+    def run_in_instance(self, ec2_instance, command_line):
+        ec2_instance.run_command(command_line)
 
-    def run_in_own_process_instance(self, node_id, ec2_instance, command_lines):
-        logging.debug("Launching process with command_lines: {}".format(command_lines))
+    def run_in_own_process_instance(self, node_id, ec2_instance, command_line):
+        logging.debug("Launching process with command_line: {}".format(command_line))
         self.processes[node_id] = Process(target=self.run_in_instance,
-                                          args=(ec2_instance, command_lines,),
+                                          args=(ec2_instance, command_line,),
                                           name=node_id)
         self.processes[node_id].start()
 
     def close_ssh_connections(self):
         for ec2_instance in self.ec2_instances:
             ec2_instance.ssh_close()
+
+    # def build_overseer_command_line_for_aws(self, config_url, log_post_url):
+    #     return "{} {} '{}' {} '{}'".format(PYTHON,
+    #                                    os.path.join(LFSDS_DIR, OVERSEER_SCRIPT_NAME),
+    #                                    config_url,
+    #                                    LOG_POST_URL_ARG,
+    #                                    log_post_url)
+
+    def build_overseer_command_line_for_aws(self, config_url, log_post_url):
+        return "{}; {} {} '{}'".format(CD_LFSDS_DIR,
+                                       PYTHON,
+                                       OVERSEER_SCRIPT_NAME,
+                                       config_url)
+
+    # def build_simulation_node_command_lines_for_aws(self, config_url, log_post_urls):
+    #     node_command_lines = {}
+    #     for node_id in self.config[NODES]:
+    #         role = self.config[NODES][node_id]
+    #         if role == ELECTRONIC_MEDICAL_RECORD:
+    #             script_name = ELECTRONIC_MEDICAL_RECORD_SCRIPT_NAME
+    #         elif role == HEALTH_DISTRICT_SYSTEM:
+    #             script_name = HEALTH_DISTRICT_SYSTEM_SCRIPT_NAME
+    #         elif role == DISEASE_OUTBREAK_ANALYZER:
+    #             script_name = DISEASE_OUTBREAK_ANALYZER_SCRIPT_NAME
+    #         else:
+    #             raise TypeError("Unknown role {}! Cannot determine script to run!".format(role))
+    #
+    #         node_command_line = "{} {} {} '{}' {} '{}'".format(PYTHON,
+    #                                                        os.path.join(LFSDS_DIR, script_name),
+    #                                                        node_id,
+    #                                                        config_url,
+    #                                                        LOG_POST_URL_ARG,
+    #                                                        log_post_urls[node_id])
+    #         logging.debug("Adding simulation node command line: {}".format(node_command_line))
+    #         node_command_lines[node_id] = node_command_line
+    #     return node_command_lines
+
+    def build_simulation_node_command_lines_for_aws(self, config_url, log_post_urls):
+        node_command_lines = {}
+        for node_id in self.config[NODES]:
+            role = self.config[NODES][node_id]
+            if role == ELECTRONIC_MEDICAL_RECORD:
+                script_name = ELECTRONIC_MEDICAL_RECORD_SCRIPT_NAME
+            elif role == HEALTH_DISTRICT_SYSTEM:
+                script_name = HEALTH_DISTRICT_SYSTEM_SCRIPT_NAME
+            elif role == DISEASE_OUTBREAK_ANALYZER:
+                script_name = DISEASE_OUTBREAK_ANALYZER_SCRIPT_NAME
+            else:
+                raise TypeError("Unknown role {}! Cannot determine script to run!".format(role))
+
+            node_command_line = "{}; {} {} {} '{}' {} {}" \
+                .format(CD_LFSDS_DIR,
+                        PYTHON,
+                        script_name,
+                        node_id,
+                        config_url,
+                        PUBLIC_IP_ADDRESS_ARG,
+                        self.simulation_node_instances[node_id].get_public_ip_address())
+
+            logging.debug("Adding simulation node command line: {}".format(node_command_line))
+            node_command_lines[node_id] = node_command_line
+        return node_command_lines
 
 
 def main():
@@ -44,14 +105,11 @@ def main():
     run_aws.ec2_instances = create_ec2_instances(len(config[NODES]) + 1)
 
     # start overseer EC2 instance
-    logging.info("======= STARTING OVERSEER EC2 INSTANCE =======")
+    logging.info("======= STARTING EC2 INSTANCES =======")
+    start_instances(run_aws.ec2_instances)
+
+    # match overseer to EC2 instance
     run_aws.overseer_instance = run_aws.ec2_instances[0]
-    run_aws.overseer_instance.start()
-
-    # start simulation node EC2 instances
-    logging.info("======= STARTING SIMULATION NODE EC2 INSTANCES =======")
-    start_instances(run_aws.ec2_instances[1:])
-
     # match simulation node_ids to EC2 instances
     sim_node_index = 1
     for node_id in run_aws.config[NODES]:
@@ -70,11 +128,11 @@ def main():
     time.sleep(1)
     #   overseer log
     overseer_log_key = "{}{}".format(simulation_folder_prefix, OVERSEER_LOG)
-    overseer_log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, overseer_log_key) 
+    overseer_log_post_url = generate_log_post_url(LFSDS_S3_BUCKET, overseer_log_key)
     #   simulation node logs
     log_post_urls = {}
     for node_id, role in config[NODES].items():
-        log_key = "{}{}-{}.log".format(simulation_folder_prefix, role, node_id) 
+        log_key = "{}{}-{}.log".format(simulation_folder_prefix, role, node_id)
         logging.debug("Generating log POST URL for key: {}".format(log_key))
         log_post_urls[node_id] = generate_log_post_url(LFSDS_S3_BUCKET, log_key)
 
@@ -98,16 +156,16 @@ def main():
     logging.info("======= GENERATING SIGNED URL FOR SIMULATION CONFIG FILE =======")
     time.sleep(1)
     config_url = generate_config_url(LFSDS_S3_BUCKET, config_file_key)
-    
+
     # build overseer command line
     logging.info("======= BUILDING LAUNCHER COMMAND LINES =======")
     time.sleep(1)
-    overseer_command_lines = [run_aws.build_overseer_command_line_for_aws(config_url, overseer_log_post_url)]
-    logging.debug("overseer command lines are: {}".format(overseer_command_lines))
+    overseer_command_line = run_aws.build_overseer_command_line_for_aws(config_url, overseer_log_post_url)
+    logging.debug("overseer command line is: {}".format(overseer_command_line))
 
     # build simulation node command lines
-    simulation_nodes_command_lines = run_aws.build_simulation_node_command_lines_for_aws(config_url, log_post_urls)
-    logging.debug("simulation nodes command lines are: {}".format(simulation_nodes_command_lines))
+    simulation_node_command_lines = run_aws.build_simulation_node_command_lines_for_aws(config_url, log_post_urls)
+    logging.debug("simulation nodes command lines are: {}".format(simulation_node_command_lines))
 
     logging.info("======= WAITING FOR EC2 INSTANCES TO FINISH LAUNCHING =======")
     logging.info("This could take a while . . .")
@@ -119,19 +177,21 @@ def main():
     for ec2_instance in run_aws.ec2_instances:
         ec2_instance.run_command(GIT_CLONE_COMMAND)
         time.sleep(2)
+        ec2_instance.ssh_close()
+        # Close the connection to avoid paramiko bug when passing ssh connection to child threads
 
     # start overseer script with config file URL and log POST URL
     time.sleep(5)
     logging.info("======= STARTING OVERSEER SCRIPT =======")
     time.sleep(1)
-    run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_lines)
+    run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_line)
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL
-    for sim_node_id, sim_node_command_lines in simulation_nodes_command_lines.items():
+    for sim_node_id, sim_node_command_line in simulation_node_command_lines.items():
         logging.info("======= STARTING SIMULATION NODE WITH node_id: {} =======".format(sim_node_id))
         run_aws.run_in_own_process_instance(sim_node_id,
                                             run_aws.simulation_node_instances[sim_node_id],
-                                            sim_node_command_lines)
+                                            sim_node_command_line)
         time.sleep(1)
 
     # wait until all child processes are started before creating zmq context

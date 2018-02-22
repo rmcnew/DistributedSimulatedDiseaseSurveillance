@@ -138,14 +138,16 @@ class Node:
             reply = requests.post(post[URL], data=post[FIELDS], files=files)
             logging.debug("Received post_log_to_s3 reply: {}".format(reply))
 
-    @staticmethod
-    def get_ip_address():
-        temp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            temp_socket.connect(('192.0.0.8', 1027))
-        except socket.error:
-            return None
-        return temp_socket.getsockname()[0]
+    def get_ip_address(self):
+        if PUBLIC_IP_ADDRESS in self.config:
+            return self.config[PUBLIC_IP_ADDRESS]
+        else:
+            temp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            try:
+                temp_socket.connect(('192.0.0.8', 1027))
+            except socket.error:
+                return None
+            return temp_socket.getsockname()[0]
 
     @staticmethod
     def archive_current_day(current_daily_disease_counts, previous_daily_disease_counts):

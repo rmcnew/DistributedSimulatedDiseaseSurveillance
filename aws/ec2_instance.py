@@ -18,7 +18,7 @@ class Ec2Instance:
         self.instance = Ec2Instance.ec2.Instance(instance_id)
         self.ssh_client = paramiko.SSHClient()
         self.ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-        self.ssh_succeeded = False  # wait a bit before attempting first SSH connection
+        self.ssh_connected = False
 
 
     def start(self):
@@ -38,21 +38,21 @@ class Ec2Instance:
 
     def ssh_connect(self):
         try:
-            if not self.ssh_succeeded:
+            if not self.ssh_connected:
                 self.ssh_client.connect(hostname=self.instance.public_ip_address,
                                         username=UBUNTU,
                                         timeout=SSH_TIMEOUT,
                                         auth_timeout=SSH_TIMEOUT,
                                         banner_timeout=SSH_TIMEOUT,
                                         pkey=Ec2Instance.key)
-                self.ssh_succeeded = True
+                self.ssh_connected = True
 
         except paramiko.AuthenticationException:
             print("AuthenticationException while connecting to {}".format(self.instance))
 
     def run_command(self, command):
         try:
-            if not self.ssh_succeeded:
+            if not self.ssh_connected:
                 self.ssh_connect()
             stdin, stdout, stderr = self.ssh_client.exec_command(command, timeout=None)
             ret_val = stdout.read()
@@ -66,6 +66,7 @@ class Ec2Instance:
 
     def ssh_close(self):
         self.ssh_client.close()
+        self.ssh_connected = False
 
     def console_output(self):
         return self.instance.console_output()

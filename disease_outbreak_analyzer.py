@@ -22,7 +22,7 @@ class DiseaseOutbreakAnalyzer(Node):
     # disease outbreak alerts to health_district_systems
     def setup_listeners(self):
         # create listener zmq sockets and save IP address and ports in config
-        my_ip_address = Node.get_ip_address()
+        my_ip_address = self.get_ip_address()
         self.disease_outbreak_alert_publisher_socket = self.context.socket(zmq.PUB)
         disease_outbreak_alert_publisher_port = \
             self.disease_outbreak_alert_publisher_socket.bind_to_random_port(TCP_RANDOM_PORT)
@@ -156,7 +156,7 @@ def main():
     log_file = "{}-{}.log".format(config[ROLE], config[NODE_ID])
     logging.basicConfig(format='%(message)s',
                         filename=log_file,
-                        level=logging.INFO)
+                        level=logging.DEBUG)
     logging.debug(config)
 
     disease_outbreak_analyzer = DiseaseOutbreakAnalyzer(config)

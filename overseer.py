@@ -165,7 +165,7 @@ def main():
     log_file = OVERSEER_LOG
     logging.basicConfig(format='%(message)s',
                         filename=log_file,
-                        level=logging.INFO, )
+                        level=logging.DEBUG)
     logging.debug(config)
 
     overseer = Overseer(config)
