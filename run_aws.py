@@ -1,4 +1,5 @@
 # given a simulation configuration file and some AWS credentials via the command line, run a simulation using AWS EC2
+import signal
 from multiprocessing import Process
 
 from aws.aws_helper import *
@@ -15,6 +16,7 @@ class RunAws(Run):
         self.simulation_node_instances = {}
 
     def run_in_instance(self, ec2_instance, command_line):
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         ec2_instance.run_command(command_line)
 
     def run_in_own_process_instance(self, node_id, ec2_instance, command_line):

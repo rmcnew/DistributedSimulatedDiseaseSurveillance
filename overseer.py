@@ -142,6 +142,7 @@ class Overseer:
                 sockets = dict(self.poller.poll(700))  # poll timeout in milliseconds
                 if self.reply_socket in sockets:
                     (node_id, message) = self.receive_from_nodes()
+                    logging.debug("Received message: {} from node: {}".format(message, node_id))
                     if message == STOP_SIMULATION:
                         self.send_to_node(self.reply_socket, node_id, ACKNOWLEDGED)
                         logging.info("Received remote shutdown request")
