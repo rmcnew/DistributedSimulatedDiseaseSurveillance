@@ -54,7 +54,7 @@ class Ec2Instance:
         try:
             if not self.ssh_succeeded:
                 self.ssh_connect()
-            stdin, stdout, stderr = self.ssh_client.exec_command(command)
+            stdin, stdout, stderr = self.ssh_client.exec_command(command, timeout=None)
             ret_val = stdout.read()
             ret_err = stderr.read()
             logging.debug("stdout: {}".format(ret_val))

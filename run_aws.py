@@ -14,12 +14,15 @@ class RunAws(Run):
         self.overseer_instance = None
         self.simulation_node_instances = {}
 
-    def run_in_instance(self, ec2_instance, command_line):
-        ec2_instance.run_command(command_line)
+    def run_in_instance(self, ec2_instance, command_lines):
+        for command_line in command_lines:
+            ec2_instance.run_command(command_line)
 
-    def run_in_own_process_instance(self, node_id, ec2_instance, command_line):
-        logging.debug("Launching process with command_line: {}".format(command_line))
-        self.processes[node_id] = Process(target=self.run_in_instance, args=(ec2_instance, command_line,), name=node_id)
+    def run_in_own_process_instance(self, node_id, ec2_instance, command_lines):
+        logging.debug("Launching process with command_lines: {}".format(command_lines))
+        self.processes[node_id] = Process(target=self.run_in_instance,
+                                          args=(ec2_instance, command_lines,),
+                                          name=node_id)
         self.processes[node_id].start()
 
     def close_ssh_connections(self):
@@ -81,7 +84,9 @@ def main():
     overseer_ip_address = run_aws.overseer_instance.get_public_ip_address()
 
     # read in config file, update overseer IP address, and save updated config file to local temp location (e.g. /tmp)
-    temp_config_filename = update_overseer_ip_address_in_config_file(config, overseer_ip_address, simulation_folder_name)
+    temp_config_filename = update_overseer_ip_address_in_config_file(config,
+                                                                     overseer_ip_address,
+                                                                     simulation_folder_name)
 
     # upload updated temp config file to S3 simulation folder
     logging.info("======= UPLOADING SIMULATION CONFIG FILE TO S3 BUCKET =======")
@@ -97,12 +102,12 @@ def main():
     # build overseer command line
     logging.info("======= BUILDING LAUNCHER COMMAND LINES =======")
     time.sleep(1)
-    overseer_command_line = run_aws.build_overseer_command_line_for_aws(config_url, overseer_log_post_url)
-    logging.debug("overseer command line is: {}".format(overseer_command_line))
+    overseer_command_lines = [run_aws.build_overseer_command_line_for_aws(config_url, overseer_log_post_url)]
+    logging.debug("overseer command lines are: {}".format(overseer_command_lines))
 
     # build simulation node command lines
-    simulation_node_command_lines = run_aws.build_simulation_node_command_lines_for_aws(config_url, log_post_urls)
-    logging.debug("simulation node command lines are: {}".format(simulation_node_command_lines))
+    simulation_nodes_command_lines = run_aws.build_simulation_node_command_lines_for_aws(config_url, log_post_urls)
+    logging.debug("simulation nodes command lines are: {}".format(simulation_nodes_command_lines))
 
     logging.info("======= WAITING FOR EC2 INSTANCES TO FINISH LAUNCHING =======")
     logging.info("This could take a while . . .")
@@ -119,12 +124,14 @@ def main():
     time.sleep(5)
     logging.info("======= STARTING OVERSEER SCRIPT =======")
     time.sleep(1)
-    run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_line)
+    run_aws.run_in_own_process_instance(OVERSEER, run_aws.overseer_instance, overseer_command_lines)
 
     # start simulation node scripts with config file URL, node_id, and respective log POST URL
-    for sim_node_id, sim_node_command_line in simulation_node_command_lines.items():
+    for sim_node_id, sim_node_command_lines in simulation_nodes_command_lines.items():
         logging.info("======= STARTING SIMULATION NODE WITH node_id: {} =======".format(sim_node_id))
-        run_aws.run_in_own_process(sim_node_id, sim_node_command_line)
+        run_aws.run_in_own_process_instance(sim_node_id,
+                                            run_aws.simulation_node_instances[sim_node_id],
+                                            sim_node_command_lines)
         time.sleep(1)
 
     # wait until all child processes are started before creating zmq context
