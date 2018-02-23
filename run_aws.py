@@ -142,6 +142,7 @@ def main():
     logging.info("======= UPDATING SIMULATION CONFIG FILE WITH OVERSEER IP ADDRESS =======")
     time.sleep(1)
     overseer_ip_address = run_aws.overseer_instance.get_public_ip_address()
+    run_aws.config[OVERSEER_HOST] = overseer_ip_address
 
     # read in config file, update overseer IP address, and save updated config file to local temp location (e.g. /tmp)
     temp_config_filename = update_overseer_ip_address_in_config_file(config,

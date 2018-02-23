@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="df38edb3-c06f-486b-b349-3ad1f3fea7dd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/overseer.py" afterPath="$PROJECT_DIR$/overseer.py" />
+      <change beforePath="$PROJECT_DIR$/run_aws.py" afterPath="$PROJECT_DIR$/run_aws.py" />
+      <change beforePath="$PROJECT_DIR$/shared/run.py" afterPath="$PROJECT_DIR$/shared/run.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,12 +15,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="overseer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="aws_helper.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-252">
+              <caret line="26" column="29" lean-forward="false" selection-start-line="26" selection-start-column="29" selection-end-line="26" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="overseer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/overseer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="621">
-              <caret line="148" column="44" lean-forward="true" selection-start-line="148" selection-start-column="44" selection-end-line="148" selection-end-column="44" />
-              <folding />
+            <state relative-caret-position="1953">
+              <caret line="135" column="56" lean-forward="true" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -27,8 +40,8 @@
       <file leaf-file-name="run_aws.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_aws.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="214" column="16" lean-forward="false" selection-start-line="214" selection-start-column="16" selection-end-line="214" selection-end-column="16" />
+            <state relative-caret-position="1728">
+              <caret line="144" column="55" lean-forward="false" selection-start-line="144" selection-start-column="55" selection-end-line="144" selection-end-column="55" />
               <folding>
                 <element signature="e#118#131#0" expanded="true" />
               </folding>
@@ -39,8 +52,8 @@
       <file leaf-file-name="run.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/run.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="74" column="8" lean-forward="false" selection-start-line="74" selection-start-column="8" selection-end-line="74" selection-end-column="8" />
+            <state relative-caret-position="513">
+              <caret line="69" column="50" lean-forward="true" selection-start-line="69" selection-start-column="50" selection-end-line="69" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -125,18 +138,18 @@
         <option value="$PROJECT_DIR$/unit_tests/run_aws_test.py" />
         <option value="$PROJECT_DIR$/run_aws_test.py" />
         <option value="$PROJECT_DIR$/config/json_config_extractor.py" />
-        <option value="$PROJECT_DIR$/aws/aws_helper.py" />
         <option value="$PROJECT_DIR$/aws/ec2_instance.py" />
         <option value="$PROJECT_DIR$/config/command_line_parser.py" />
         <option value="$PROJECT_DIR$/config/sds_config.py" />
         <option value="$PROJECT_DIR$/disease_outbreak_analyzer.py" />
         <option value="$PROJECT_DIR$/health_district_system.py" />
-        <option value="$PROJECT_DIR$/shared/run.py" />
         <option value="$PROJECT_DIR$/electronic_medical_record.py" />
-        <option value="$PROJECT_DIR$/run_aws.py" />
         <option value="$PROJECT_DIR$/shared/node.py" />
         <option value="$PROJECT_DIR$/shared/constants.py" />
         <option value="$PROJECT_DIR$/overseer.py" />
+        <option value="$PROJECT_DIR$/shared/run.py" />
+        <option value="$PROJECT_DIR$/run_aws.py" />
+        <option value="$PROJECT_DIR$/aws/aws_helper.py" />
       </list>
     </option>
   </component>
@@ -193,7 +206,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/disease_outbreak_analyzer_helper.py" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -583,7 +596,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519357799168</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Remove unnecessary ZMQ polling from Overseer; use loop sentinel instead of break for main simulation loop.">
+      <created>1519360047587</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1519360047587</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -667,7 +687,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Simple electronic_medical_record to health_district_system disease notifications working" />
     <MESSAGE value="health_district_system to disease_outbreak_analyzer disease count reporting works" />
     <MESSAGE value="Outbreak alert messaging works.  Refactor and clean up to remove storing data in electronic_medical_record; health_district_system handles that function.  Add some configuration to specify how often health_district_systems should report to disease_outbreak_analyzers." />
     <MESSAGE value="Start conversion / refactoring to object-oriented classes to improve organization and reduce redundant data structure passing" />
@@ -692,7 +711,8 @@
     <MESSAGE value="Test overseer delay" />
     <MESSAGE value="Fix overseer syntax error" />
     <MESSAGE value="Rollback overseer heartbeat changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rollback overseer heartbeat changes" />
+    <MESSAGE value="Remove unnecessary ZMQ polling from Overseer; use loop sentinel instead of break for main simulation loop." />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove unnecessary ZMQ polling from Overseer; use loop sentinel instead of break for main simulation loop." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -962,6 +982,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1323">
           <caret line="90" column="60" lean-forward="true" selection-start-line="90" selection-start-column="60" selection-end-line="90" selection-end-column="60" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -981,20 +1002,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+    <entry file="file://$PROJECT_DIR$/overseer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="21" column="38" lean-forward="true" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_aws.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="214" column="16" lean-forward="false" selection-start-line="214" selection-start-column="16" selection-end-line="214" selection-end-column="16" />
+        <state relative-caret-position="1953">
+          <caret line="135" column="56" lean-forward="true" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
           <folding>
-            <element signature="e#118#131#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1009,16 +1022,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shared/run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="74" column="8" lean-forward="false" selection-start-line="74" selection-start-column="8" selection-end-line="74" selection-end-column="8" />
+        <state relative-caret-position="513">
+          <caret line="69" column="50" lean-forward="true" selection-start-line="69" selection-start-column="50" selection-end-line="69" selection-end-column="50" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/overseer.py">
+    <entry file="file://$PROJECT_DIR$/run_aws.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="621">
-          <caret line="148" column="44" lean-forward="true" selection-start-line="148" selection-start-column="44" selection-end-line="148" selection-end-column="44" />
+        <state relative-caret-position="1728">
+          <caret line="144" column="55" lean-forward="false" selection-start-line="144" selection-start-column="55" selection-end-line="144" selection-end-column="55" />
+          <folding>
+            <element signature="e#118#131#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-252">
+          <caret line="26" column="29" lean-forward="false" selection-start-line="26" selection-start-column="29" selection-end-line="26" selection-end-column="29" />
           <folding />
         </state>
       </provider>

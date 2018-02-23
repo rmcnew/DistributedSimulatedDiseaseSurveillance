@@ -52,7 +52,6 @@ class Run:
             node_command_lines[node_id] = node_command_line
         return node_command_lines
 
-
     def run_as_subprocess(self, command_line):
         split_command_line = command_line.split(' ')
         signal.signal(signal.SIGINT, signal.SIG_IGN)
