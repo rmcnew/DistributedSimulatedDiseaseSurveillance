@@ -187,6 +187,8 @@ def main():
     logging.info("All nodes are registered.")
     logging.debug("registered node_addresses: {}".format(overseer.node_addresses))
 
+    time.sleep(5)
+
     # publish node_addresses to all nodes
     logging.info("Publishing node addresses . . .")
     overseer.publish_heartbeat()
