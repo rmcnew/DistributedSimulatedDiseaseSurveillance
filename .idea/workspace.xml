@@ -37,8 +37,8 @@
       <file leaf-file-name="overseer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/overseer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="189" column="16" lean-forward="false" selection-start-line="189" selection-start-column="16" selection-end-line="189" selection-end-column="16" />
+            <state relative-caret-position="471">
+              <caret line="160" column="21" lean-forward="false" selection-start-line="160" selection-start-column="21" selection-end-line="160" selection-end-column="21" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -564,7 +564,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519284471440</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Test overseer delay">
+      <created>1519356816071</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1519356816071</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -648,7 +655,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Checkpoint:  adding ZMQ pollers in node scripts" />
     <MESSAGE value="Simulation start bugs fixed.  Simulation stop logic in place.  Need to add disease simulation." />
     <MESSAGE value="Update virtualenv to Python 3.6" />
     <MESSAGE value="Simple electronic_medical_record to health_district_system disease notifications working" />
@@ -673,7 +679,8 @@
     <MESSAGE value="Checkpoint:  Added EC2 security group rule to allow TCP connections from other simulation nodes; added command line parameter for simulation nodes to pass in EC2 instance public IP address since previous IP address detection only provided EC2 private IP addresses." />
     <MESSAGE value="Use more conservative timing for run_aws; replace math.tau with math.pi * 2 since EC2 instance python version is 3.5 and does not have a definition for tau." />
     <MESSAGE value="Fix Ctrl-C for run_aws child threads using signal handler.  Add debug logging to determine why run_aws stop_simulation message is not triggering overseer stop." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix Ctrl-C for run_aws child threads using signal handler.  Add debug logging to determine why run_aws stop_simulation message is not triggering overseer stop." />
+    <MESSAGE value="Test overseer delay" />
+    <option name="LAST_COMMIT_MESSAGE" value="Test overseer delay" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1001,8 +1008,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/overseer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="189" column="16" lean-forward="false" selection-start-line="189" selection-start-column="16" selection-end-line="189" selection-end-column="16" />
+        <state relative-caret-position="471">
+          <caret line="160" column="21" lean-forward="false" selection-start-line="160" selection-start-column="21" selection-end-line="160" selection-end-column="21" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

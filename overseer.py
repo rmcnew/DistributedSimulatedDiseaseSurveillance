@@ -158,7 +158,7 @@ class Overseer:
                         self.node_heartbeats[node_id] = datetime.now()
                         logging.info("Heartbeat received from: {}".format(node_id))
                 self.check_node_heartbeats()
-                overseer.publish_heartbeat()
+                self.publish_heartbeat()
                 time.sleep(1)
             except KeyboardInterrupt:  # wait for Ctrl-C to exit main simulation run loop
                 break
