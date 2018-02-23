@@ -103,10 +103,6 @@ class Overseer:
         self.poller = zmq.Poller()
         self.poller.register(self.reply_socket, zmq.POLLIN)
 
-    def publish_heartbeat(self):
-        logging.info("Pub Heartbeat")
-        self.publish_socket.send_string(OVERSEER_HEARTBEAT)
-
     def publish_start_simulation(self):
         logging.info("Starting the simulation . . .")
         start_time = datetime.now()
@@ -158,7 +154,6 @@ class Overseer:
                         self.node_heartbeats[node_id] = datetime.now()
                         logging.info("Heartbeat received from: {}".format(node_id))
                 self.check_node_heartbeats()
-                self.publish_heartbeat()
                 time.sleep(1)
             except KeyboardInterrupt:  # wait for Ctrl-C to exit main simulation run loop
                 break
@@ -180,10 +175,8 @@ def main():
 
     # register all nodes
     logging.info("Waiting for nodes to register . . .")
-    overseer.publish_heartbeat()
     while not overseer.all_registrations_completed():
         overseer.handle_node_registration_request()
-        overseer.publish_heartbeat()
     logging.info("All nodes are registered.")
     logging.debug("registered node_addresses: {}".format(overseer.node_addresses))
 
@@ -191,14 +184,11 @@ def main():
 
     # publish node_addresses to all nodes
     logging.info("Publishing node addresses . . .")
-    overseer.publish_heartbeat()
     overseer.publish_node_addresses()
 
     # wait for all nodes to connect to peers and then send "Ready" message
     logging.info("Waiting for nodes to get ready . . .")
-    overseer.publish_heartbeat()
     while not overseer.all_nodes_ready():
-        overseer.publish_heartbeat()
         overseer.handle_node_ready_request()
     logging.info("All nodes are ready to start.")
 
@@ -207,9 +197,7 @@ def main():
 
     # wait for all nodes to deregister
     logging.info("Waiting for nodes to deregister . . .")
-    overseer.publish_heartbeat()
     while not overseer.all_deregistrations_completed():
-        overseer.publish_heartbeat()
         overseer.handle_node_deregistration_request()
     logging.info("All nodes are deregistered.  Shutting down . . .")
 

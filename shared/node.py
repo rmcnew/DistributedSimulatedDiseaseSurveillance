@@ -57,12 +57,7 @@ class Node:
                 return reply
 
     def receive_subscription_message(self):
-        ready = False
-        while not ready:
-            message = self.overseer_subscribe_socket.recv_string()
-            if message != OVERSEER_HEARTBEAT:
-                ready = True
-        return message
+        return self.overseer_subscribe_socket.recv_string()
 
     def register(self):
         logging.debug("{} registering with overseer".format(self.node_id))
