@@ -77,7 +77,7 @@ def main():
     run_aws = RunAws(config)
 
     # create EC2 instances for all the nodes needed plus the overseer
-    logging.info("======= CREATING EC2 INSTANCES =======")
+    logging.info("======= CREATING {} EC2 INSTANCES =======".format(len(config[NODES]) + 1))
     run_aws.ec2_instances = create_ec2_instances(len(config[NODES]) + 1)
 
     # start overseer EC2 instance

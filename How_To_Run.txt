@@ -108,4 +108,15 @@ region=us-east-1
 
 Replace "us-east-1" with your default AWS region if needed.
 
-Your AWS configuration files will be queried by boto3 to use S3 and EC2 to run
+Your AWS configuration files will be queried by boto3 to use S3 and EC2 to run.
+
+You will also need to create a RSA private key pair that will be use for SSH authentication to run commands on EC2 instances.
+
+In EC2, you will need to configure an Amazon Machine Image (AMI) that includes Python 3 and the required Python dependency libraries found in "requirements.txt".
+
+Make sure that the Security Group used for EC2 instances allows for all TCP traffic from any address.
+This is needed to allow the simulation nodes to freely communicate.  Ideally, a virtual personal cloud (VPC) could be used,
+but LFSDS currently does not implement such a configuration.
+
+You will also need to specify a S3 bucket that will be used to store the simulation configuration file for a running
+simulation and that will receive overseer and simulation node log files after the simulation is stopped.

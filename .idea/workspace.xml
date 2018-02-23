@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="df38edb3-c06f-486b-b349-3ad1f3fea7dd" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/simulation_configs/homework2_config.json" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/disease_outbreak_analyzer.py" afterPath="$PROJECT_DIR$/disease_outbreak_analyzer.py" />
-      <change beforePath="$PROJECT_DIR$/electronic_medical_record.py" afterPath="$PROJECT_DIR$/electronic_medical_record.py" />
-      <change beforePath="$PROJECT_DIR$/health_district_system.py" afterPath="$PROJECT_DIR$/health_district_system.py" />
-      <change beforePath="$PROJECT_DIR$/overseer.py" afterPath="$PROJECT_DIR$/overseer.py" />
+      <change beforePath="$PROJECT_DIR$/How_To_Run.txt" afterPath="$PROJECT_DIR$/How_To_Run.txt" />
       <change beforePath="$PROJECT_DIR$/run_aws.py" afterPath="$PROJECT_DIR$/run_aws.py" />
-      <change beforePath="$PROJECT_DIR$/shared/node.py" afterPath="$PROJECT_DIR$/shared/node.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,7 +19,7 @@
       <file leaf-file-name="aws_helper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
+            <state relative-caret-position="1890">
               <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
               <folding>
                 <element signature="e#16#27#0" expanded="true" />
@@ -34,8 +31,8 @@
       <file leaf-file-name="run_aws.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_aws.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1593">
-              <caret line="73" column="42" lean-forward="false" selection-start-line="73" selection-start-column="42" selection-end-line="73" selection-end-column="42" />
+            <state relative-caret-position="315">
+              <caret line="80" column="72" lean-forward="true" selection-start-line="80" selection-start-column="72" selection-end-line="80" selection-end-column="72" />
               <folding>
                 <element signature="e#118#131#0" expanded="true" />
               </folding>
@@ -43,10 +40,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="health_district_system.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="homework2_config.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/simulation_configs/homework2_config.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="health_district_system.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/health_district_system.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
+            <state relative-caret-position="729">
               <caret line="205" column="42" lean-forward="false" selection-start-line="205" selection-start-column="42" selection-end-line="205" selection-end-column="42" />
               <folding />
             </state>
@@ -68,9 +75,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="171">
               <caret line="126" column="55" lean-forward="false" selection-start-line="126" selection-start-column="55" selection-end-line="126" selection-end-column="55" />
-              <folding>
-                <element signature="e#117#128#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -135,7 +140,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/disease_outbreak_analyzer_helper.py" />
         <option value="$PROJECT_DIR$/node_helper.py" />
         <option value="$PROJECT_DIR$/test_config.json" />
         <option value="$PROJECT_DIR$/test2_config.json" />
@@ -168,7 +172,6 @@
         <option value="$PROJECT_DIR$/integration_tests/plague.json" />
         <option value="$PROJECT_DIR$/simulation_configs/utah.json" />
         <option value="$PROJECT_DIR$/unit_tests/s3_test.py" />
-        <option value="$PROJECT_DIR$/How_To_Run.txt" />
         <option value="$PROJECT_DIR$/aws/overseer_aws_instance.py" />
         <option value="$PROJECT_DIR$/aws/aws_instance.py" />
         <option value="$PROJECT_DIR$/unit_tests/run_aws_test.py" />
@@ -184,8 +187,10 @@
         <option value="$PROJECT_DIR$/shared/node.py" />
         <option value="$PROJECT_DIR$/disease_outbreak_analyzer.py" />
         <option value="$PROJECT_DIR$/electronic_medical_record.py" />
-        <option value="$PROJECT_DIR$/run_aws.py" />
         <option value="$PROJECT_DIR$/health_district_system.py" />
+        <option value="$PROJECT_DIR$/run_aws.py" />
+        <option value="$PROJECT_DIR$/How_To_Run.txt" />
+        <option value="$PROJECT_DIR$/simulation_configs/homework2_config.json" />
       </list>
     </option>
   </component>
@@ -232,6 +237,11 @@
               <item name="LiquidFortressSimulatedDiseaseSurveillance" type="b2602c69:ProjectViewProjectNode" />
               <item name="LiquidFortressSimulatedDiseaseSurveillance" type="462c0819:PsiDirectoryNode" />
               <item name="shared" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LiquidFortressSimulatedDiseaseSurveillance" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LiquidFortressSimulatedDiseaseSurveillance" type="462c0819:PsiDirectoryNode" />
+              <item name="simulation_configs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -667,7 +677,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519369345210</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Log posting to S3 working.  Update logging configuration to INFO for assignment turn-in.">
+      <created>1519370252019</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1519370252019</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -751,7 +768,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Refactored to object-oriented structure" />
     <MESSAGE value="Replace magic strings with &quot;constants&quot; throughout the code base. Start adding unit tests and integration tests." />
     <MESSAGE value="1) Clean up output: set default log level to INFO. Add configuration to handle logging to files.  2) Add sine disease generation to electronic_medical_record." />
     <MESSAGE value="Add unit tests; tests that use ZeroMQ will be performed as part of integration tests that will be added next." />
@@ -776,7 +792,8 @@
     <MESSAGE value="Clean shutdown working :)" />
     <MESSAGE value="Test log posting" />
     <MESSAGE value="Changes to log posting based on some testing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes to log posting based on some testing" />
+    <MESSAGE value="Log posting to S3 working.  Update logging configuration to INFO for assignment turn-in." />
+    <option name="LAST_COMMIT_MESSAGE" value="Log posting to S3 working.  Update logging configuration to INFO for assignment turn-in." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -786,13 +803,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/electronic_medical_record.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/overseer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
@@ -978,13 +988,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/aws/aws_instance.py" />
-    <entry file="file://$PROJECT_DIR$/How_To_Run.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="805">
-          <caret line="110" column="54" lean-forward="false" selection-start-line="110" selection-start-column="54" selection-end-line="110" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/unit_tests/run_aws_test.py" />
     <entry file="file://$PROJECT_DIR$/integration_tests/minimal.json">
       <provider selected="true" editor-type-id="text-editor">
@@ -1042,19 +1045,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="531">
           <caret line="163" column="42" lean-forward="false" selection-start-line="163" selection-start-column="42" selection-end-line="163" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
-          <folding>
-            <element signature="e#16#27#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1078,9 +1069,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="126" column="55" lean-forward="false" selection-start-line="126" selection-start-column="55" selection-end-line="126" selection-end-column="55" />
-          <folding>
-            <element signature="e#117#128#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1100,20 +1089,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/health_district_system.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="729">
+          <caret line="205" column="42" lean-forward="false" selection-start-line="205" selection-start-column="42" selection-end-line="205" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/How_To_Run.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="859">
+          <caret line="121" column="104" lean-forward="false" selection-start-line="121" selection-start-column="104" selection-end-line="121" selection-end-column="104" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1890">
+          <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+          <folding>
+            <element signature="e#16#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/run_aws.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1593">
-          <caret line="73" column="42" lean-forward="false" selection-start-line="73" selection-start-column="42" selection-end-line="73" selection-end-column="42" />
+        <state relative-caret-position="315">
+          <caret line="80" column="72" lean-forward="true" selection-start-line="80" selection-start-column="72" selection-end-line="80" selection-end-column="72" />
           <folding>
             <element signature="e#118#131#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/health_district_system.py">
+    <entry file="file://$PROJECT_DIR$/simulation_configs/homework2_config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="205" column="42" lean-forward="false" selection-start-line="205" selection-start-column="42" selection-end-line="205" selection-end-column="42" />
+        <state relative-caret-position="504">
+          <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
           <folding />
         </state>
       </provider>

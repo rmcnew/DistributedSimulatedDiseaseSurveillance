@@ -1,0 +1,162 @@
+{
+  "overseer": {
+    "host": "192.168.1.5",
+    "reply_port": 9000,
+    "publish_port": 9090
+  },
+  "time_scaling_factor": 1800,
+  "diseases": [
+    "influenza",
+    "chicken_pox",
+    "measles"
+  ],
+  "nodes": {
+    "Seattle": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Washington"
+      ]
+    },
+    "Tacoma": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Washington"
+      ]
+    },
+    "Salt_Lake_City": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Utah"
+      ]
+    },
+    "Ogden": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Utah"
+      ]
+    },
+    "Houston": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Texas"
+      ]
+    },
+    "Dallas": {
+      "role": "electronic_medical_record",
+      "role_parameters": {
+        "outbreak_daily_query_frequency": 4,
+        "disease_generation": "random",
+        "disease_generation_parameters": {
+          "probability": 0.05
+        }
+      },
+      "connections": [
+        "Texas"
+      ]
+    },
+    "Washington": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 2
+      },
+      "connections": [
+        "Influenza_Detector",
+        "Chicken_Pox_Detector",
+        "Measles_Detector"
+      ]
+    },
+    "Utah": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 2
+      },
+      "connections": [
+        "Influenza_Detector",
+        "Chicken_Pox_Detector",
+        "Measles_Detector"
+      ]
+    },
+    "Texas": {
+      "role": "health_district_system",
+      "role_parameters": {
+        "daily_count_send_frequency": 2
+      },
+      "connections": [
+        "Influenza_Detector",
+        "Chicken_Pox_Detector",
+        "Measles_Detector"
+      ]
+    },
+    "Influenza_Detector": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "influenza",
+        "daily_outbreak_threshold": 50
+      },
+      "connections": [
+        "Washington",
+        "Utah",
+        "Texas"
+      ]
+    },
+    "Chicken_Pox_Detector": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "chicken_pox",
+        "daily_outbreak_threshold": 200
+      },
+      "connections": [
+        "Washington",
+        "Utah",
+        "Texas"
+      ]
+    },
+    "Measles_Detector": {
+      "role": "disease_outbreak_analyzer",
+      "role_parameters": {
+        "disease": "measles",
+        "daily_outbreak_threshold": 200
+      },
+      "connections": [
+        "Washington",
+        "Utah",
+        "Texas"
+      ]
+    }
+  }
+}
