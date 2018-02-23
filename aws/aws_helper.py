@@ -7,6 +7,7 @@ import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlencode
 
 import boto3
 
@@ -102,8 +103,7 @@ def generate_log_post_url(bucket, key):
     s3 = boto3.client(S3)
     # Note that the URL will expire in 1 hour based on default settings
     result = s3.generate_presigned_post(bucket, key)
-    return result
-    # return urlencode(result)
+    return urlencode(result)
 
 
 def generate_config_url(bucket, key):

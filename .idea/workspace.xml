@@ -4,8 +4,6 @@
     <list default="true" id="df38edb3-c06f-486b-b349-3ad1f3fea7dd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/aws/aws_helper.py" afterPath="$PROJECT_DIR$/aws/aws_helper.py" />
-      <change beforePath="$PROJECT_DIR$/run_aws.py" afterPath="$PROJECT_DIR$/run_aws.py" />
-      <change beforePath="$PROJECT_DIR$/shared/constants.py" afterPath="$PROJECT_DIR$/shared/constants.py" />
       <change beforePath="$PROJECT_DIR$/shared/node.py" afterPath="$PROJECT_DIR$/shared/node.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,12 +15,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="aws_helper.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="aws_helper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="106" column="6" lean-forward="false" selection-start-line="106" selection-start-column="6" selection-end-line="106" selection-end-column="6" />
-              <folding />
+            <state relative-caret-position="522">
+              <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+              <folding>
+                <element signature="e#16#27#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -39,12 +39,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_aws.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="run_aws.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_aws.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="729">
+              <caret line="202" column="5" lean-forward="false" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
+              <folding>
+                <element signature="e#118#131#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,9 +64,11 @@
       <file leaf-file-name="node.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/node.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="621">
-              <caret line="144" column="74" lean-forward="true" selection-start-line="144" selection-start-column="74" selection-end-line="144" selection-end-column="74" />
-              <folding />
+            <state relative-caret-position="90">
+              <caret line="107" column="33" lean-forward="true" selection-start-line="107" selection-start-column="33" selection-end-line="107" selection-end-column="33" />
+              <folding>
+                <element signature="e#117#128#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -167,8 +171,8 @@
         <option value="$PROJECT_DIR$/overseer.py" />
         <option value="$PROJECT_DIR$/shared/run.py" />
         <option value="$PROJECT_DIR$/run_aws.py" />
-        <option value="$PROJECT_DIR$/aws/aws_helper.py" />
         <option value="$PROJECT_DIR$/shared/constants.py" />
+        <option value="$PROJECT_DIR$/aws/aws_helper.py" />
         <option value="$PROJECT_DIR$/shared/node.py" />
       </list>
     </option>
@@ -630,7 +634,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519362286546</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Clean shutdown working :)">
+      <created>1519364090910</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1519364090910</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1025,14 +1036,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_aws.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/command_line_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
@@ -1057,19 +1060,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/shared/node.py">
+    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="621">
-          <caret line="144" column="74" lean-forward="true" selection-start-line="144" selection-start-column="74" selection-end-line="144" selection-end-column="74" />
-          <folding />
+        <state relative-caret-position="522">
+          <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+          <folding>
+            <element signature="e#16#27#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+    <entry file="file://$PROJECT_DIR$/shared/node.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="106" column="6" lean-forward="false" selection-start-line="106" selection-start-column="6" selection-end-line="106" selection-end-column="6" />
-          <folding />
+        <state relative-caret-position="90">
+          <caret line="107" column="33" lean-forward="true" selection-start-line="107" selection-start-column="33" selection-end-line="107" selection-end-column="33" />
+          <folding>
+            <element signature="e#117#128#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_aws.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="729">
+          <caret line="202" column="5" lean-forward="false" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
+          <folding>
+            <element signature="e#118#131#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
