@@ -3,7 +3,6 @@ import json
 import logging
 import socket
 from datetime import datetime
-from urllib.parse import parse_qs
 
 import requests
 import zmq
@@ -132,8 +131,9 @@ class Node:
     def post_log_to_s3(self, log_file):
         if LOG_POST_URL in self.config:
             logging.debug("POSTing log file: {} to s3 . . .".format(log_file))
-            files = {FILE: open(log_file, RB)}
-            post = parse_qs(self.config[LOG_POST_URL])
+            slurped_log_file = open(log_file, R).read().replace('\n', ' ')
+            files = {log_file: slurped_log_file}
+            post = dict(self.config[LOG_POST_URL])
             reply = requests.post(post[URL], data=post[FIELDS], files=files)
             logging.debug("Received post_log_to_s3 reply: {}".format(reply))
 
