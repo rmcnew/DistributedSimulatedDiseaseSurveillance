@@ -49,6 +49,7 @@ def start_instances(ec2_instance_list):
 
 def wait_until_instances_are_running(ec2_instance_list):
     instance_id_list = []
+    counter = 0
     for ec2_instance in ec2_instance_list:
         instance_id_list.append(ec2_instance.instance_id)
     ec2 = boto3.client(EC2)
@@ -57,6 +58,7 @@ def wait_until_instances_are_running(ec2_instance_list):
     while not_ready:
         not_ready = False
         statuses = ec2.describe_instance_status(InstanceIds=instance_id_list)
+        logging.info("============================================{}".format(counter))
         for instance_status in statuses[INSTANCE_STATUSES]:
             # logging.debug("Checking readiness of EC2 Instance: {}".format(instance_status))
             if (instance_status[INSTANCE_STATUS][STATUS] != OK) or (instance_status[SYSTEM_STATUS][STATUS] != OK):
@@ -64,6 +66,7 @@ def wait_until_instances_are_running(ec2_instance_list):
                 not_ready = True
             else:
                 logging.info("EC2 Instance {} is Ready".format(instance_status[INSTANCE_ID]))
+        counter = counter + 1
         time.sleep(5)  # still not ready, wait a bit longer
 
 

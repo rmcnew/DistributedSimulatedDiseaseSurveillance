@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="df38edb3-c06f-486b-b349-3ad1f3fea7dd" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/simulation_configs/homework2_config.json" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/How_To_Run.txt" afterPath="$PROJECT_DIR$/How_To_Run.txt" />
-      <change beforePath="$PROJECT_DIR$/run_aws.py" afterPath="$PROJECT_DIR$/run_aws.py" />
+      <change beforePath="$PROJECT_DIR$/aws/aws_helper.py" afterPath="$PROJECT_DIR$/aws/aws_helper.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,11 +14,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="aws_helper.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="aws_helper.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1890">
-              <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+            <state relative-caret-position="261">
+              <caret line="60" column="22" lean-forward="false" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="22" />
               <folding>
                 <element signature="e#16#27#0" expanded="true" />
               </folding>
@@ -31,16 +29,14 @@
       <file leaf-file-name="run_aws.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_aws.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="80" column="72" lean-forward="true" selection-start-line="80" selection-start-column="72" selection-end-line="80" selection-end-column="72" />
-              <folding>
-                <element signature="e#118#131#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1350">
+              <caret line="80" column="72" lean-forward="false" selection-start-line="80" selection-start-column="72" selection-end-line="80" selection-end-column="72" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="homework2_config.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="homework2_config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simulation_configs/homework2_config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="504">
@@ -53,7 +49,7 @@
       <file leaf-file-name="health_district_system.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/health_district_system.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="729">
+            <state relative-caret-position="3582">
               <caret line="205" column="42" lean-forward="false" selection-start-line="205" selection-start-column="42" selection-end-line="205" selection-end-column="42" />
               <folding />
             </state>
@@ -63,7 +59,7 @@
       <file leaf-file-name="run.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/run.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="513">
+            <state relative-caret-position="1080">
               <caret line="69" column="50" lean-forward="false" selection-start-line="69" selection-start-column="50" selection-end-line="69" selection-end-column="50" />
               <folding />
             </state>
@@ -73,7 +69,7 @@
       <file leaf-file-name="node.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/node.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
+            <state relative-caret-position="2088">
               <caret line="126" column="55" lean-forward="false" selection-start-line="126" selection-start-column="55" selection-end-line="126" selection-end-column="55" />
               <folding />
             </state>
@@ -83,7 +79,7 @@
       <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="117">
+            <state relative-caret-position="1440">
               <caret line="80" column="7" lean-forward="false" selection-start-line="80" selection-start-column="7" selection-end-line="80" selection-end-column="7" />
               <folding />
             </state>
@@ -93,7 +89,7 @@
       <file leaf-file-name="disease_outbreak_analyzer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/disease_outbreak_analyzer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="297">
+            <state relative-caret-position="2736">
               <caret line="158" column="42" lean-forward="false" selection-start-line="158" selection-start-column="42" selection-end-line="158" selection-end-column="42" />
               <folding />
             </state>
@@ -103,7 +99,7 @@
       <file leaf-file-name="electronic_medical_record.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/electronic_medical_record.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
+            <state relative-caret-position="2970">
               <caret line="174" column="42" lean-forward="false" selection-start-line="174" selection-start-column="42" selection-end-line="174" selection-end-column="42" />
               <folding />
             </state>
@@ -182,7 +178,6 @@
         <option value="$PROJECT_DIR$/config/sds_config.py" />
         <option value="$PROJECT_DIR$/shared/run.py" />
         <option value="$PROJECT_DIR$/shared/constants.py" />
-        <option value="$PROJECT_DIR$/aws/aws_helper.py" />
         <option value="$PROJECT_DIR$/overseer.py" />
         <option value="$PROJECT_DIR$/shared/node.py" />
         <option value="$PROJECT_DIR$/disease_outbreak_analyzer.py" />
@@ -191,6 +186,7 @@
         <option value="$PROJECT_DIR$/run_aws.py" />
         <option value="$PROJECT_DIR$/How_To_Run.txt" />
         <option value="$PROJECT_DIR$/simulation_configs/homework2_config.json" />
+        <option value="$PROJECT_DIR$/aws/aws_helper.py" />
       </list>
     </option>
   </component>
@@ -215,7 +211,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -247,7 +243,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -684,7 +680,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519370252019</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Add some logging.INFO level messaging.  Update How_To_Run.txt instructions.  Add another simulation configuration for Homework #2.">
+      <created>1519372399741</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1519372399741</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -726,13 +729,13 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24188481" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914045" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -768,7 +771,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Replace magic strings with &quot;constants&quot; throughout the code base. Start adding unit tests and integration tests." />
     <MESSAGE value="1) Clean up output: set default log level to INFO. Add configuration to handle logging to files.  2) Add sine disease generation to electronic_medical_record." />
     <MESSAGE value="Add unit tests; tests that use ZeroMQ will be performed as part of integration tests that will be added next." />
     <MESSAGE value="Local simulation runner script (run_local.py) works.  Simplified command line parsing and logging configuration:  overseer and nodes log to files by default.  Added missing configuration values to homework1_config.json." />
@@ -793,7 +795,8 @@
     <MESSAGE value="Test log posting" />
     <MESSAGE value="Changes to log posting based on some testing" />
     <MESSAGE value="Log posting to S3 working.  Update logging configuration to INFO for assignment turn-in." />
-    <option name="LAST_COMMIT_MESSAGE" value="Log posting to S3 working.  Update logging configuration to INFO for assignment turn-in." />
+    <MESSAGE value="Add some logging.INFO level messaging.  Update How_To_Run.txt instructions.  Add another simulation configuration for Homework #2." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add some logging.INFO level messaging.  Update How_To_Run.txt instructions.  Add another simulation configuration for Homework #2." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1019,7 +1022,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shared/run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
+        <state relative-caret-position="1080">
           <caret line="69" column="50" lean-forward="false" selection-start-line="69" selection-start-column="50" selection-end-line="69" selection-end-column="50" />
           <folding />
         </state>
@@ -1029,7 +1032,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
           <caret line="20" column="103" lean-forward="false" selection-start-line="20" selection-start-column="103" selection-end-line="20" selection-end-column="103" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1037,7 +1039,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="17" column="58" lean-forward="false" selection-start-line="17" selection-start-column="58" selection-end-line="17" selection-end-column="58" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1045,7 +1046,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="531">
           <caret line="163" column="42" lean-forward="false" selection-start-line="163" selection-start-column="42" selection-end-line="163" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1053,13 +1053,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="63">
           <caret line="49" column="38" lean-forward="false" selection-start-line="49" selection-start-column="38" selection-end-line="49" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/shared/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
+        <state relative-caret-position="1440">
           <caret line="80" column="7" lean-forward="false" selection-start-line="80" selection-start-column="7" selection-end-line="80" selection-end-column="7" />
           <folding />
         </state>
@@ -1067,7 +1066,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shared/node.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
+        <state relative-caret-position="2088">
           <caret line="126" column="55" lean-forward="false" selection-start-line="126" selection-start-column="55" selection-end-line="126" selection-end-column="55" />
           <folding />
         </state>
@@ -1075,7 +1074,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/disease_outbreak_analyzer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
+        <state relative-caret-position="2736">
           <caret line="158" column="42" lean-forward="false" selection-start-line="158" selection-start-column="42" selection-end-line="158" selection-end-column="42" />
           <folding />
         </state>
@@ -1083,7 +1082,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/electronic_medical_record.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
+        <state relative-caret-position="2970">
           <caret line="174" column="42" lean-forward="false" selection-start-line="174" selection-start-column="42" selection-end-line="174" selection-end-column="42" />
           <folding />
         </state>
@@ -1091,7 +1090,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/health_district_system.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="729">
+        <state relative-caret-position="3582">
           <caret line="205" column="42" lean-forward="false" selection-start-line="205" selection-start-column="42" selection-end-line="205" selection-end-column="42" />
           <folding />
         </state>
@@ -1101,27 +1100,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="859">
           <caret line="121" column="104" lean-forward="false" selection-start-line="121" selection-start-column="104" selection-end-line="121" selection-end-column="104" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1890">
-          <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
-          <folding>
-            <element signature="e#16#27#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run_aws.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="80" column="72" lean-forward="true" selection-start-line="80" selection-start-column="72" selection-end-line="80" selection-end-column="72" />
-          <folding>
-            <element signature="e#118#131#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1350">
+          <caret line="80" column="72" lean-forward="false" selection-start-line="80" selection-start-column="72" selection-end-line="80" selection-end-column="72" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1130,6 +1116,16 @@
         <state relative-caret-position="504">
           <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="60" column="22" lean-forward="false" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="22" />
+          <folding>
+            <element signature="e#16#27#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
