@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="df38edb3-c06f-486b-b349-3ad1f3fea7dd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/aws/aws_helper.py" afterPath="$PROJECT_DIR$/aws/aws_helper.py" />
       <change beforePath="$PROJECT_DIR$/shared/node.py" afterPath="$PROJECT_DIR$/shared/node.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,9 +19,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="522">
               <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
-              <folding>
-                <element signature="e#16#27#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -43,7 +40,7 @@
         <entry file="file://$PROJECT_DIR$/run_aws.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="729">
-              <caret line="202" column="5" lean-forward="false" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
+              <caret line="202" column="4" lean-forward="false" selection-start-line="202" selection-start-column="4" selection-end-line="202" selection-end-column="4" />
               <folding>
                 <element signature="e#118#131#0" expanded="true" />
               </folding>
@@ -64,8 +61,8 @@
       <file leaf-file-name="node.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/node.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="107" column="33" lean-forward="true" selection-start-line="107" selection-start-column="33" selection-end-line="107" selection-end-column="33" />
+            <state relative-caret-position="630">
+              <caret line="138" column="50" lean-forward="false" selection-start-line="138" selection-start-column="50" selection-end-line="138" selection-end-column="50" />
               <folding>
                 <element signature="e#117#128#0" expanded="true" />
               </folding>
@@ -76,7 +73,7 @@
       <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shared/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="603">
+            <state relative-caret-position="117">
               <caret line="80" column="7" lean-forward="false" selection-start-line="80" selection-start-column="7" selection-end-line="80" selection-end-column="7" />
               <folding />
             </state>
@@ -170,10 +167,10 @@
         <option value="$PROJECT_DIR$/electronic_medical_record.py" />
         <option value="$PROJECT_DIR$/overseer.py" />
         <option value="$PROJECT_DIR$/shared/run.py" />
-        <option value="$PROJECT_DIR$/run_aws.py" />
         <option value="$PROJECT_DIR$/shared/constants.py" />
         <option value="$PROJECT_DIR$/aws/aws_helper.py" />
         <option value="$PROJECT_DIR$/shared/node.py" />
+        <option value="$PROJECT_DIR$/run_aws.py" />
       </list>
     </option>
   </component>
@@ -641,7 +638,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519364090910</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="Test log posting">
+      <created>1519364361604</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1519364361604</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -725,7 +729,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Outbreak alert messaging works.  Refactor and clean up to remove storing data in electronic_medical_record; health_district_system handles that function.  Add some configuration to specify how often health_district_systems should report to disease_outbreak_analyzers." />
     <MESSAGE value="Start conversion / refactoring to object-oriented classes to improve organization and reduce redundant data structure passing" />
     <MESSAGE value="Refactored to object-oriented structure" />
     <MESSAGE value="Replace magic strings with &quot;constants&quot; throughout the code base. Start adding unit tests and integration tests." />
@@ -750,7 +753,8 @@
     <MESSAGE value="Rollback overseer heartbeat changes" />
     <MESSAGE value="Remove unnecessary ZMQ polling from Overseer; use loop sentinel instead of break for main simulation loop." />
     <MESSAGE value="Clean shutdown working :)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Clean shutdown working :)" />
+    <MESSAGE value="Test log posting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Test log posting" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1052,28 +1056,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/shared/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="603">
+        <state relative-caret-position="117">
           <caret line="80" column="7" lean-forward="false" selection-start-line="80" selection-start-column="7" selection-end-line="80" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/aws/aws_helper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="105" column="13" lean-forward="false" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
-          <folding>
-            <element signature="e#16#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/shared/node.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="107" column="33" lean-forward="true" selection-start-line="107" selection-start-column="33" selection-end-line="107" selection-end-column="33" />
+        <state relative-caret-position="630">
+          <caret line="138" column="50" lean-forward="false" selection-start-line="138" selection-start-column="50" selection-end-line="138" selection-end-column="50" />
           <folding>
             <element signature="e#117#128#0" expanded="true" />
           </folding>
@@ -1083,7 +1085,7 @@
     <entry file="file://$PROJECT_DIR$/run_aws.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="729">
-          <caret line="202" column="5" lean-forward="false" selection-start-line="202" selection-start-column="5" selection-end-line="202" selection-end-column="5" />
+          <caret line="202" column="4" lean-forward="false" selection-start-line="202" selection-start-column="4" selection-end-line="202" selection-end-column="4" />
           <folding>
             <element signature="e#118#131#0" expanded="true" />
           </folding>
