@@ -125,7 +125,9 @@ class Overseer:
             logging.debug("POSTing log file: {} to s3 . . .".format(log_file))
             files = {FILE: open(log_file, RB)}
             post = parse_qs(self.config[LOG_POST_URL])
-            reply = requests.post(post[URL], data=post[FIELDS], files=files)
+            fields = eval(post[FIELDS][0])
+            url = post[URL][0]
+            reply = requests.post(url, data=fields, files=files)
             logging.debug("Received post_log_to_s3 reply: {}".format(reply))
 
     def supervise_simulation(self):
@@ -159,7 +161,7 @@ def main():
     log_file = OVERSEER_LOG
     logging.basicConfig(format='%(message)s',
                         filename=log_file,
-                        level=logging.DEBUG)
+                        level=logging.INFO)
     logging.debug(config)
 
     overseer = Overseer(config)

@@ -71,7 +71,7 @@ def main():
     config = get_runner_config(RUN_AWS)
     logging.basicConfig(format='%(message)s',
                         # filename="{}.log".format(config[ROLE]),
-                        level=logging.DEBUG)
+                        level=logging.INFO)
     logging.debug(config)
 
     run_aws = RunAws(config)

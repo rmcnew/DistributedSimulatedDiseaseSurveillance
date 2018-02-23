@@ -124,6 +124,7 @@ class Node:
         current_time = datetime.now()
         time_since_last_heartbeat = current_time - self.last_heartbeat_sent
         if time_since_last_heartbeat.seconds > SECONDS_PER_HEARTBEAT:
+            logging.info("Sending heartbeat to overseer")
             self.send_to_overseer(HEARTBEAT)
             reply = self.receive_from_overseer()
             self.last_heartbeat_sent = current_time
@@ -131,7 +132,7 @@ class Node:
 
     def post_log_to_s3(self, log_file):
         if LOG_POST_URL in self.config:
-            logging.debug("POSTing log file: {} to s3 . . .".format(log_file))
+            logging.info("POSTing log file: {} to s3 . . .".format(log_file))
             files = {FILE: open(log_file, RB)}
             post = parse_qs(self.config[LOG_POST_URL])
             fields = eval(post[FIELDS][0])

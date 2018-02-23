@@ -172,7 +172,7 @@ def main():
     log_file = "{}-{}.log".format(config[ROLE], config[NODE_ID])
     logging.basicConfig(format='%(message)s',
                         filename=log_file,
-                        level=logging.DEBUG)
+                        level=logging.INFO)
     logging.debug(config)
 
     electronic_medical_record = ElectronicMedicalRecord(config)
