@@ -99,10 +99,6 @@ class Overseer:
     def all_nodes_ready(self):
         return len(self.config[NODES]) == len(self.nodes_ready_to_start)
 
-    def configure_poller(self):
-        self.poller = zmq.Poller()
-        self.poller.register(self.reply_socket, zmq.POLLIN)
-
     def publish_start_simulation(self):
         logging.info("Starting the simulation . . .")
         start_time = datetime.now()
@@ -133,31 +129,26 @@ class Overseer:
             logging.debug("Received post_log_to_s3 reply: {}".format(reply))
 
     def supervise_simulation(self):
-        self.configure_poller()
         # publish "start_simulation" message to all nodes
         self.publish_start_simulation()
-
         # main simulation run loop
+        running_simulation = True
         logging.info("Press Ctrl-C to stop simulation.")
-        while True:
+        while running_simulation:
             try:
-                sockets = dict(self.poller.poll(700))  # poll timeout in milliseconds
-                if self.reply_socket in sockets:
-                    (node_id, message) = self.receive_from_nodes()
-                    logging.debug("Received message: {} from node: {}".format(message, node_id))
-                    if message == STOP_SIMULATION:
-                        self.send_to_node(self.reply_socket, node_id, ACKNOWLEDGED)
-                        logging.info("Received remote shutdown request")
-                        break
-                    elif message == HEARTBEAT:
-                        self.send_to_node(self.reply_socket, node_id, HEARTBEAT_RECEIVED)
-                        self.node_heartbeats[node_id] = datetime.now()
-                        logging.info("Heartbeat received from: {}".format(node_id))
+                (node_id, message) = self.receive_from_nodes()
+                logging.debug("Received message: {} from node: {}".format(message, node_id))
+                if message == STOP_SIMULATION:
+                    self.send_to_node(self.reply_socket, node_id, ACKNOWLEDGED)
+                    logging.info("Received remote shutdown request")
+                    running_simulation = False
+                elif message == HEARTBEAT:
+                    self.send_to_node(self.reply_socket, node_id, HEARTBEAT_RECEIVED)
+                    self.node_heartbeats[node_id] = datetime.now()
+                    logging.info("Heartbeat received from: {}".format(node_id))
                 self.check_node_heartbeats()
-                time.sleep(1)
             except KeyboardInterrupt:  # wait for Ctrl-C to exit main simulation run loop
                 break
-
         # publish "stop_simulation" message to all nodes
         self.publish_stop_simulation()
 
@@ -180,7 +171,8 @@ def main():
     logging.info("All nodes are registered.")
     logging.debug("registered node_addresses: {}".format(overseer.node_addresses))
 
-    time.sleep(5)
+    # sleep 1 second for each node to allow all nodes to finish startup
+    time.sleep(len(overseer.config[NODES]) + 1)
 
     # publish node_addresses to all nodes
     logging.info("Publishing node addresses . . .")
